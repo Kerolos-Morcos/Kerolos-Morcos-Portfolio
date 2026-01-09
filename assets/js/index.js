@@ -4,6 +4,9 @@ const scrollToTopBtn = document.getElementById("scroll-to-top");
 const sections = document.querySelectorAll("section");
 const links = document.querySelectorAll(".nav-links a");
 const navHeight = document.getElementById("header").offsetHeight;
+// Dark Mode
+const darkThemeBtn = document.getElementById("theme-toggle-button");
+const html = document.querySelector("html");
 
 // Scroll To Top Feature
 scrollToTopFeature();
@@ -42,5 +45,18 @@ function activeLinks() {
     document
       .querySelector(`.nav-links a[href="#${current}"]`)
       .classList.add("active");
+  });
+}
+
+// Dark Mode Feature
+darkTheme();
+function darkTheme() {
+  if (localStorage.getItem("theme") === "light") {
+    html.classList.remove("dark");
+  }
+  // toggle dark
+  darkThemeBtn.addEventListener("click", () => {
+    const isDark = html.classList.toggle("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
   });
 }
