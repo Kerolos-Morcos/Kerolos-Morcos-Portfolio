@@ -7,6 +7,10 @@ const navHeight = document.getElementById("header").offsetHeight;
 // Dark Mode
 const darkThemeBtn = document.getElementById("theme-toggle-button");
 const html = document.querySelector("html");
+// Gear Settings Theme
+const gearBtn = document.getElementById("settings-toggle");
+const settingsSide = document.getElementById("settings-sidebar");
+const closeSettingsBtn = document.getElementById("close-settings");
 
 // Scroll To Top Feature
 scrollToTopFeature();
@@ -59,4 +63,16 @@ function darkTheme() {
     const isDark = html.classList.toggle("dark");
     localStorage.setItem("theme", isDark ? "dark" : "light");
   });
+}
+
+// Gear Icon Theming
+// Close Button
+closeSettingsBtn.addEventListener("click", showGearOptions);
+// Show Settings Sidebar
+gearBtn.addEventListener("click", showGearOptions);
+function showGearOptions() {
+  settingsSide.classList.toggle("translate-x-full");
+  !settingsSide.classList.contains("translate-x-full")
+    ? (gearBtn.style.transform = "translate(-20rem, -50%)")
+    : (gearBtn.style.transform = "translateY(-50%)");
 }
