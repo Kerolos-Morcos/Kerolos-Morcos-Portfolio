@@ -149,45 +149,63 @@ createColorBtns();
 function createColorBtns() {
   themes.forEach((theme, index) => {
     const btn = document.createElement("button");
-    btn.className =
-      "w-12 h-12 rounded-full cursor-pointer transition-transform hover:scale-110 border-2 border-slate-200 dark:border-slate-700 hover:border-primary shadow-sm";
-    btn.title = theme.name;
-    btn.dataset.primary = theme.primary;
-    btn.dataset.secondary = theme.secondary;
-    btn.style.background = `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`;
-    btns.push(btn);
-    // default
-    if (index === 0) {
-      btn.classList.add(
-        "ring-2",
-        "ring-primary",
-        "ring-offset-2",
-        "ring-offset-white",
-        "dark:ring-offset-slate-900"
-      );
-    }
+    setBtnAttributes(btn, theme, index);
+    const themeStyle = `--color-primary: ${theme.primary}; --color-secondary: ${theme.secondary}; --color-accent: ${theme.accent};`;
     btn.addEventListener("click", () => {
-      btns.forEach((btn) => {
-        // remove any classes
-        btn.classList.remove(
-          "ring-2",
-          "ring-primary",
-          "ring-offset-2",
-          "ring-offset-white",
-          "dark:ring-offset-slate-900"
-        );
-      });
-      // add active class to the current clicked btn
-      btn.classList.add(
-        "ring-2",
-        "ring-primary",
-        "ring-offset-2",
-        "ring-offset-white",
-        "dark:ring-offset-slate-900"
-      );
+      setThemeStyle(theme, btn, themeStyle); // change html style
+      btns.forEach(removeActiveBtnClass); // remove active
+      setActiveBtnClass(btn); // add active class to the current clicked btn
     });
     colorsGrid.appendChild(btn);
   });
+}
+// Setting Button Attributes
+function setBtnAttributes(btn, theme, index) {
+  btn.className =
+    "w-12 h-12 rounded-full cursor-pointer transition-transform hover:scale-110 border-2 border-slate-200 dark:border-slate-700 hover:border-primary shadow-sm";
+  btn.title = theme.name;
+  btn.dataset.primary = theme.primary;
+  btn.dataset.secondary = theme.secondary;
+  btn.dataset.accent = theme.accent;
+  btn.style.background = `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`;
+  btns.push(btn);
+  // default
+  if (index === 0) {
+    btn.classList.add(
+      "ring-2",
+      "ring-primary",
+      "ring-offset-2",
+      "ring-offset-white",
+      "dark:ring-offset-slate-900"
+    );
+  }
+}
+// Setting Theme Style
+function setThemeStyle(theme, btn, themeStyle) {
+  if (theme.name === btn.title) {
+    html.style = themeStyle;
+  }
+  localStorage.setItem("themeStyle", themeStyle);
+}
+// Reset Active Button Class
+function removeActiveBtnClass(btn) {
+  btn.classList.remove(
+    "ring-2",
+    "ring-primary",
+    "ring-offset-2",
+    "ring-offset-white",
+    "dark:ring-offset-slate-900"
+  );
+}
+// Set Active Button Class
+function setActiveBtnClass(btn) {
+  btn.classList.add(
+    "ring-2",
+    "ring-primary",
+    "ring-offset-2",
+    "ring-offset-white",
+    "dark:ring-offset-slate-900"
+  );
 }
 
 // Font Selection
