@@ -43,6 +43,9 @@ function scrollToTopFeature() {
 // Active Links Feature
 activeLinks();
 function activeLinks() {
+  document
+    .querySelector('.nav-links a[href="#hero-section"]')
+    .classList.add("active");
   window.addEventListener("scroll", () => {
     let current = "";
     sections.forEach((section) => {
