@@ -150,15 +150,24 @@ function createColorBtns() {
   themes.forEach((theme, index) => {
     const btn = document.createElement("button");
     setBtnAttributes(btn, theme, index);
-    const themeStyle = `--color-primary: ${theme.primary}; --color-secondary: ${theme.secondary}; --color-accent: ${theme.accent};`;
     btn.addEventListener("click", () => {
-      setThemeStyle(theme, btn, themeStyle); // change html style
+      setThemeStyle(theme); // change html style
       btns.forEach(removeActiveBtnClass); // remove active
       setActiveBtnClass(btn); // add active class to the current clicked btn
     });
     colorsGrid.appendChild(btn);
   });
 }
+
+// Get Saved Theme
+getSavedTheme();
+function getSavedTheme() {
+  const savedTheme = localStorage.getItem("themeStyle");
+  if (savedTheme) {
+    html.style.cssText = savedTheme;
+  }
+}
+
 // Setting Button Attributes
 function setBtnAttributes(btn, theme, index) {
   btn.className =
@@ -169,23 +178,26 @@ function setBtnAttributes(btn, theme, index) {
   btn.dataset.accent = theme.accent;
   btn.style.background = `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`;
   btns.push(btn);
-  // default
-  if (index === 0) {
-    btn.classList.add(
-      "ring-2",
-      "ring-primary",
-      "ring-offset-2",
-      "ring-offset-white",
-      "dark:ring-offset-slate-900"
-    );
+  // default & active
+  const savedActiveTheme = localStorage.getItem("activeTheme");
+  if (savedActiveTheme && btn.title === savedActiveTheme) {
+    setActiveBtnClass(btn);
+  }
+  if (!savedActiveTheme && index === 0) {
+    setActiveBtnClass(btn);
   }
 }
+
 // Setting Theme Style
-function setThemeStyle(theme, btn, themeStyle) {
-  if (theme.name === btn.title) {
-    html.style = themeStyle;
-  }
+function setThemeStyle(theme) {
+  const themeStyle = `
+    --color-primary: ${theme.primary};
+    --color-secondary: ${theme.secondary};
+    --color-accent: ${theme.accent};
+  `;
+  html.style.cssText = themeStyle;
   localStorage.setItem("themeStyle", themeStyle);
+  localStorage.setItem("activeTheme", theme.name);
 }
 // Reset Active Button Class
 function removeActiveBtnClass(btn) {
