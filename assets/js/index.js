@@ -13,6 +13,8 @@ const settingsSide = document.getElementById("settings-sidebar");
 const closeSettingsBtn = document.getElementById("close-settings");
 // Theme Palette Container
 const colorsGrid = document.getElementById("theme-colors-grid");
+// Theme Reset Button
+const resetThemeBtn = document.getElementById("reset-settings");
 // Font Buttons
 const fontBtns = document.querySelectorAll(".font-option");
 
@@ -218,6 +220,22 @@ function setActiveBtnClass(btn) {
     "ring-offset-white",
     "dark:ring-offset-slate-900"
   );
+}
+// Reset Theme
+resetTheme();
+function resetTheme() {
+  resetThemeBtn.addEventListener("click", () => {
+    localStorage.removeItem("selectedFont");
+    localStorage.removeItem("activeTheme");
+    localStorage.removeItem("themeStyle");
+    html.style.cssText = `
+    --color-primary: #6366f1;
+    --color-secondary: #8b5cf6;
+    --color-accent: #a855f7;
+  `;
+    btns.forEach(removeActiveBtnClass);
+    setActiveBtnClass(btns[0]);
+  });
 }
 
 // Font Selection
