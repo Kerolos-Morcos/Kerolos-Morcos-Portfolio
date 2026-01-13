@@ -2,13 +2,10 @@ import { activeLinks } from "./activeLinkFeature.js";
 import { darkTheme } from "./darkModeFeature.js";
 import { resetTheme } from "./resetFeature.js";
 import { scrollToTopFeature } from "./scrollToTopFeature.js";
+import { gearBtn } from "./showSettingsSideFeature.js";
 
 export const html = document.querySelector("html");
 
-// Gear Settings Theme
-const gearBtn = document.getElementById("settings-toggle");
-const settingsSide = document.getElementById("settings-sidebar");
-const closeSettingsBtn = document.getElementById("close-settings");
 // Theme Palette Container
 const colorsGrid = document.getElementById("theme-colors-grid");
 
@@ -25,40 +22,8 @@ activeLinks();
 // Dark Mode Feature
 darkTheme();
 
-// Gear Icon Theming
-// Close Button
-closeSettingsBtn.addEventListener("click", closeGearOptions);
-// Show Settings Sidebar & Stop Bubbling
-gearBtn.addEventListener("click", function (e) {
-  e.stopPropagation();
-  showGearOptions();
-});
-// Stop Bubbling in Container
-settingsSide.addEventListener("click", function (e) {
-  e.stopPropagation();
-});
-// Show Gear Options
-function showGearOptions() {
-  settingsSide.classList.toggle("translate-x-full"); // add and remove the class
-  !settingsSide.classList.contains("translate-x-full") // If gear options is opened
-    ? (gearBtn.style.transform = "translate(-20rem, -50%)")
-    : (gearBtn.style.transform = "translateY(-50%)");
-}
-// Close Gear Options
-function closeGearOptions() {
-  settingsSide.classList.add("translate-x-full");
-  gearBtn.style.transform = "translateY(-50%)";
-}
-// Close Gear Options When Click Outside Its Container
-document.body.addEventListener("click", function (e) {
-  if (
-    !settingsSide.classList.contains("translate-x-full") &&
-    !settingsSide.contains(e.target) &&
-    !gearBtn.contains(e.target)
-  ) {
-    closeGearOptions();
-  }
-});
+// Settings Side
+gearBtn;
 
 // Themes Colors Array Objects
 const themes = [
