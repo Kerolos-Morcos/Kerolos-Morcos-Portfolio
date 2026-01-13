@@ -1,78 +1,29 @@
-// Scroll To Top
-const scrollToTopBtn = document.getElementById("scroll-to-top");
-// Active Links
-const sections = document.querySelectorAll("section");
-const links = document.querySelectorAll(".nav-links a");
-const navHeight = document.getElementById("header").offsetHeight;
-// Dark Mode
-const darkThemeBtn = document.getElementById("theme-toggle-button");
-const html = document.querySelector("html");
+import { activeLinks } from "./activeLinkFeature.js";
+import { darkTheme } from "./darkModeFeature.js";
+import { resetTheme } from "./resetFeature.js";
+import { scrollToTopFeature } from "./scrollToTopFeature.js";
+
+export const html = document.querySelector("html");
+
 // Gear Settings Theme
 const gearBtn = document.getElementById("settings-toggle");
 const settingsSide = document.getElementById("settings-sidebar");
 const closeSettingsBtn = document.getElementById("close-settings");
 // Theme Palette Container
 const colorsGrid = document.getElementById("theme-colors-grid");
-// Theme Reset Button
-const resetThemeBtn = document.getElementById("reset-settings");
+
 // Font Buttons
-const fontBtns = document.querySelectorAll(".font-option");
+export const fontBtns = document.querySelectorAll(".font-option");
+export const fonts = ["font-tajawal", "font-cairo", "font-alexandria"];
 
 // Scroll To Top Feature
 scrollToTopFeature();
-function scrollToTopFeature() {
-  // On Scroll Event (Show the button)
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 300) {
-      scrollToTopBtn.classList.remove("opacity-0", "invisible");
-      scrollToTopBtn.classList.add("opacity-100", "visible");
-    } else {
-      scrollToTopBtn.classList.add("opacity-0", "invisible");
-      scrollToTopBtn.classList.remove("opacity-100", "visible");
-    }
-  });
-  // On Click Event
-  scrollToTopBtn.addEventListener("click", () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  });
-}
 
 // Active Links Feature
 activeLinks();
-function activeLinks() {
-  document
-    .querySelector('.nav-links a[href="#hero-section"]')
-    .classList.add("active");
-  window.addEventListener("scroll", () => {
-    let current = "";
-    sections.forEach((section) => {
-      const sectionTop = section.offsetTop - navHeight - 10;
-      if (window.scrollY >= sectionTop) {
-        current = section.id;
-      }
-    });
-    links.forEach((link) => link.classList.remove("active"));
-    document
-      .querySelector(`.nav-links a[href="#${current}"]`)
-      .classList.add("active");
-  });
-}
 
 // Dark Mode Feature
 darkTheme();
-function darkTheme() {
-  if (localStorage.getItem("theme") === "light") {
-    html.classList.remove("dark");
-  }
-  // toggle dark
-  darkThemeBtn.addEventListener("click", () => {
-    const isDark = html.classList.toggle("dark");
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-  });
-}
 
 // Gear Icon Theming
 // Close Button
@@ -149,7 +100,7 @@ const themes = [
   },
 ];
 // Create Theme Color Buttons
-let btns = [];
+export let btns = [];
 createColorBtns();
 function createColorBtns() {
   themes.forEach((theme, index) => {
@@ -205,7 +156,7 @@ function setThemeStyle(theme) {
   localStorage.setItem("activeTheme", theme.name);
 }
 // Reset Active Button Class
-function removeActiveBtnClass(btn) {
+export function removeActiveBtnClass(btn) {
   btn.classList.remove(
     "ring-2",
     "ring-primary",
@@ -215,7 +166,7 @@ function removeActiveBtnClass(btn) {
   );
 }
 // Set Active Button Class
-function setActiveBtnClass(btn) {
+export function setActiveBtnClass(btn) {
   btn.classList.add(
     "ring-2",
     "ring-primary",
@@ -224,9 +175,7 @@ function setActiveBtnClass(btn) {
     "dark:ring-offset-slate-900"
   );
 }
-
 // Font Selection
-const fonts = ["font-tajawal", "font-cairo", "font-alexandria"];
 document.body.classList.remove(fonts[0]); // remove default html font (tajawal)
 let storageFont = localStorage.getItem("selectedFont") || fonts[0];
 document.body.classList.add(storageFont);
@@ -248,7 +197,7 @@ function fontSelection() {
   });
 }
 // Reset Font Button UI
-function btnReset(btn) {
+export function btnReset(btn) {
   btn.setAttribute("aria-checked", "false");
   btn.classList.remove(
     "active",
@@ -260,7 +209,7 @@ function btnReset(btn) {
   btn.classList.add("border-slate-200", "dark:border-slate-700");
 }
 // Set Font Button UI (Active)
-function btnActive(btn) {
+export function btnActive(btn) {
   btn.setAttribute("aria-checked", "true");
   btn.classList.add(
     "active",
@@ -274,25 +223,3 @@ function btnActive(btn) {
 
 // Reset Theme
 resetTheme();
-function resetTheme() {
-  resetThemeBtn.addEventListener("click", () => {
-    document.body.classList.remove(...fonts);
-    document.body.classList.add(fonts[0]);
-    fontBtns.forEach(btnReset);
-    for (const fontBtn of fontBtns) {
-      if (fontBtn.dataset.font === "tajawal") {
-        btnActive(fontBtn);
-      }
-    }
-    localStorage.removeItem("selectedFont");
-    localStorage.removeItem("activeTheme");
-    localStorage.removeItem("themeStyle");
-    html.style.cssText = `
-    --color-primary: #6366f1;
-    --color-secondary: #8b5cf6;
-    --color-accent: #a855f7;
-  `;
-    btns.forEach(removeActiveBtnClass);
-    setActiveBtnClass(btns[0]);
-  });
-}
