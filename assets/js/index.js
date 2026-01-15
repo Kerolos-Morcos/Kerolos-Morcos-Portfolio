@@ -140,51 +140,6 @@ export function setActiveBtnClass(btn) {
     "dark:ring-offset-slate-900"
   );
 }
-// Font Selection
-document.body.classList.remove(fonts[0]); // remove default html font (tajawal)
-let storageFont = localStorage.getItem("selectedFont") || fonts[0];
-document.body.classList.add(storageFont);
-fontSelection();
-function fontSelection() {
-  fontBtns.forEach((btn) => {
-    const btnFont = `font-${btn.dataset.font}`;
-    if (btnFont === storageFont) {
-      btnActive(btn);
-    }
-    btn.addEventListener("click", () => {
-      document.body.classList.remove(...fonts); // Remove Old Font
-      fontBtns.forEach(btnReset); // Remove Active
-      document.body.classList.add(btnFont); // Add The New Font
-      btnActive(btn); // Add Active
-      storageFont = btnFont; // Update The Storage
-      localStorage.setItem("selectedFont", btnFont);
-    });
-  });
-}
-// Reset Font Button UI
-export function btnReset(btn) {
-  btn.setAttribute("aria-checked", "false");
-  btn.classList.remove(
-    "active",
-    "border-primary",
-    "border-2",
-    "bg-slate-50",
-    "dark:bg-slate-800"
-  );
-  btn.classList.add("border-slate-200", "dark:border-slate-700");
-}
-// Set Font Button UI (Active)
-export function btnActive(btn) {
-  btn.setAttribute("aria-checked", "true");
-  btn.classList.add(
-    "active",
-    "border-primary",
-    "border-2",
-    "bg-slate-50",
-    "dark:bg-slate-800"
-  );
-  btn.classList.remove("border-slate-200", "dark:border-slate-700");
-}
 
 // Reset Theme
 resetTheme();
