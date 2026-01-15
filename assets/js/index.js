@@ -9,10 +9,6 @@ export const html = document.querySelector("html");
 // Theme Palette Container
 const colorsGrid = document.getElementById("theme-colors-grid");
 
-// Font Buttons
-export const fontBtns = document.querySelectorAll(".font-option");
-export const fonts = ["font-tajawal", "font-cairo", "font-alexandria"];
-
 // Scroll To Top Feature
 scrollToTopFeature();
 

@@ -1,9 +1,12 @@
-import { btnActive, fontBtns, fonts } from "./index.js";
+import { btnActive } from "./activeBtnUI.js";
 import { btnReset } from "./resetFontUI.js";
 
+export const fontBtns = document.querySelectorAll(".font-option");
+export const fonts = ["font-tajawal", "font-cairo", "font-alexandria"];
 document.body.classList.remove(fonts[0]); // remove default html font (tajawal)
 let storageFont = localStorage.getItem("selectedFont") || fonts[0];
 document.body.classList.add(storageFont);
+
 fontSelection();
 function fontSelection() {
   fontBtns.forEach((btn) => {

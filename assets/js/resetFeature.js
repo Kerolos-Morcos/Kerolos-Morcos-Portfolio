@@ -1,5 +1,13 @@
 // Reset Theme
-import { fontBtns, fonts, btnReset, btnActive, html, btns, removeActiveBtnClass, setActiveBtnClass } from "./index.js";
+import { btnActive } from "./activeBtnUI.js";
+import { fontBtns, fonts } from "./fontSelectionFeature.js";
+import {
+  btns,
+  html,
+  removeActiveBtnClass,
+  setActiveBtnClass,
+} from "./index.js";
+import { btnReset } from "./resetFontUI.js";
 const resetThemeBtn = document.getElementById("reset-settings");
 export function resetTheme() {
   resetThemeBtn.addEventListener("click", () => {
