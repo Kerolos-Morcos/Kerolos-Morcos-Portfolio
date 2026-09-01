@@ -1,0 +1,22 @@
+/* Small behavioral additions kept separate from the original compiled utility sheet. */
+.hero-photo-orbit { pointer-events: none; }
+.hero-photo-orbit--inner { animation: orbit-pulse 8s ease-in-out infinite; }
+.project-preview-fallback { background-image: radial-gradient(circle at 20% 20%, rgba(255,255,255,.18) 0 2px, transparent 3px), linear-gradient(135deg, #0f172a, var(--color-primary), var(--color-secondary)); background-size: 28px 28px, auto; }
+.language-switcher { white-space: nowrap; }
+@keyframes orbit-pulse { 0%, 100% { transform: scale(1); opacity: .7; } 50% { transform: scale(1.04); opacity: 1; } }
+@media (max-width: 1024px) {
+  .mobile-menu-btn { display: inline-flex; }
+  .nav-links { transform: translateX(100%); }
+  .nav-links.active { transform: translateX(0); }
+  html[dir="ltr"] .nav-links { transform: translateX(-100%); }
+  html[dir="ltr"] .nav-links.active { transform: translateX(0); }
+}
+@media (max-width: 768px) {
+  .hero-photo-orbit { width: 280px; height: 280px; }
+  .hero-photo-orbit--inner { width: 220px; height: 220px; }
+  .experience-section .relative.flex.items-center > .w-1\/2 { padding-left: 0 !important; padding-right: 0 !important; }
+  .experience-section .relative.flex.items-center > .w-1\/2 article { margin-bottom: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-photo-orbit--inner { animation: none; }
+}

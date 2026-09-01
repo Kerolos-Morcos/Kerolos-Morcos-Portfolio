@@ -1,0 +1,8 @@
+export const skills = [
+  { id: "vue", name: "Vue.js", icon: "fa-brands fa-vuejs", color: "primary", level: 88, tone: "primary", description: { ar: "بناء واجهات تفاعلية بمكونات قابلة لإعادة الاستخدام باستخدام Vue.js", en: "Building interactive interfaces with Vue 3 and reusable components" } },
+  { id: "javascript", name: "JavaScript", icon: "fa-brands fa-js", color: "secondary", level: 86, tone: "secondary", description: { ar: "كتابة كود منظم باستخدام ES6+ والتعامل مع العمليات غير المتزامنة", en: "Writing structured ES6+ code and handling asynchronous workflows" } },
+  { id: "node", name: "Node.js", icon: "fa-brands fa-node-js", color: "accent", level: 78, tone: "accent", description: { ar: "بناء خدمات Backend وتطبيقات ويب باستخدام Node.js", en: "Building backend services and web applications with Node.js" } },
+  { id: "express", name: "Express.js", icon: "fa-solid fa-server", color: "primary", level: 78, tone: "primary", description: { ar: "بناء REST APIs باستخدام التوجيه وMiddleware وعمليات CRUD", en: "Building REST APIs with routing, middleware, and CRUD workflows" } },
+  { id: "mysql", name: "MySQL", icon: "fa-solid fa-database", color: "secondary", level: 74, tone: "secondary", description: { ar: "تصميم وربط قواعد بيانات MySQL مع تطبيقات الويب", en: "Designing and integrating MySQL databases for web applications" } },
+  { id: "rest", name: "REST APIs", icon: "fa-solid fa-plug", color: "accent", level: 82, tone: "accent", description: { ar: "ربط الواجهات بخدمات REST باستخدام Axios وasync/await", en: "Connecting frontends to REST APIs with Axios and async/await" } },
+];
