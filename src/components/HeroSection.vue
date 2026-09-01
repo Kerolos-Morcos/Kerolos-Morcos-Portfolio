@@ -1,4 +1,6 @@
 <script setup>
+import profileImage from "../assets/profile/kerolos-morcos.webp";
+
 defineProps({ lang: { type: String, required: true }, t: { type: Function, required: true } });
 
 const techIcons = [
@@ -18,45 +20,45 @@ const techIcons = [
 
     <div class="container mx-auto pt-40 lg:pt-0 px-4 md:px-8 z-10">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-36 lg:gap-16 items-center">
-        <div class="order-2 lg:order-1 text-center lg:text-right">
-          <div class="inline-flex items-center gap-3 bg-gradient-to-l from-emerald-500/10 to-emerald-500/5 dark:from-emerald-500/20 dark:to-emerald-500/10 backdrop-blur-sm border border-emerald-500/30 rounded-full px-5 py-2.5 mb-8">
+        <div class="order-2 lg:order-1 text-center lg:text-right" data-reveal="hero-content">
+          <div class="inline-flex items-center gap-3 bg-gradient-to-l from-emerald-500/10 to-emerald-500/5 dark:from-emerald-500/20 dark:to-emerald-500/10 backdrop-blur-sm border border-emerald-500/30 rounded-full px-5 py-2.5 mb-8" data-reveal>
             <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
             <span class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{{ t('hero.available') }}</span>
           </div>
 
-          <div class="mb-8">
+          <div class="mb-8" data-reveal>
             <p class="text-xl md:text-2xl text-slate-500 dark:text-slate-400 mb-3 font-medium">{{ t('hero.greeting') }}</p>
             <h1 id="hero-title" class="text-4xl md:text-6xl lg:text-7xl font-black leading-tight"><span class="relative inline-block"><span class="bg-gradient-to-l pb-8 from-primary via-secondary to-accent bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">{{ t('hero.name') }}</span></span></h1>
           </div>
 
-          <div class="inline-flex items-center gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-5 py-2.5 rounded-full mb-8">
+          <div class="inline-flex items-center gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-5 py-2.5 rounded-full mb-8" data-reveal>
             <div class="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center"><i class="fa-solid fa-code text-white text-sm" aria-hidden="true"></i></div>
             <span class="font-bold text-slate-800 dark:text-white">{{ t('hero.role') }}</span>
           </div>
 
-          <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-xl mx-auto lg:mx-0 lg:mr-0 leading-relaxed">
+          <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-xl mx-auto lg:mx-0 lg:mr-0 leading-relaxed" data-reveal>
             {{ t('hero.descriptionBefore') }} <span class="text-primary font-semibold">{{ t('hero.descriptionHighlight') }}</span>{{ t('hero.descriptionAfter') }}
           </p>
 
-          <div class="flex flex-wrap justify-center lg:justify-end gap-4 mb-10">
+          <div class="flex flex-wrap justify-center lg:justify-end gap-4 mb-10" data-reveal>
             <a href="#portfolio" class="group relative inline-flex items-center gap-3 bg-gradient-to-l from-primary to-secondary px-8 py-4 rounded-2xl text-lg font-bold text-white overflow-hidden transition-all duration-300 hover:-translate-y-1"><span class="relative z-10">{{ t('hero.projectsCta') }}</span><i class="fa-solid fa-arrow-left relative z-10 transition-transform duration-300 group-hover:-translate-x-2" aria-hidden="true"></i><span class="absolute inset-0 bg-gradient-to-l from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span></a>
             <a href="#contact" class="group inline-flex items-center gap-3 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white px-8 py-4 rounded-2xl text-lg font-bold transition-all duration-300 hover:border-primary hover:text-primary hover:-translate-y-1 hover:shadow-lg"><span>{{ t('hero.contactCta') }}</span><i class="fa-solid fa-paper-plane transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" aria-hidden="true"></i></a>
           </div>
 
-          <div class="flex flex-wrap justify-center lg:justify-end gap-2" aria-label="Core technologies">
-            <div v-for="tech in techIcons" :key="tech.name" class="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all duration-300 group" :style="{ '--tech-color': tech.color }"><i :class="tech.icon" class="text-xl group-hover:rotate-180 transition-transform duration-500" :style="{ color: tech.color }" aria-hidden="true"></i><span class="text-sm font-semibold text-slate-700 dark:text-slate-300">{{ tech.name }}</span></div>
+          <div class="flex flex-wrap justify-center lg:justify-end gap-2" aria-label="Core technologies" data-reveal>
+            <div v-for="(tech, index) in techIcons" :key="tech.name" class="hero-tech-chip flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all duration-300 group" :style="{ '--tech-color': tech.color, '--float-delay': `${index * 180}ms` }"><i :class="tech.icon" class="text-xl group-hover:rotate-180 transition-transform duration-500" :style="{ color: tech.color }" aria-hidden="true"></i><span class="text-sm font-semibold text-slate-700 dark:text-slate-300">{{ tech.name }}</span></div>
           </div>
         </div>
 
-        <div class="order-1 lg:order-2 relative flex justify-center">
+        <div class="order-1 lg:order-2 relative flex justify-center" data-reveal="hero-image">
           <div class="hero-photo-orbit absolute w-[350px] h-[350px] md:w-[470px] md:h-[470px] border border-primary/20 rounded-full"></div>
           <div class="hero-photo-orbit hero-photo-orbit--inner absolute w-[280px] h-[280px] md:w-[390px] md:h-[390px] border-2 border-dashed border-secondary/20 rounded-full"></div>
-          <div class="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full p-2 bg-gradient-to-br from-primary via-secondary to-accent shadow-2xl shadow-primary/30">
-            <img src="/assets/imgs/Kero.jpg" :alt="t('hero.heroImageAlt')" class="w-full h-full object-cover rounded-full border-4 border-white dark:border-slate-950" fetchpriority="high" />
+          <div class="hero-photo-frame relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full p-2 bg-gradient-to-br from-primary via-secondary to-accent shadow-2xl shadow-primary/30">
+            <img :src="profileImage" :alt="t('hero.heroImageAlt')" class="w-full h-full object-cover object-top rounded-full border-4 border-white dark:border-slate-950" fetchpriority="high" />
           </div>
-          <span class="absolute top-4 left-1/4 z-20 w-14 h-14 bg-white dark:bg-slate-800 rounded-xl shadow-lg flex items-center justify-center text-primary text-2xl"><i class="fa-brands fa-vuejs" aria-hidden="true"></i></span>
-          <span class="absolute bottom-8 right-1/4 z-20 w-14 h-14 bg-white dark:bg-slate-800 rounded-xl shadow-lg flex items-center justify-center text-secondary text-2xl"><i class="fa-brands fa-node-js" aria-hidden="true"></i></span>
-          <span class="absolute top-1/2 -left-2 z-20 w-14 h-14 bg-white dark:bg-slate-800 rounded-xl shadow-lg flex items-center justify-center text-accent text-2xl"><i class="fa-solid fa-server" aria-hidden="true"></i></span>
+          <span class="hero-floating-icon absolute top-4 left-1/4 z-20 w-14 h-14 bg-white dark:bg-slate-800 rounded-xl shadow-lg flex items-center justify-center text-primary text-2xl"><i class="fa-brands fa-vuejs" aria-hidden="true"></i></span>
+          <span class="hero-floating-icon absolute bottom-8 right-1/4 z-20 w-14 h-14 bg-white dark:bg-slate-800 rounded-xl shadow-lg flex items-center justify-center text-secondary text-2xl" style="--float-delay: 240ms"><i class="fa-brands fa-node-js" aria-hidden="true"></i></span>
+          <span class="hero-floating-icon absolute top-1/2 -left-2 z-20 w-14 h-14 bg-white dark:bg-slate-800 rounded-xl shadow-lg flex items-center justify-center text-accent text-2xl" style="--float-delay: 480ms"><i class="fa-solid fa-server" aria-hidden="true"></i></span>
         </div>
       </div>
     </div>
