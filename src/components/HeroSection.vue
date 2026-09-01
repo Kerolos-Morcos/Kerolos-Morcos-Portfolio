@@ -74,7 +74,7 @@ const techIcons = [
       </div>
     </div>
 
-    <a href="#about" class="absolute bottom-4 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 animate-bounce hover:text-primary transition-colors duration-300" :aria-label="t('hero.scrollLabel')">
+    <a href="#about" class="hero-scroll-indicator absolute left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 animate-bounce hover:text-primary transition-colors duration-300" :aria-label="t('hero.scrollLabel')">
       <span class="text-sm text-slate-500 dark:text-slate-400 hover:text-primary">{{ t('hero.scrollText') }}</span>
       <span class="w-6 h-10 rounded-full border-2 border-slate-400 dark:border-slate-600 hover:border-primary flex justify-center pt-2 transition-colors duration-300"><span class="w-1.5 h-2 rounded-full bg-primary"></span></span>
     </a>

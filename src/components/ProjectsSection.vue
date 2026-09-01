@@ -1,13 +1,23 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { TransitionGroup } from "vue";
 import { projects } from "../data/projects";
 
 const props = defineProps({ lang: { type: String, required: true }, t: { type: Function, required: true } });
 const selectedFilter = ref("all");
 const filterKeys = ["all", "fullstack", "frontend", "mobile"];
+const projectsPerPage = 6;
+const currentPage = ref(1);
 const filteredProjects = computed(() => selectedFilter.value === "all" ? projects : projects.filter((project) => project.category === selectedFilter.value));
+const pageCount = computed(() => Math.max(1, Math.ceil(filteredProjects.value.length / projectsPerPage)));
+const paginatedProjects = computed(() => filteredProjects.value.slice((currentPage.value - 1) * projectsPerPage, currentPage.value * projectsPerPage));
 const localized = (value) => value[props.lang];
+
+watch(selectedFilter, () => { currentPage.value = 1; });
+watch(pageCount, (totalPages) => { if (currentPage.value > totalPages) currentPage.value = totalPages; });
+function goToPage(page) { currentPage.value = Math.min(Math.max(page, 1), pageCount.value); }
+function nextPage() { goToPage(currentPage.value + 1); }
+function previousPage() { goToPage(currentPage.value - 1); }
 </script>
 
 <template>
@@ -16,7 +26,7 @@ const localized = (value) => value[props.lang];
     <div class="container mx-auto max-w-7xl relative z-10">
       <div class="text-center mb-16" data-reveal>
         <span class="text-accent text-lg font-medium mb-3 block">{{ t('projects.eyebrow') }}</span>
-        <h2 id="portfolio-title" class="text-5xl font-black mb-4">{{ t('projects.titleLead') }} <span class="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">{{ t('projects.titleAccent') }}</span></h2>
+        <h2 id="portfolio-title" class="section-title text-5xl font-black mb-4">{{ t('projects.titleLead') }} <span class="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">{{ t('projects.titleAccent') }}</span></h2>
         <div class="w-24 h-1.5 bg-linear-to-r from-accent to-primary mx-auto rounded-full"></div>
         <p class="text-slate-500 dark:text-slate-400 mt-6">{{ t('projects.count') }}</p>
       </div>
@@ -26,10 +36,9 @@ const localized = (value) => value[props.lang];
       </div>
 
       <TransitionGroup name="project-list" tag="div" id="portfolio-grid" class="project-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-reveal>
-        <article v-for="project in filteredProjects" :key="project.id" class="portfolio-item group relative bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-primary transition-all duration-300">
+        <article v-for="project in paginatedProjects" :key="project.id" class="portfolio-item group relative bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-primary transition-all duration-300">
           <div class="relative h-72 overflow-hidden">
-            <img v-if="project.image" :src="project.image" :alt="`${localized(project.title)} project preview`" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" decoding="async" />
-            <div v-else class="project-preview-fallback w-full h-full flex flex-col items-center justify-center text-white bg-gradient-to-br from-slate-950 via-primary/70 to-secondary"><i :class="[project.fallbackIcon || 'fa-solid fa-image', 'text-6xl mb-4']" aria-hidden="true"></i><span class="font-bold text-lg">{{ t('projects.unavailablePreview') }}</span><small class="mt-2 text-white/70">{{ t('projects.unavailableNote') }}</small></div>
+            <img :src="project.image" :alt="`${localized(project.title)} project preview`" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" decoding="async" />
             <div class="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <span v-if="project.live" class="absolute top-4 left-4 px-3 py-1 rounded-full bg-emerald-500 text-white text-xs font-bold shadow-lg"><i class="fa-solid fa-circle text-[8px] mr-1" aria-hidden="true"></i>{{ t('projects.live') }}</span>
           </div>
@@ -47,6 +56,14 @@ const localized = (value) => value[props.lang];
           </div>
         </article>
       </TransitionGroup>
+
+      <div v-if="pageCount > 1" class="project-pagination flex items-center justify-center gap-4 mt-10" role="navigation" :aria-label="t('projects.page')">
+        <button type="button" class="w-12 h-12 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-primary hover:text-white transition-all duration-300 border border-slate-300 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-40" :aria-label="t('projects.previousPage')" :disabled="currentPage === 1" @click="previousPage"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
+        <div class="flex gap-3" role="tablist" :aria-label="t('projects.page')">
+          <button v-for="page in pageCount" :key="page" type="button" role="tab" :aria-selected="currentPage === page" :aria-label="`${t('projects.page')} ${page}`" :class="['w-3 h-3 rounded-full transition-all duration-300 hover:scale-125', currentPage === page ? 'bg-accent scale-125' : 'bg-slate-400 dark:bg-slate-600']" @click="goToPage(page)"></button>
+        </div>
+        <button type="button" class="w-12 h-12 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-secondary hover:text-white transition-all duration-300 border border-slate-300 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-40" :aria-label="t('projects.nextPage')" :disabled="currentPage === pageCount" @click="nextPage"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
+      </div>
 
       <div class="text-center mt-12"><a href="#contact" class="inline-flex items-center gap-3 bg-linear-to-l from-primary to-secondary px-8 py-4 rounded-2xl text-lg font-bold text-white hover:-translate-y-1 transition-all duration-300"><span>{{ t('projects.moreCta') }}</span><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a></div>
     </div>

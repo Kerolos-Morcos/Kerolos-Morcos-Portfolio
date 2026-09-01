@@ -1,15 +1,30 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { certificates } from "../data/certificates";
 import { experience } from "../data/experience";
 
-defineProps({ lang: { type: String, required: true }, t: { type: Function, required: true } });
+const props = defineProps({ lang: { type: String, required: true }, t: { type: Function, required: true } });
 
 const trainingIndex = ref(0);
-const visibleCertificates = computed(() => certificates.map((_, index) => certificates[(index + trainingIndex.value) % certificates.length]));
+const visibleCount = ref(1);
+const trainingPageCount = computed(() => Math.max(1, certificates.length - visibleCount.value + 1));
+const visibleCertificates = computed(() => certificates.slice(trainingIndex.value, trainingIndex.value + visibleCount.value));
 
-function nextTraining() { trainingIndex.value = (trainingIndex.value + 1) % certificates.length; }
-function previousTraining() { trainingIndex.value = (trainingIndex.value - 1 + certificates.length) % certificates.length; }
+function getVisibleCount() {
+  if (typeof window === "undefined") return 1;
+  return window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+}
+function updateVisibleCount() { visibleCount.value = getVisibleCount(); }
+function selectTrainingPage(page) { trainingIndex.value = Math.min(Math.max(page, 0), trainingPageCount.value - 1); }
+function nextTraining() { selectTrainingPage(trainingIndex.value + 1 >= trainingPageCount.value ? 0 : trainingIndex.value + 1); }
+function previousTraining() { selectTrainingPage(trainingIndex.value - 1 < 0 ? trainingPageCount.value - 1 : trainingIndex.value - 1); }
+
+watch(visibleCount, () => selectTrainingPage(trainingIndex.value));
+onMounted(() => {
+  updateVisibleCount();
+  window.addEventListener("resize", updateVisibleCount, { passive: true });
+});
+onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
 </script>
 
 <template>
@@ -18,7 +33,7 @@ function previousTraining() { trainingIndex.value = (trainingIndex.value - 1 + c
     <div class="container mx-auto max-w-7xl relative z-10">
       <div class="text-center mb-16" data-reveal>
         <span class="text-secondary text-lg font-medium mb-3 block">{{ t('experience.eyebrow') }}</span>
-        <h2 id="experience-title" class="text-5xl font-black mb-4">{{ t('experience.titleLead') }} <span class="bg-linear-to-r from-secondary to-accent bg-clip-text text-transparent">{{ t('experience.titleAccent') }}</span></h2>
+        <h2 id="experience-title" class="section-title text-5xl font-black mb-4">{{ t('experience.titleLead') }} <span class="bg-linear-to-r from-secondary to-accent bg-clip-text text-transparent">{{ t('experience.titleAccent') }}</span></h2>
         <div class="w-24 h-1.5 bg-linear-to-r from-secondary to-accent mx-auto rounded-full"></div>
       </div>
 
@@ -65,22 +80,22 @@ function previousTraining() { trainingIndex.value = (trainingIndex.value - 1 + c
       </div>
 
       <div class="mt-20">
-        <h3 class="text-3xl font-black text-center mb-10" data-reveal><span class="bg-linear-to-r from-secondary to-accent bg-clip-text text-transparent">{{ t('experience.trainingTitle') }}</span></h3>
+        <h3 class="section-title text-3xl font-black text-center mb-10" data-reveal><span class="bg-linear-to-r from-secondary to-accent bg-clip-text text-transparent">{{ t('experience.trainingTitle') }}</span></h3>
         <p class="text-center text-slate-500 dark:text-slate-400 mb-8" data-reveal>{{ t('experience.certificates') }}</p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <TransitionGroup name="training-cards" tag="div" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <article v-for="(certificate, index) in visibleCertificates" :key="certificate.id" class="training-card bg-slate-50 dark:bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 border border-slate-300 dark:border-slate-700 text-center hover:border-primary transition-all duration-300 transform hover:-translate-y-1" data-reveal :style="{ '--reveal-delay': `${index * 80}ms` }">
             <span :class="['w-16 h-16 bg-linear-to-br rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl text-white', certificate.tone === 'secondary' ? 'from-secondary to-accent' : certificate.tone === 'accent' ? 'from-accent to-primary' : 'from-primary to-secondary']"><i :class="certificate.icon" aria-hidden="true"></i></span>
             <p class="text-primary font-bold mb-2">{{ certificate.provider }}</p>
             <h4 class="text-2xl font-bold mb-2">{{ certificate.title[lang] }}</h4>
             <p class="text-slate-500 dark:text-slate-400">{{ certificate.period[lang] }}</p>
           </article>
-        </div>
+        </TransitionGroup>
         <div class="training-pagination flex items-center justify-center gap-4 mt-10" role="group" :aria-label="t('experience.trainingTitle')" data-reveal>
-          <button type="button" class="w-12 h-12 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-primary hover:text-white transition-all duration-300 border border-slate-300 dark:border-slate-700" :aria-label="t('experience.previousTraining')" @click="previousTraining"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+          <button type="button" class="w-12 h-12 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-primary hover:text-white transition-all duration-300 border border-slate-300 dark:border-slate-700" :aria-label="t('experience.previousTraining')" @click="previousTraining"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
           <div class="flex gap-3" role="tablist">
-            <button v-for="(_, index) in certificates" :key="index" type="button" role="tab" :aria-selected="trainingIndex === index" :aria-label="`${t('experience.trainingPage')} ${index + 1}`" :class="['w-3 h-3 rounded-full transition-all duration-300 hover:scale-125', trainingIndex === index ? 'bg-accent scale-125' : 'bg-slate-400 dark:bg-slate-600']" @click="trainingIndex = index"></button>
+            <button v-for="page in trainingPageCount" :key="page" type="button" role="tab" :aria-selected="trainingIndex === page - 1" :aria-label="`${t('experience.trainingPage')} ${page}`" :class="['w-3 h-3 rounded-full transition-all duration-300 hover:scale-125', trainingIndex === page - 1 ? 'bg-accent scale-125' : 'bg-slate-400 dark:bg-slate-600']" @click="selectTrainingPage(page - 1)"></button>
           </div>
-          <button type="button" class="w-12 h-12 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-secondary hover:text-white transition-all duration-300 border border-slate-300 dark:border-slate-700" :aria-label="t('experience.nextTraining')" @click="nextTraining"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+          <button type="button" class="w-12 h-12 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-secondary hover:text-white transition-all duration-300 border border-slate-300 dark:border-slate-700" :aria-label="t('experience.nextTraining')" @click="nextTraining"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
         </div>
       </div>
     </div>

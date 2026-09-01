@@ -11,6 +11,8 @@ const links = [
   ["#testimonials", "nav.testimonials"],
   ["#contact", "nav.contact"],
 ];
+
+const currentYear = new Date().getFullYear();
 </script>
 
 <template>
@@ -66,7 +68,7 @@ const links = [
 
       <div class="border-t border-slate-200 dark:border-slate-800 pt-8" data-reveal>
         <div class="flex flex-col md:flex-row justify-between items-center gap-5">
-          <p class="text-slate-500 dark:text-slate-400 text-lg text-center md:text-start">© 2026 {{ t('footer.name') }}. {{ t('footer.rights') }}</p>
+          <p class="text-slate-500 dark:text-slate-400 text-lg text-center md:text-start">© {{ currentYear }} {{ t('footer.name') }}. {{ t('footer.rights') }}</p>
           <div class="flex gap-3">
             <a
               v-for="social in socials"

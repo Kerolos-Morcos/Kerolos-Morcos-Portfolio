@@ -1,15 +1,28 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 
 const props = defineProps({ lang: { type: String, required: true }, t: { type: Function, required: true } });
 const activeIndex = ref(0);
-const visibleItems = computed(() => {
-  const items = props.t("credibility.items");
-  return [items[activeIndex.value], items[(activeIndex.value + 1) % items.length], items[(activeIndex.value + 2) % items.length]];
-});
+const visibleCount = ref(1);
+const items = computed(() => props.t("credibility.items"));
+const pageCount = computed(() => Math.max(1, items.value.length - visibleCount.value + 1));
+const visibleItems = computed(() => items.value.slice(activeIndex.value, activeIndex.value + visibleCount.value));
 
-function next() { activeIndex.value = (activeIndex.value + 1) % props.t("credibility.items").length; }
-function previous() { const total = props.t("credibility.items").length; activeIndex.value = (activeIndex.value - 1 + total) % total; }
+function getVisibleCount() {
+  if (typeof window === "undefined") return 1;
+  return window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+}
+function updateVisibleCount() { visibleCount.value = getVisibleCount(); }
+function selectPage(page) { activeIndex.value = Math.min(Math.max(page, 0), pageCount.value - 1); }
+function next() { selectPage(activeIndex.value + 1 >= pageCount.value ? 0 : activeIndex.value + 1); }
+function previous() { selectPage(activeIndex.value - 1 < 0 ? pageCount.value - 1 : activeIndex.value - 1); }
+
+watch(visibleCount, () => selectPage(activeIndex.value));
+onMounted(() => {
+  updateVisibleCount();
+  window.addEventListener("resize", updateVisibleCount, { passive: true });
+});
+onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
 </script>
 
 <template>
@@ -18,7 +31,7 @@ function previous() { const total = props.t("credibility.items").length; activeI
     <div class="container mx-auto max-w-7xl relative z-10">
       <div class="text-center mb-16" data-reveal>
         <span class="text-accent text-lg font-medium mb-3 block">{{ t('credibility.eyebrow') }}</span>
-        <h2 id="testimonials-title" class="text-5xl font-black mb-4">{{ t('credibility.titleLead') }} <span class="bg-linear-to-r from-accent to-primary bg-clip-text text-transparent">{{ t('credibility.titleAccent') }}</span></h2>
+        <h2 id="testimonials-title" class="section-title text-5xl font-black mb-4">{{ t('credibility.titleLead') }} <span class="bg-linear-to-r from-accent to-primary bg-clip-text text-transparent">{{ t('credibility.titleAccent') }}</span></h2>
         <div class="w-24 h-1.5 bg-linear-to-r from-accent to-primary mx-auto rounded-full"></div>
         <p class="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mt-6">{{ t('credibility.description') }}</p>
       </div>
@@ -36,12 +49,12 @@ function previous() { const total = props.t("credibility.items").length; activeI
           </Transition>
         </div>
 
-        <button type="button" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white/90 dark:bg-slate-800/90 hover:bg-primary text-slate-900 dark:text-white w-12 h-12 rounded-full hidden md:flex items-center justify-center transition-all duration-300 hover:scale-110 z-10 border border-slate-300 dark:border-slate-700" :aria-label="t('credibility.next')" @click="next"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
-        <button type="button" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white/90 dark:bg-slate-800/90 hover:bg-secondary text-slate-900 dark:text-white w-12 h-12 rounded-full hidden md:flex items-center justify-center transition-all duration-300 hover:scale-110 z-10 border border-slate-300 dark:border-slate-700" :aria-label="t('credibility.previous')" @click="previous"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
+        <button type="button" class="carousel-prev absolute top-1/2 -translate-y-1/2 bg-white/90 dark:bg-slate-800/90 hover:bg-secondary text-slate-900 dark:text-white w-12 h-12 rounded-full hidden md:flex items-center justify-center transition-all duration-300 hover:scale-110 z-10 border border-slate-300 dark:border-slate-700" :aria-label="t('credibility.previous')" @click="previous"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
+        <button type="button" class="carousel-next absolute top-1/2 -translate-y-1/2 bg-white/90 dark:bg-slate-800/90 hover:bg-primary text-slate-900 dark:text-white w-12 h-12 rounded-full hidden md:flex items-center justify-center transition-all duration-300 hover:scale-110 z-10 border border-slate-300 dark:border-slate-700" :aria-label="t('credibility.next')" @click="next"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
       </div>
 
       <div class="flex justify-center gap-3 mb-12" role="tablist" :aria-label="t('credibility.titleLead')">
-        <button v-for="(_, index) in t('credibility.items')" :key="index" type="button" role="tab" :aria-selected="activeIndex === index" :aria-label="`${t('credibility.indicator')} ${index + 1}`" :class="['w-3 h-3 rounded-full transition-all duration-300 hover:scale-125', activeIndex === index ? 'bg-accent scale-125' : 'bg-slate-400 dark:bg-slate-600']" @click="activeIndex = index"></button>
+        <button v-for="page in pageCount" :key="page" type="button" role="tab" :aria-selected="activeIndex === page - 1" :aria-label="`${t('credibility.indicator')} ${page}`" :class="['w-3 h-3 rounded-full transition-all duration-300 hover:scale-125', activeIndex === page - 1 ? 'bg-accent scale-125' : 'bg-slate-400 dark:bg-slate-600']" @click="selectPage(page - 1)"></button>
       </div>
 
       <div class="bg-linear-to-r from-primary via-secondary to-accent p-1 rounded-3xl" data-reveal>

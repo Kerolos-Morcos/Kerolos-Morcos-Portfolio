@@ -4,13 +4,18 @@
 html { scroll-behavior: smooth; }
 body { overflow-x: hidden; }
 #settings-toggle { transform: translateY(-50%); }
+.section-title { line-height: 1.3; overflow: visible; }
+.section-title > span { display: inline-block; line-height: inherit; padding-block: .06em .12em; }
+.hero-scroll-indicator { bottom: clamp(.5rem, 1.5vh, .875rem); }
+.carousel-prev { inset-inline-start: 0; margin-inline-start: -1rem; }
+.carousel-next { inset-inline-end: 0; margin-inline-end: -1rem; }
 .portfolio-item { min-width: 0; height: 100%; display: flex; flex-direction: column; }
 .portfolio-item > .p-6 { display: flex; flex: 1; flex-direction: column; }
 .portfolio-item > .p-6 > .flex.flex-wrap.gap-2 { margin-top: auto; }
 .project-grid { position: relative; align-items: stretch; }
 .project-list-enter-active, .project-list-leave-active { transition: opacity .35s ease, transform .35s ease; }
 .project-list-enter-from, .project-list-leave-to { opacity: 0; transform: translateY(16px) scale(.98); }
-.project-list-leave-active { position: absolute; width: calc((100% - 4rem) / 3); }
+.project-list-leave-active { position: absolute; width: 100%; }
 .project-list-move { transition: transform .4s cubic-bezier(.22, 1, .36, 1); }
 .skill-focus-line > div { width: 100%; }
 
@@ -22,7 +27,12 @@ body.reveal-ready [data-reveal].is-visible { opacity: 1; transform: none; }
 .credibility-fade-enter-active,
 .credibility-fade-leave-active { transition: opacity .5s ease, transform .5s ease; }
 .credibility-fade-enter-from,
-.credibility-fade-leave-to { opacity: 0; transform: translateX(18px); }
+.credibility-fade-leave-to { opacity: 0; }
+html[dir="rtl"] .credibility-fade-enter-from { transform: translateX(18px); }
+html[dir="ltr"] .credibility-fade-enter-from { transform: translateX(-18px); }
+.training-cards-enter-active, .training-cards-leave-active, .training-cards-move { transition: opacity .35s ease, transform .35s ease; }
+.training-cards-enter-from, .training-cards-leave-to { opacity: 0; transform: translateY(12px); }
+.training-cards-leave-active { position: absolute; }
 
 a, button { -webkit-tap-highlight-color: transparent; }
 a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
@@ -45,6 +55,15 @@ button:active, a:active { transform: scale(.98); }
   .experience-section .timeline-card-left,
   .experience-section .timeline-card-right { border-top: 3px solid var(--color-primary); }
   html[dir="ltr"] .experience-section .relative.flex.items-center > .timeline-side { text-align: left !important; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .project-list-leave-active { width: calc((100% - 2rem) / 2); }
+}
+@media (min-width: 1024px) {
+  .project-list-leave-active { width: calc((100% - 4rem) / 3); }
+}
+@media (max-height: 720px) and (min-width: 768px) {
+  .hero-scroll-indicator { bottom: .5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

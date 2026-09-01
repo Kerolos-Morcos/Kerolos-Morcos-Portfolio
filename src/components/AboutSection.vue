@@ -12,7 +12,7 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
     <div class="container mx-auto max-w-7xl relative z-10">
       <div class="text-center mb-16" data-reveal>
         <span class="text-primary text-lg font-medium mb-3 block">{{ t('about.eyebrow') }}</span>
-        <h2 id="about-title" class="text-5xl font-black mb-4">{{ t('about.titleLead') }} <span class="bg-gradient-to-l from-primary to-secondary bg-clip-text text-transparent">{{ t('about.titleAccent') }}</span></h2>
+        <h2 id="about-title" class="section-title text-5xl font-black mb-4">{{ t('about.titleLead') }} <span class="bg-gradient-to-l from-primary to-secondary bg-clip-text text-transparent">{{ t('about.titleAccent') }}</span></h2>
         <div class="w-24 h-1.5 bg-gradient-to-l from-primary to-secondary mx-auto rounded-full"></div>
       </div>
 

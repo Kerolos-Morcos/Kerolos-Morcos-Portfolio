@@ -1,25 +1,46 @@
 <script setup>
-import { reactive, ref } from "vue";
+import { onUnmounted, reactive, ref } from "vue";
 import { socials } from "../data/socials";
 
 const props = defineProps({ lang: { type: String, required: true }, t: { type: Function, required: true } });
-const form = reactive({ name: "", email: "", phone: "", projectType: "", budget: "", details: "" });
+const form = reactive({ name: "", email: "", phone: "", projectType: "", budget: "", details: "", website: "" });
 const openSelect = ref(null);
+const submitState = ref("idle");
+let successResetTimer;
 
 function toggleSelect(name) { openSelect.value = openSelect.value === name ? null : name; }
 function selectOption(name, value) { form[name] = value; openSelect.value = null; }
-function openEmailDraft() {
-  const subject = props.lang === "ar" ? `استفسار عن مشروع من ${form.name}` : `Project inquiry from ${form.name}`;
-  const body = [
-    `${props.t("contact.fullName")}: ${form.name}`,
-    `${props.t("contact.email")}: ${form.email}`,
-    `${props.t("contact.phone")}: ${form.phone || "-"}`,
-    `${props.t("contact.projectType")}: ${form.projectType || "-"}`,
-    `${props.t("contact.budget")}: ${form.budget || "-"}`,
-    `${props.t("contact.details")}: ${form.details}`,
-  ].join("\n");
-  window.location.href = `mailto:${props.t("contact.emailValue")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+async function submitForm() {
+  if (submitState.value === "submitting") return;
+
+  submitState.value = "submitting";
+  try {
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        subject: form.projectType,
+        budget: form.budget,
+        message: form.details,
+        website: form.website,
+      }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.message || "Contact request failed");
+
+    Object.assign(form, { name: "", email: "", phone: "", projectType: "", budget: "", details: "", website: "" });
+    submitState.value = "success";
+    window.clearTimeout(successResetTimer);
+    successResetTimer = window.setTimeout(() => { submitState.value = "idle"; }, 7000);
+  } catch {
+    submitState.value = "error";
+  }
 }
+
+onUnmounted(() => window.clearTimeout(successResetTimer));
 </script>
 
 <template>
@@ -28,7 +49,7 @@ function openEmailDraft() {
     <div class="container mx-auto max-w-7xl relative z-10">
       <div class="text-center mb-16" data-reveal>
         <span class="text-primary text-lg font-medium mb-3 block">{{ t('contact.eyebrow') }}</span>
-        <h2 id="contact-title" class="text-5xl font-black mb-4">{{ t('contact.titleLead') }} <span class="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">{{ t('contact.titleAccent') }}</span></h2>
+        <h2 id="contact-title" class="section-title text-5xl font-black mb-4">{{ t('contact.titleLead') }} <span class="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">{{ t('contact.titleAccent') }}</span></h2>
         <div class="w-24 h-1.5 bg-linear-to-r from-primary to-secondary mx-auto rounded-full"></div>
         <p class="text-xl text-slate-600 dark:text-slate-300 mt-6 max-w-2xl mx-auto">{{ t('contact.description') }}</p>
       </div>
@@ -67,7 +88,11 @@ function openEmailDraft() {
         </div>
 
         <div class="bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-200 dark:border-slate-700" data-reveal>
-          <form class="space-y-6" :aria-label="t('contact.formTitle')" @submit.prevent="openEmailDraft">
+          <form class="space-y-6" :aria-label="t('contact.formTitle')" @submit.prevent="submitForm">
+            <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+              <label for="website">Website</label>
+              <input id="website" v-model="form.website" name="website" tabindex="-1" autocomplete="off" type="text" />
+            </div>
             <div>
               <label for="full-name" class="block text-lg font-medium mb-2">{{ t('contact.fullName') }}</label>
               <input id="full-name" v-model="form.name" name="full-name" autocomplete="name" required type="text" :placeholder="t('contact.fullNamePlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
@@ -106,7 +131,10 @@ function openEmailDraft() {
               <label for="project-details" class="block text-lg font-medium mb-2">{{ t('contact.details') }}</label>
               <textarea id="project-details" v-model="form.details" name="project-details" required rows="5" :placeholder="t('contact.detailsPlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors resize-none"></textarea>
             </div>
-            <button type="submit" class="w-full bg-linear-to-r from-primary to-secondary py-4 rounded-xl text-lg font-bold text-white hover:shadow-2xl hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105"><i class="fa-solid fa-paper-plane me-2" aria-hidden="true"></i>{{ t('contact.submit') }}</button>
+            <button type="submit" :disabled="submitState === 'submitting'" class="w-full bg-linear-to-r from-primary to-secondary py-4 rounded-xl text-lg font-bold text-white hover:shadow-2xl hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105 disabled:cursor-wait disabled:opacity-70"><i class="fa-solid fa-paper-plane me-2" aria-hidden="true"></i>{{ submitState === 'submitting' ? t('contact.sending') : t('contact.submit') }}</button>
+            <p v-if="submitState === 'success'" class="text-center text-emerald-600 dark:text-emerald-400" role="status" aria-live="polite">{{ t('contact.success') }}</p>
+            <p v-else-if="submitState === 'error'" class="text-center text-red-600 dark:text-red-400" role="alert">{{ t('contact.error') }}</p>
+            <p class="text-center text-sm text-slate-500 dark:text-slate-400">{{ t('contact.formNote') }}</p>
           </form>
         </div>
       </div>

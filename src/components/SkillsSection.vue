@@ -17,7 +17,7 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
     <div class="container mx-auto max-w-7xl relative z-10">
       <div class="text-center mb-16" data-reveal>
         <span class="text-secondary text-lg font-medium mb-3 block">{{ t('skills.eyebrow') }}</span>
-        <h2 id="skills-title" class="text-5xl font-black mb-4">{{ t('skills.titleLead') }} <span class="bg-linear-to-r from-secondary to-accent bg-clip-text text-transparent">{{ t('skills.titleAccent') }}</span></h2>
+        <h2 id="skills-title" class="section-title text-5xl font-black mb-4">{{ t('skills.titleLead') }} <span class="bg-linear-to-r from-secondary to-accent bg-clip-text text-transparent">{{ t('skills.titleAccent') }}</span></h2>
         <div class="w-24 h-1.5 bg-linear-to-r from-secondary to-accent mx-auto rounded-full"></div>
       </div>
 
@@ -29,7 +29,7 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
         </article>
       </div>
       <div class="secondary-tech-list mt-16 grid grid-cols-2 md:grid-cols-4 gap-6" data-reveal aria-label="Supporting technologies">
-        <div v-for="tech in secondarySkills" :key="tech.name" class="text-center p-6 bg-slate-100 dark:bg-slate-800/20 rounded-xl border border-slate-300 dark:border-slate-700">
+        <div v-for="tech in secondarySkills" :key="tech.name" class="supporting-tech-card text-center p-6 bg-slate-100 dark:bg-slate-800/20 rounded-xl border border-slate-300 dark:border-slate-700 transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:shadow-lg">
           <i :class="tech.icon" :style="{ color: tech.color }" class="text-5xl mb-3" aria-hidden="true"></i>
           <p class="text-slate-600 dark:text-slate-300 font-medium">{{ tech.name }}</p>
         </div>
