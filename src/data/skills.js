@@ -1,5 +1,5 @@
 export const skills = [
-  { id: "vue", name: "Vue.js", icon: "fa-brands fa-vuejs", color: "primary", tone: "primary", description: { ar: "بناء واجهات تفاعلية بمكونات قابلة لإعادة الاستخدام باستخدام Vue.js", en: "Building interactive interfaces with Vue 3 and reusable components" } },
+  { id: "vue", name: "Vue.js", icon: "fa-brands fa-vuejs", color: "primary", tone: "primary", description: { ar: "بناء واجهات تفاعلية بمكونات قابلة لإعادة الاستخدام باستخدام Vue.js", en: "Building interactive interfaces with Vue.js and reusable components" } },
   { id: "javascript", name: "JavaScript", icon: "fa-brands fa-js", color: "secondary", tone: "secondary", description: { ar: "كتابة كود منظم باستخدام ES6+ والتعامل مع العمليات غير المتزامنة", en: "Writing structured ES6+ code and handling asynchronous workflows" } },
   { id: "node", name: "Node.js", icon: "fa-brands fa-node-js", color: "accent", tone: "accent", description: { ar: "بناء خدمات Backend وتطبيقات ويب باستخدام Node.js", en: "Building backend services and web applications with Node.js" } },
   { id: "express", name: "Express.js", icon: "fa-solid fa-server", color: "primary", tone: "primary", description: { ar: "بناء REST APIs باستخدام Express.js وMiddleware وتنفيذ عمليات CRUD", en: "Building REST APIs with Express.js, middleware, and CRUD workflows" } },

@@ -50,17 +50,33 @@ const techIcons = [
           </div>
         </div>
 
-        <div class="order-1 lg:order-2 relative flex justify-center" data-reveal="hero-image">
-          <div class="hero-photo-orbit absolute w-[350px] h-[350px] md:w-[470px] md:h-[470px] border border-primary/20 rounded-full"></div>
-          <div class="hero-photo-orbit hero-photo-orbit--inner absolute w-[280px] h-[280px] md:w-[390px] md:h-[390px] border-2 border-dashed border-secondary/20 rounded-full"></div>
-          <div class="hero-photo-frame relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full p-2 bg-gradient-to-br from-primary via-secondary to-accent shadow-2xl shadow-primary/30">
-            <img :src="profileImage" :alt="t('hero.heroImageAlt')" class="w-full h-full object-cover object-top rounded-full border-4 border-white dark:border-slate-950" fetchpriority="high" />
+        <div class="order-1 lg:order-2 relative flex justify-center lg:justify-start" data-reveal="hero-image">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-[350px] h-[350px] md:w-[450px] md:h-[450px] rounded-full border-2 border-dashed border-primary/30 animate-spin" style="animation-duration: 30s"></div>
           </div>
-          <span class="hero-floating-icon absolute top-4 left-1/4 z-20 w-14 h-14 bg-white dark:bg-slate-800 rounded-xl shadow-lg flex items-center justify-center text-primary text-2xl"><i class="fa-brands fa-vuejs" aria-hidden="true"></i></span>
-          <span class="hero-floating-icon absolute bottom-8 right-1/4 z-20 w-14 h-14 bg-white dark:bg-slate-800 rounded-xl shadow-lg flex items-center justify-center text-secondary text-2xl" style="--float-delay: 240ms"><i class="fa-brands fa-node-js" aria-hidden="true"></i></span>
-          <span class="hero-floating-icon absolute top-1/2 -left-2 z-20 w-14 h-14 bg-white dark:bg-slate-800 rounded-xl shadow-lg flex items-center justify-center text-accent text-2xl" style="--float-delay: 480ms"><i class="fa-solid fa-server" aria-hidden="true"></i></span>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-[280px] h-[280px] md:w-[380px] md:h-[380px] rounded-full border-2 border-secondary/20 animate-spin" style="animation-duration: 20s; animation-direction: reverse"></div>
+          </div>
+
+          <div class="relative z-10">
+            <div class="absolute -inset-3 bg-gradient-to-br from-primary via-secondary to-accent rounded-full opacity-75 blur-sm animate-pulse"></div>
+            <div class="absolute -inset-2 bg-gradient-to-br from-primary via-secondary to-accent rounded-full"></div>
+            <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-800 border-4 border-white dark:border-slate-900">
+              <img :src="profileImage" :alt="t('hero.heroImageAlt')" class="w-full h-full object-cover" fetchpriority="high" decoding="async" />
+            </div>
+
+            <div class="absolute -top-4 -right-4 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="animation-duration: 3s" aria-hidden="true"><i class="fa-brands fa-vuejs text-3xl text-[#4FC08D]"></i></div>
+            <div class="absolute top-1/4 -left-6 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="animation-duration: 2.5s; animation-delay: 0.5s" aria-hidden="true"><i class="fa-brands fa-node-js text-3xl text-[#68A063]"></i></div>
+            <div class="absolute -bottom-4 -right-4 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="animation-duration: 3.5s; animation-delay: 1s" aria-hidden="true"><i class="fa-brands fa-figma text-3xl text-[#F24E1E]"></i></div>
+            <div class="absolute bottom-1/4 -left-6 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="animation-duration: 2s; animation-delay: 1.5s" aria-hidden="true"><i class="fa-solid fa-code text-3xl text-primary"></i></div>
+          </div>
         </div>
       </div>
     </div>
+
+    <a href="#about" class="absolute bottom-4 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 animate-bounce hover:text-primary transition-colors duration-300" :aria-label="t('hero.scrollLabel')">
+      <span class="text-sm text-slate-500 dark:text-slate-400 hover:text-primary">{{ t('hero.scrollText') }}</span>
+      <span class="w-6 h-10 rounded-full border-2 border-slate-400 dark:border-slate-600 hover:border-primary flex justify-center pt-2 transition-colors duration-300"><span class="w-1.5 h-2 rounded-full bg-primary"></span></span>
+    </a>
   </section>
 </template>

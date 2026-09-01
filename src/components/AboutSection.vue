@@ -49,11 +49,11 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
               <p class="ml-4"><span class="text-green-400">role</span>: <span class="text-yellow-400">&quot;{{ t('about.code.role') }}&quot;</span>,</p>
               <p class="ml-4"><span class="text-green-400">experience</span>: <span class="text-yellow-400">&quot;{{ t('about.code.experience') }}&quot;</span>,</p>
               <p class="ml-4"><span class="text-green-400">location</span>: <span class="text-yellow-400">&quot;{{ t('about.code.location') }}&quot;</span>,</p>
-              <p class="ml-4"><span class="text-green-400">frontend</span>: <span class="text-yellow-400">&quot;Vue.js&quot;</span>,</p>
-              <p class="ml-4"><span class="text-green-400">backend</span>: <span class="text-yellow-400">&quot;Node.js&quot;</span>,</p>
-              <p class="ml-4"><span class="text-green-400">stack</span>: [</p>
-              <p class="ml-8"><span class="text-yellow-400">&quot;Vue.js&quot;</span>, <span class="text-yellow-400">&quot;Node.js&quot;</span>,</p>
-              <p class="ml-8"><span class="text-yellow-400">&quot;Express.js&quot;</span>, <span class="text-yellow-400">&quot;MySQL&quot;</span></p>
+              <p class="ml-4"><span class="text-green-400">skills</span>: [</p>
+              <p class="ml-8"><span class="text-yellow-400">&quot;Vue.js&quot;</span>,</p>
+              <p class="ml-8"><span class="text-yellow-400">&quot;Node.js&quot;</span>,</p>
+              <p class="ml-8"><span class="text-yellow-400">&quot;Express.js&quot;</span>,</p>
+              <p class="ml-8"><span class="text-yellow-400">&quot;MySQL&quot;</span></p>
               <p class="ml-4">],</p>
               <p class="ml-4"><span class="text-green-400">passion</span>: <span class="text-yellow-400">&quot;{{ t('about.code.passion') }}&quot;</span>,</p>
               <p class="ml-4"><span class="text-green-400">available</span>: <span class="text-blue-400">true</span></p>

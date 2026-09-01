@@ -1,10 +1,13 @@
 <script setup>
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { socials } from "../data/socials";
 
 const props = defineProps({ lang: { type: String, required: true }, t: { type: Function, required: true } });
 const form = reactive({ name: "", email: "", phone: "", projectType: "", budget: "", details: "" });
+const openSelect = ref(null);
 
+function toggleSelect(name) { openSelect.value = openSelect.value === name ? null : name; }
+function selectOption(name, value) { form[name] = value; openSelect.value = null; }
 function openEmailDraft() {
   const subject = props.lang === "ar" ? `استفسار عن مشروع من ${form.name}` : `Project inquiry from ${form.name}`;
   const body = [
@@ -21,30 +24,91 @@ function openEmailDraft() {
 
 <template>
   <section id="contact" class="py-24 px-4 md:px-8 bg-white dark:bg-slate-900/50 relative overflow-hidden" aria-labelledby="contact-title">
-    <div class="absolute top-0 right-1/4 w-96 h-96 bg-primary rounded-full filter blur-3xl opacity-10"></div>
+    <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-primary rounded-full filter blur-3xl opacity-10"></div>
     <div class="container mx-auto max-w-7xl relative z-10">
-      <div class="text-center mb-16" data-reveal><span class="text-primary text-lg font-medium mb-3 block">{{ t('contact.eyebrow') }}</span><h2 id="contact-title" class="text-5xl font-black mb-4">{{ t('contact.title') }}</h2><div class="w-24 h-1.5 bg-linear-to-r from-primary to-secondary mx-auto rounded-full"></div><p class="text-slate-500 dark:text-slate-400 mt-6">{{ t('contact.description') }}</p></div>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-        <div class="space-y-5" data-reveal>
-          <a :href="`mailto:${t('contact.emailValue')}`" class="flex items-center gap-5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-primary transition-all duration-300"><span class="w-14 h-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-2xl"><i class="fa-solid fa-envelope" aria-hidden="true"></i></span><span><span class="block font-bold text-xl">{{ t('contact.email') }}</span><span class="block text-primary">{{ t('contact.emailValue') }}</span><span class="block text-sm text-slate-500 dark:text-slate-400 mt-1">{{ t('contact.emailNote') }}</span></span></a>
-          <a href="tel:+201206868603" class="flex items-center gap-5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-secondary transition-all duration-300"><span class="w-14 h-14 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center text-2xl"><i class="fa-solid fa-phone" aria-hidden="true"></i></span><span><span class="block font-bold text-xl">{{ t('contact.phone') }}</span><span class="block text-secondary">{{ t('contact.phoneValue') }}</span><span class="block text-sm text-slate-500 dark:text-slate-400 mt-1">{{ t('contact.phoneNote') }}</span></span></a>
-          <div class="flex items-center gap-5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-700"><span class="w-14 h-14 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-2xl"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></span><span><span class="block font-bold text-xl">{{ t('contact.location') }}</span><span class="block text-accent">{{ t('contact.locationValue') }}</span><span class="block text-sm text-slate-500 dark:text-slate-400 mt-1">{{ t('contact.locationNote') }}</span></span></div>
-          <div class="pt-4"><h3 class="text-xl font-bold mb-4">{{ t('contact.follow') }}</h3><div class="flex gap-4"><a v-for="social in socials" :key="social.id" :href="social.href" class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-primary hover:text-white transition-all" :aria-label="social.label" target="_blank" rel="noopener noreferrer"><i :class="social.icon" aria-hidden="true"></i></a></div></div>
+      <div class="text-center mb-16" data-reveal>
+        <span class="text-primary text-lg font-medium mb-3 block">{{ t('contact.eyebrow') }}</span>
+        <h2 id="contact-title" class="text-5xl font-black mb-4">{{ t('contact.titleLead') }} <span class="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">{{ t('contact.titleAccent') }}</span></h2>
+        <div class="w-24 h-1.5 bg-linear-to-r from-primary to-secondary mx-auto rounded-full"></div>
+        <p class="text-xl text-slate-600 dark:text-slate-300 mt-6 max-w-2xl mx-auto">{{ t('contact.description') }}</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="space-y-8" data-reveal>
+          <a :href="`mailto:${t('contact.emailValue')}`" class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+            <div class="flex items-center gap-5">
+              <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-solid fa-envelope text-3xl" aria-hidden="true"></i></div>
+              <div><h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1">{{ t('contact.email') }}</h3><p class="text-xl font-bold text-slate-800 dark:text-white direction-ltr" dir="ltr">{{ t('contact.emailValue') }}</p><p class="text-sm text-slate-400 mt-1">{{ t('contact.emailNote') }}</p></div>
+            </div>
+          </a>
+
+          <a href="tel:+201206868603" class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+            <div class="flex items-center gap-5">
+              <div class="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-2xl flex items-center justify-center text-white shadow-lg shadow-secondary/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-solid fa-phone text-3xl" aria-hidden="true"></i></div>
+              <div><h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1">{{ t('contact.phone') }}</h3><p class="text-xl font-bold text-slate-800 dark:text-white direction-ltr" dir="ltr">{{ t('contact.phoneValue') }}</p><p class="text-sm text-slate-400 mt-1">{{ t('contact.phoneNote') }}</p></div>
+            </div>
+          </a>
+
+          <div class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all duration-300">
+            <div class="flex items-center gap-5">
+              <div class="w-16 h-16 bg-gradient-to-br from-accent to-primary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-accent/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-solid fa-location-dot text-3xl" aria-hidden="true"></i></div>
+              <div><h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1">{{ t('contact.location') }}</h3><p class="text-xl font-bold text-slate-800 dark:text-white">{{ t('contact.locationValue') }}</p><p class="text-sm text-slate-400 mt-1">{{ t('contact.locationNote') }}</p></div>
+            </div>
+          </div>
+
+          <div class="bg-linear-to-r from-primary via-secondary to-accent p-1 rounded-2xl">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl p-8">
+              <h3 class="text-2xl font-bold mb-4 text-center text-slate-800 dark:text-white">{{ t('contact.follow') }}</h3>
+              <div class="flex justify-center gap-4">
+                <a v-for="social in socials" :key="social.id" :href="social.href" class="w-14 h-14 bg-slate-200 dark:bg-slate-800 rounded-xl flex items-center justify-center hover:bg-primary transition-all duration-300 transform hover:scale-110 group" :aria-label="social.label" target="_blank" rel="noopener noreferrer"><i :class="social.icon" class="text-2xl text-slate-700 dark:text-white group-hover:text-white" aria-hidden="true"></i></a>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <form class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-7 md:p-8 border border-slate-200 dark:border-slate-700" :aria-label="t('contact.formTitle')" data-reveal @submit.prevent="openEmailDraft">
-          <h3 class="text-2xl font-bold mb-6">{{ t('contact.formTitle') }}</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <label class="block"><span class="block text-sm font-bold mb-2">{{ t('contact.fullName') }}</span><input v-model="form.name" required type="text" :placeholder="t('contact.fullNamePlaceholder')" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors" /></label>
-            <label class="block"><span class="block text-sm font-bold mb-2">{{ t('contact.email') }}</span><input v-model="form.email" required type="email" :placeholder="t('contact.emailPlaceholder')" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors" /></label>
-            <label class="block"><span class="block text-sm font-bold mb-2">{{ t('contact.phone') }}</span><input v-model="form.phone" type="tel" :placeholder="t('contact.phonePlaceholder')" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors" /></label>
-            <label class="block"><span class="block text-sm font-bold mb-2">{{ t('contact.projectType') }}</span><select v-model="form.projectType" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors"><option value="">{{ t('contact.projectTypePlaceholder') }}</option><option v-for="option in t('contact.projectTypes')" :key="option" :value="option">{{ option }}</option></select></label>
-            <label class="block md:col-span-2"><span class="block text-sm font-bold mb-2">{{ t('contact.budget') }}</span><select v-model="form.budget" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors"><option value="">{{ t('contact.budgetPlaceholder') }}</option><option v-for="option in t('contact.budgets')" :key="option" :value="option">{{ option }}</option></select></label>
-            <label class="block md:col-span-2"><span class="block text-sm font-bold mb-2">{{ t('contact.details') }}</span><textarea v-model="form.details" required rows="5" :placeholder="t('contact.detailsPlaceholder')" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors"></textarea></label>
-          </div>
-          <button type="submit" class="mt-6 w-full inline-flex items-center justify-center gap-3 bg-linear-to-l from-primary to-secondary px-6 py-4 rounded-xl text-lg font-bold text-white hover:-translate-y-1 transition-all"><span>{{ t('contact.submit') }}</span><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-4 text-center">{{ t('contact.formNote') }}</p>
-        </form>
+        <div class="bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-200 dark:border-slate-700" data-reveal>
+          <form class="space-y-6" :aria-label="t('contact.formTitle')" @submit.prevent="openEmailDraft">
+            <div>
+              <label for="full-name" class="block text-lg font-medium mb-2">{{ t('contact.fullName') }}</label>
+              <input id="full-name" v-model="form.name" name="full-name" autocomplete="name" required type="text" :placeholder="t('contact.fullNamePlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
+            </div>
+            <div>
+              <label for="email" class="block text-lg font-medium mb-2">{{ t('contact.email') }}</label>
+              <input id="email" v-model="form.email" name="email" autocomplete="email" required type="email" :placeholder="t('contact.emailPlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
+            </div>
+            <div>
+              <label for="phone" class="block text-lg font-medium mb-2">{{ t('contact.phone') }}</label>
+              <input id="phone" v-model="form.phone" name="phone" autocomplete="tel" type="tel" :placeholder="t('contact.phonePlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
+            </div>
+            <div>
+              <label id="project-type-label" class="block text-lg font-medium mb-2">{{ t('contact.projectType') }}</label>
+              <div class="custom-select-wrapper relative">
+                <div class="custom-select w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white focus:border-primary transition-all cursor-pointer flex justify-between items-center hover:border-primary" role="combobox" aria-labelledby="project-type-label" aria-haspopup="listbox" :aria-expanded="openSelect === 'projectType'" tabindex="0" @click="toggleSelect('projectType')" @keydown.enter.prevent="toggleSelect('projectType')" @keydown.space.prevent="toggleSelect('projectType')">
+                  <span :class="form.projectType ? '' : 'text-slate-500 dark:text-slate-400'">{{ form.projectType || t('contact.projectTypePlaceholder') }}</span><i class="fa-solid fa-chevron-down transition-transform duration-300 text-slate-600 dark:text-slate-400" :class="{ 'rotate-180': openSelect === 'projectType' }" aria-hidden="true"></i>
+                </div>
+                <div v-if="openSelect === 'projectType'" class="custom-options absolute w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl mt-2 shadow-2xl z-50 overflow-hidden" role="listbox" aria-labelledby="project-type-label">
+                  <div v-for="option in t('contact.projectTypes')" :key="option" class="custom-option px-6 py-3 hover:bg-primary/20 cursor-pointer transition-colors text-slate-700 dark:text-slate-200" role="option" @click.stop="selectOption('projectType', option)">{{ option }}</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label id="budget-label" class="block text-lg font-medium mb-2">{{ t('contact.budget') }}</label>
+              <div class="custom-select-wrapper relative">
+                <div class="custom-select w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white focus:border-primary transition-all cursor-pointer flex justify-between items-center hover:border-primary" role="combobox" aria-labelledby="budget-label" aria-haspopup="listbox" :aria-expanded="openSelect === 'budget'" tabindex="0" @click="toggleSelect('budget')" @keydown.enter.prevent="toggleSelect('budget')" @keydown.space.prevent="toggleSelect('budget')">
+                  <span :class="form.budget ? '' : 'text-slate-500 dark:text-slate-400'">{{ form.budget || t('contact.budgetPlaceholder') }}</span><i class="fa-solid fa-chevron-down transition-transform duration-300 text-slate-600 dark:text-slate-400" :class="{ 'rotate-180': openSelect === 'budget' }" aria-hidden="true"></i>
+                </div>
+                <div v-if="openSelect === 'budget'" class="custom-options absolute w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl mt-2 shadow-2xl z-50 overflow-hidden" role="listbox" aria-labelledby="budget-label">
+                  <div v-for="option in t('contact.budgets')" :key="option" class="custom-option px-6 py-3 hover:bg-secondary/20 cursor-pointer transition-colors text-slate-700 dark:text-slate-200" role="option" @click.stop="selectOption('budget', option)">{{ option }}</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label for="project-details" class="block text-lg font-medium mb-2">{{ t('contact.details') }}</label>
+              <textarea id="project-details" v-model="form.details" name="project-details" required rows="5" :placeholder="t('contact.detailsPlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors resize-none"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-linear-to-r from-primary to-secondary py-4 rounded-xl text-lg font-bold text-white hover:shadow-2xl hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105"><i class="fa-solid fa-paper-plane me-2" aria-hidden="true"></i>{{ t('contact.submit') }}</button>
+          </form>
+        </div>
       </div>
     </div>
   </section>

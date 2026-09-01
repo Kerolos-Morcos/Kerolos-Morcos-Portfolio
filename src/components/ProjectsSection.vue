@@ -16,20 +16,20 @@ const localized = (value) => value[props.lang];
     <div class="container mx-auto max-w-7xl relative z-10">
       <div class="text-center mb-16" data-reveal>
         <span class="text-accent text-lg font-medium mb-3 block">{{ t('projects.eyebrow') }}</span>
-        <h2 id="portfolio-title" class="text-5xl font-black mb-4">{{ t('projects.title') }}</h2>
+        <h2 id="portfolio-title" class="text-5xl font-black mb-4">{{ t('projects.titleLead') }} <span class="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">{{ t('projects.titleAccent') }}</span></h2>
         <div class="w-24 h-1.5 bg-linear-to-r from-accent to-primary mx-auto rounded-full"></div>
         <p class="text-slate-500 dark:text-slate-400 mt-6">{{ t('projects.count') }}</p>
       </div>
 
-      <div id="portfolio-filters" class="flex flex-wrap justify-center gap-3 mb-12" role="group" :aria-label="t('projects.filtersLabel')">
-        <button v-for="filter in filterKeys" :key="filter" type="button" :aria-pressed="selectedFilter === filter" :class="['px-6 py-3 rounded-xl border transition-all duration-300 font-medium', selectedFilter === filter ? 'border-primary bg-primary text-white shadow-lg shadow-primary/20' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 hover:border-primary hover:text-primary']" @click="selectedFilter = filter">{{ t(`projects.filters.${filter}`) }}</button>
+      <div id="portfolio-filters" class="flex justify-center gap-4 mb-12 flex-wrap" role="group" :aria-label="t('projects.filtersLabel')">
+        <button v-for="filter in filterKeys" :key="filter" type="button" :aria-pressed="selectedFilter === filter" :class="['px-8 py-3 rounded-xl transition-all duration-300 font-bold', selectedFilter === filter ? 'bg-linear-to-r from-primary to-secondary text-white hover:shadow-lg hover:shadow-primary/50' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700']" @click="selectedFilter = filter">{{ t(`projects.filters.${filter}`) }}</button>
       </div>
 
       <TransitionGroup name="project-list" tag="div" id="portfolio-grid" class="project-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-reveal>
-        <article v-for="project in filteredProjects" :key="project.id" class="portfolio-item group relative bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-700 hover:border-primary transition-all duration-300">
+        <article v-for="project in filteredProjects" :key="project.id" class="portfolio-item group relative bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-primary transition-all duration-300">
           <div class="relative h-72 overflow-hidden">
             <img v-if="project.image" :src="project.image" :alt="`${localized(project.title)} project preview`" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" decoding="async" />
-            <div v-else class="project-preview-fallback w-full h-full flex flex-col items-center justify-center text-white bg-gradient-to-br from-slate-950 via-primary/70 to-secondary"><i class="fa-solid fa-car-side text-6xl mb-4" aria-hidden="true"></i><span class="font-bold text-lg">{{ t('projects.unavailablePreview') }}</span><small class="mt-2 text-white/70">{{ t('projects.unavailableNote') }}</small></div>
+            <div v-else class="project-preview-fallback w-full h-full flex flex-col items-center justify-center text-white bg-gradient-to-br from-slate-950 via-primary/70 to-secondary"><i :class="[project.fallbackIcon || 'fa-solid fa-image', 'text-6xl mb-4']" aria-hidden="true"></i><span class="font-bold text-lg">{{ t('projects.unavailablePreview') }}</span><small class="mt-2 text-white/70">{{ t('projects.unavailableNote') }}</small></div>
             <div class="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <span v-if="project.live" class="absolute top-4 left-4 px-3 py-1 rounded-full bg-emerald-500 text-white text-xs font-bold shadow-lg"><i class="fa-solid fa-circle text-[8px] mr-1" aria-hidden="true"></i>{{ t('projects.live') }}</span>
           </div>

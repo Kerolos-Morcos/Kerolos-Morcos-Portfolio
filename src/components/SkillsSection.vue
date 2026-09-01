@@ -19,7 +19,6 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
         <span class="text-secondary text-lg font-medium mb-3 block">{{ t('skills.eyebrow') }}</span>
         <h2 id="skills-title" class="text-5xl font-black mb-4">{{ t('skills.titleLead') }} <span class="bg-linear-to-r from-secondary to-accent bg-clip-text text-transparent">{{ t('skills.titleAccent') }}</span></h2>
         <div class="w-24 h-1.5 bg-linear-to-r from-secondary to-accent mx-auto rounded-full"></div>
-        <p class="text-slate-500 dark:text-slate-400 mt-6 max-w-2xl mx-auto">{{ t('skills.supporting') }}</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -29,10 +28,10 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
           <p class="text-slate-500 dark:text-slate-400">{{ skill.description[lang] }}</p>
         </article>
       </div>
-      <div class="secondary-tech-list mt-12" data-reveal aria-label="Supporting technologies">
-        <h3 class="text-center text-xl font-bold mb-5 text-slate-700 dark:text-slate-200">{{ t('skills.secondaryTitle') }}</h3>
-        <div class="flex flex-wrap justify-center gap-3">
-        <span v-for="tech in secondarySkills" :key="tech.name" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/80 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-300"><i :class="tech.icon" :style="{ color: tech.color }" aria-hidden="true"></i>{{ tech.name }}</span>
+      <div class="secondary-tech-list mt-16 grid grid-cols-2 md:grid-cols-4 gap-6" data-reveal aria-label="Supporting technologies">
+        <div v-for="tech in secondarySkills" :key="tech.name" class="text-center p-6 bg-slate-100 dark:bg-slate-800/20 rounded-xl border border-slate-300 dark:border-slate-700">
+          <i :class="tech.icon" :style="{ color: tech.color }" class="text-5xl mb-3" aria-hidden="true"></i>
+          <p class="text-slate-600 dark:text-slate-300 font-medium">{{ tech.name }}</p>
         </div>
       </div>
     </div>
