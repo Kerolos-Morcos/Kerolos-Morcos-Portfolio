@@ -64,9 +64,9 @@ onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
       <div class="relative">
         <div :class="['absolute top-0 transform h-full w-1 bg-linear-to-b from-primary via-secondary to-accent', lang === 'ar' ? 'right-1/2 translate-x-1/2' : 'left-1/2 -translate-x-1/2']"></div>
 
-        <div class="space-y-12">
+        <div class="space-y-16">
           <div v-for="(item, index) in experience" :key="item.id" class="relative flex items-center">
-            <div v-if="index % 2 === 0" :class="['timeline-side w-1/2 pl-8', lang === 'ar' ? 'text-right' : 'text-left']">
+            <div v-if="index % 2 === 0" :class="['timeline-side w-1/2', lang === 'ar' ? 'text-right' : 'text-left']">
               <article class="timeline-card-left bg-white dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-200 dark:border-slate-700 hover:border-primary transition-all duration-300 transform" data-reveal>
                 <div class="flex items-center justify-between mb-4">
                   <span class="px-4 py-2 bg-primary/20 text-primary rounded-lg text-sm font-bold">{{ item.period[lang] }}</span>
@@ -80,11 +80,11 @@ onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
                 </div>
               </article>
             </div>
-            <div v-else class="timeline-side w-1/2 pr-8"></div>
+            <div v-else class="timeline-side w-1/2"></div>
 
             <div :class="['absolute transform w-6 h-6 rounded-full border-4 border-white dark:border-slate-950 z-10', lang === 'ar' ? 'right-1/2 translate-x-1/2' : 'left-1/2 -translate-x-1/2', index % 2 === 0 ? 'bg-primary' : 'bg-secondary']" aria-hidden="true"></div>
 
-            <div v-if="index % 2 === 1" :class="['timeline-side w-1/2 pr-8', lang === 'ar' ? 'text-right' : 'text-left']">
+            <div v-if="index % 2 === 1" :class="['timeline-side w-1/2', lang === 'ar' ? 'text-right' : 'text-left']">
               <article class="timeline-card-right bg-white dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-200 dark:border-slate-700 hover:border-secondary transition-all duration-300 transform" data-reveal>
                 <div class="flex items-center justify-between mb-4">
                   <span class="px-4 py-2 bg-secondary/20 text-secondary rounded-lg text-sm font-bold">{{ item.period[lang] }}</span>
@@ -98,7 +98,7 @@ onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
                 </div>
               </article>
             </div>
-            <div v-else class="timeline-side w-1/2 pl-8"></div>
+            <div v-else class="timeline-side w-1/2"></div>
           </div>
         </div>
       </div>

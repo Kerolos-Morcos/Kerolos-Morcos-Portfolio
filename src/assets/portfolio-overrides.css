@@ -11,10 +11,9 @@ body { overflow-x: hidden; }
 .portfolio-item { min-width: 0; height: 100%; display: flex; flex-direction: column; }
 .portfolio-item > .p-6 { display: flex; flex: 1; flex-direction: column; }
 .portfolio-item > .p-6 > .flex.flex-wrap.gap-2 { margin-top: auto; }
-.project-grid { position: relative; align-items: stretch; }
+.project-grid { position: relative; align-items: stretch; overflow-anchor: none; }
 .main-skill-card { transition: transform .32s cubic-bezier(.22, 1, .36, 1), border-color .32s ease, box-shadow .32s ease, background-color .32s ease; }
 .main-skill-card:hover { transform: translateY(-5px); border-color: var(--color-primary); box-shadow: 0 16px 32px rgb(var(--accent-primary-rgb) / .18); }
-.supporting-tech-card { transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease, background-color .3s ease; }
 .project-filter { position: relative; isolation: isolate; overflow: hidden; transition: color .3s ease, border-color .3s ease, box-shadow .3s ease, transform .3s ease, background-color .3s ease; }
 .project-filter::before { content: ""; position: absolute; inset: 0; z-index: 0; opacity: 0; background: linear-gradient(to right, var(--color-primary), var(--color-secondary)); transition: opacity .3s ease; }
 .project-filter > span { position: relative; z-index: 1; }
@@ -26,12 +25,26 @@ body { overflow-x: hidden; }
 .project-list-leave-to { opacity: 0; transform: translateY(-12px) scale(.985); }
 .project-list-leave-active { position: absolute; width: 100%; pointer-events: none; }
 .project-list-move { transition: transform .4s cubic-bezier(.22, 1, .36, 1); }
-.project-cta { box-shadow: 0 12px 28px rgb(239 68 68 / .25); transition: transform .3s cubic-bezier(.22, 1, .36, 1), box-shadow .3s ease, filter .3s ease; }
+.project-cta { background: linear-gradient(to right, var(--color-orange-500), var(--color-red-500)); transition: transform .3s cubic-bezier(.22, 1, .36, 1); }
 html[dir="rtl"] .project-cta { flex-direction: row; }
 html[dir="ltr"] .project-cta { flex-direction: row-reverse; }
-.project-cta:hover { transform: translateY(-4px); box-shadow: 0 18px 34px rgb(239 68 68 / .34); filter: saturate(1.08); }
+.project-cta:hover { transform: translateY(-4px); }
 .project-cta:active { transform: translateY(0) scale(.98); }
-.skill-focus-line > div { width: 100%; }
+
+.experience-section .timeline-card-left,
+.experience-section .timeline-card-right { position: relative; --timeline-card-surface: rgb(255 255 255); }
+html.dark .experience-section .timeline-card-left,
+html.dark .experience-section .timeline-card-right { --timeline-card-surface: rgb(30 41 59 / .5); }
+@media (min-width: 769px) {
+  .experience-section .timeline-card-left { margin-inline-end: 3rem; }
+  .experience-section .timeline-card-right { margin-inline-start: 3rem; }
+  .experience-section .timeline-card-left::after,
+  .experience-section .timeline-card-right::after { content: ""; position: absolute; top: 50%; width: 0; height: 0; transform: translateY(-50%); border-block: 12px solid transparent; border-inline: 0; }
+  html[dir="ltr"] .experience-section .timeline-card-left::after,
+  html[dir="rtl"] .experience-section .timeline-card-right::after { left: auto; right: -12px; border-left: 12px solid var(--timeline-card-surface); }
+  html[dir="ltr"] .experience-section .timeline-card-right::after,
+  html[dir="rtl"] .experience-section .timeline-card-left::after { left: -12px; right: auto; border-right: 12px solid var(--timeline-card-surface); }
+}
 
 body.reveal-ready [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity .7s cubic-bezier(.22, 1, .36, 1), transform .7s cubic-bezier(.22, 1, .36, 1); transition-delay: var(--reveal-delay, 0ms); }
 body.reveal-ready [data-reveal="hero-content"] { transform: translateY(24px); }
@@ -94,6 +107,7 @@ button:active, a:active { transform: scale(.98); }
   .experience-section .relative.flex.items-center > .timeline-side { width: 100%; padding-inline: 1rem !important; text-align: right !important; }
   .experience-section .relative.flex.items-center > .timeline-side:not(:has(article)) { display: none; }
   .experience-section .relative > .absolute.top-0.bottom-0,
+  .experience-section .relative > .absolute.top-0.h-full.w-1,
   .experience-section .relative.flex.items-center > .absolute.w-6.h-6 { display: none; }
   .experience-section .timeline-card-left,
   .experience-section .timeline-card-right { border-top: 3px solid var(--color-primary); }
