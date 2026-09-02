@@ -33,7 +33,7 @@ const currentYear = new Date().getFullYear();
           <a
             href="/Kerolos-Morcos-Full-Stack-Developer-CV.pdf"
             download
-            class="inline-flex items-center gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-5 py-4 rounded-xl hover:border-primary/50 hover:-translate-y-1 transition-all group w-full md:w-auto"
+            class="inline-flex items-center gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-5 py-4 rounded-xl hover:border-primary/50 hover:-translate-y-1 transition-interactive group w-full md:w-auto"
           >
             <span class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary text-xl" aria-hidden="true">
               <i class="fa-solid fa-file-arrow-down"></i>
@@ -75,7 +75,7 @@ const currentYear = new Date().getFullYear();
               :key="social.id"
               :href="social.href"
               :aria-label="social.label"
-              class="w-10 h-10 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-primary hover:text-white hover:border-primary transition-all"
+              class="w-10 h-10 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-primary hover:text-white hover:border-primary transition-interactive"
               target="_blank"
               rel="noopener noreferrer"
             >

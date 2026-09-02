@@ -26,9 +26,11 @@ let scrollFrame;
 let sectionObserver;
 let menuReadyFrame;
 let menuScrollLockSnapshot;
+let activeSectionObserverKey;
 
 function updateScrollState() {
-  showScrollTop.value = window.scrollY > 300;
+  const nextVisible = window.scrollY > 300;
+  if (nextVisible !== showScrollTop.value) showScrollTop.value = nextVisible;
 }
 
 function scrollToTop() { window.scrollTo({ top: 0, behavior: "smooth" }); }
@@ -41,14 +43,20 @@ function scheduleScrollState() {
 }
 
 function observeActiveSections() {
-  sectionObserver?.disconnect();
   if (!("IntersectionObserver" in window)) return;
 
-  const activationOffset = (document.getElementById("header")?.offsetHeight || 85) + 24;
-  const observationLineHeight = Math.max(1, window.innerHeight - activationOffset - 1);
+  const headerHeight = document.getElementById("header")?.offsetHeight || 85;
+  const viewportHeight = window.innerHeight;
+  const observerKey = `${headerHeight}:${viewportHeight}`;
+  if (observerKey === activeSectionObserverKey) return;
+  activeSectionObserverKey = observerKey;
+
+  sectionObserver?.disconnect();
+  const activationOffset = headerHeight + 24;
+  const observationLineHeight = Math.max(1, viewportHeight - activationOffset - 1);
   sectionObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) activeSection.value = entry.target.id;
+      if (entry.isIntersecting && activeSection.value !== entry.target.id) activeSection.value = entry.target.id;
     });
   }, {
     rootMargin: `-${activationOffset}px 0px -${observationLineHeight}px`,
@@ -189,6 +197,6 @@ onUnmounted(() => {
 
   <FooterSection :t="t" />
 
-  <button id="scroll-to-top" class="fixed left-8 bottom-8 bg-gradient-to-tr from-primary to-accent hover:from-secondary hover:to-primary text-white w-14 h-14 rounded-full shadow-lg hover:shadow-2xl hover:shadow-primary/50 flex items-center justify-center transition-all duration-300 z-50 hover:scale-110 group" :class="showScrollTop ? 'opacity-100 visible' : 'opacity-0 invisible'" type="button" :aria-label="t('a11y.scrollTop')" @click="scrollToTop"><i class="fa-solid fa-rocket text-2xl transform -rotate-45 group-hover:translate-y-[-3px] transition-transform duration-300" aria-hidden="true"></i></button>
+  <button id="scroll-to-top" class="fixed left-8 bottom-8 bg-gradient-to-tr from-primary to-accent hover:from-secondary hover:to-primary text-white w-14 h-14 rounded-full shadow-lg hover:shadow-2xl hover:shadow-primary/50 flex items-center justify-center transition-interactive duration-300 z-50 hover:scale-110 group" :class="showScrollTop ? 'opacity-100 visible' : 'opacity-0 invisible'" type="button" :aria-label="t('a11y.scrollTop')" @click="scrollToTop"><i class="fa-solid fa-rocket text-2xl transform -rotate-45 group-hover:translate-y-[-3px] transition-transform duration-300" aria-hidden="true"></i></button>
   <SettingsPanel :is-open="settingsOpen" :menu-open="menuOpen" :lang="lang" :t="t" :themes="themes" :theme-name="themeName" :font="font" @close="settingsOpen = $event" @set-font="setFont" @set-theme="chooseTheme" @reset="resetSettings" />
 </template>

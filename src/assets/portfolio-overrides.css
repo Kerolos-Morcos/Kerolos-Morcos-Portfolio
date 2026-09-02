@@ -33,6 +33,7 @@ html, body, #app { min-height: 100%; }
 html { background: var(--page-canvas); }
 body { min-height: 100dvh; margin: 0; background: var(--page-background); }
 #app { min-height: 100dvh; background: var(--page-background); }
+.transition-interactive { transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, visibility; transition-timing-function: var(--default-transition-timing-function, cubic-bezier(.4, 0, .2, 1)); }
 .code-editor { background: var(--code-bg); border: 1px solid var(--code-border); box-shadow: var(--code-shadow); }
 .code-editor__header { background: var(--code-header-bg); border-bottom: 1px solid var(--code-border); }
 .code-editor__content { color: var(--code-text); }

@@ -67,21 +67,21 @@ onUnmounted(() => window.clearTimeout(successResetTimer));
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <div class="space-y-8" data-reveal>
-          <a :href="`mailto:${t('contact.emailValue')}`" class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+          <a :href="`mailto:${t('contact.emailValue')}`" class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-primary hover:shadow-lg hover:-translate-y-1 transition-interactive duration-300">
             <div class="flex items-center gap-5">
               <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-solid fa-envelope text-3xl" aria-hidden="true"></i></div>
               <div><h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1">{{ t('contact.email') }}</h3><p class="text-xl font-bold text-slate-800 dark:text-white direction-ltr" dir="ltr">{{ t('contact.emailValue') }}</p><p class="text-sm text-slate-400 mt-1">{{ t('contact.emailNote') }}</p></div>
             </div>
           </a>
 
-          <a href="tel:+201206868603" class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+          <a href="tel:+201206868603" class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-interactive duration-300">
             <div class="flex items-center gap-5">
               <div class="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-2xl flex items-center justify-center text-white shadow-lg shadow-secondary/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-solid fa-phone text-3xl" aria-hidden="true"></i></div>
               <div><h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1">{{ t('contact.phone') }}</h3><p class="text-xl font-bold text-slate-800 dark:text-white direction-ltr" dir="ltr">{{ t('contact.phoneValue') }}</p><p class="text-sm text-slate-400 mt-1">{{ t('contact.phoneNote') }}</p></div>
             </div>
           </a>
 
-          <div class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-all duration-300">
+          <div class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-interactive duration-300">
             <div class="flex items-center gap-5">
               <div class="w-16 h-16 bg-gradient-to-br from-accent to-primary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-accent/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-solid fa-location-dot text-3xl" aria-hidden="true"></i></div>
               <div><h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1">{{ t('contact.location') }}</h3><p class="text-xl font-bold text-slate-800 dark:text-white">{{ t('contact.locationValue') }}</p><p class="text-sm text-slate-400 mt-1">{{ t('contact.locationNote') }}</p></div>
@@ -92,7 +92,7 @@ onUnmounted(() => window.clearTimeout(successResetTimer));
             <div class="bg-white dark:bg-slate-900 rounded-2xl p-8">
               <h3 class="text-2xl font-bold mb-4 text-center text-slate-800 dark:text-white">{{ t('contact.follow') }}</h3>
               <div class="flex justify-center gap-4">
-                <a v-for="social in socials" :key="social.id" :href="social.href" class="w-14 h-14 bg-slate-200 dark:bg-slate-800 rounded-xl flex items-center justify-center hover:bg-primary transition-all duration-300 transform hover:scale-110 group" :aria-label="social.label" target="_blank" rel="noopener noreferrer"><i :class="social.icon" class="text-2xl text-slate-700 dark:text-white group-hover:text-white" aria-hidden="true"></i></a>
+                <a v-for="social in socials" :key="social.id" :href="social.href" class="w-14 h-14 bg-slate-200 dark:bg-slate-800 rounded-xl flex items-center justify-center hover:bg-primary transition-interactive duration-300 transform hover:scale-110 group" :aria-label="social.label" target="_blank" rel="noopener noreferrer"><i :class="social.icon" class="text-2xl text-slate-700 dark:text-white group-hover:text-white" aria-hidden="true"></i></a>
               </div>
             </div>
           </div>
@@ -119,7 +119,7 @@ onUnmounted(() => window.clearTimeout(successResetTimer));
             <div>
               <label id="project-type-label" class="block text-lg font-medium mb-2">{{ t('contact.projectType') }}</label>
               <div class="custom-select-wrapper relative">
-                <div class="custom-select w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white focus:border-primary transition-all cursor-pointer flex justify-between items-center hover:border-primary" role="combobox" aria-labelledby="project-type-label" aria-haspopup="listbox" :aria-expanded="openSelect === 'projectType'" tabindex="0" @click="toggleSelect('projectType')" @keydown.enter.prevent="toggleSelect('projectType')" @keydown.space.prevent="toggleSelect('projectType')">
+                <div class="custom-select w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white focus:border-primary transition-interactive cursor-pointer flex justify-between items-center hover:border-primary" role="combobox" aria-labelledby="project-type-label" aria-haspopup="listbox" :aria-expanded="openSelect === 'projectType'" tabindex="0" @click="toggleSelect('projectType')" @keydown.enter.prevent="toggleSelect('projectType')" @keydown.space.prevent="toggleSelect('projectType')">
                   <span :class="form.projectType ? '' : 'text-slate-500 dark:text-slate-400'">{{ form.projectType || t('contact.projectTypePlaceholder') }}</span><i class="fa-solid fa-chevron-down transition-transform duration-300 text-slate-600 dark:text-slate-400" :class="{ 'rotate-180': openSelect === 'projectType' }" aria-hidden="true"></i>
                 </div>
                 <div v-if="openSelect === 'projectType'" class="custom-options absolute w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl mt-2 shadow-2xl z-50 overflow-hidden" role="listbox" aria-labelledby="project-type-label">
@@ -130,7 +130,7 @@ onUnmounted(() => window.clearTimeout(successResetTimer));
             <div>
               <label id="budget-label" class="block text-lg font-medium mb-2">{{ t('contact.budget') }}</label>
               <div class="custom-select-wrapper relative">
-                <div class="custom-select w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white focus:border-primary transition-all cursor-pointer flex justify-between items-center hover:border-primary" role="combobox" aria-labelledby="budget-label" aria-haspopup="listbox" :aria-expanded="openSelect === 'budget'" tabindex="0" @click="toggleSelect('budget')" @keydown.enter.prevent="toggleSelect('budget')" @keydown.space.prevent="toggleSelect('budget')">
+                <div class="custom-select w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white focus:border-primary transition-interactive cursor-pointer flex justify-between items-center hover:border-primary" role="combobox" aria-labelledby="budget-label" aria-haspopup="listbox" :aria-expanded="openSelect === 'budget'" tabindex="0" @click="toggleSelect('budget')" @keydown.enter.prevent="toggleSelect('budget')" @keydown.space.prevent="toggleSelect('budget')">
                   <span :class="form.budget ? '' : 'text-slate-500 dark:text-slate-400'">{{ form.budget || t('contact.budgetPlaceholder') }}</span><i class="fa-solid fa-chevron-down transition-transform duration-300 text-slate-600 dark:text-slate-400" :class="{ 'rotate-180': openSelect === 'budget' }" aria-hidden="true"></i>
                 </div>
                 <div v-if="openSelect === 'budget'" class="custom-options absolute w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl mt-2 shadow-2xl z-50 overflow-hidden" role="listbox" aria-labelledby="budget-label">
@@ -142,7 +142,7 @@ onUnmounted(() => window.clearTimeout(successResetTimer));
               <label for="project-details" class="block text-lg font-medium mb-2">{{ t('contact.details') }}</label>
               <textarea id="project-details" v-model="form.details" name="project-details" required rows="5" :placeholder="t('contact.detailsPlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors resize-none"></textarea>
             </div>
-            <button type="submit" :disabled="submitState === 'submitting'" class="w-full bg-linear-to-r from-primary to-secondary py-4 rounded-xl text-lg font-bold text-white flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105 disabled:cursor-wait disabled:opacity-70"><span>{{ submitState === 'submitting' ? t('contact.sending') : t('contact.submit') }}</span><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
+            <button type="submit" :disabled="submitState === 'submitting'" class="w-full bg-linear-to-r from-primary to-secondary py-4 rounded-xl text-lg font-bold text-white flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-primary/50 transition-interactive duration-300 transform hover:scale-105 disabled:cursor-wait disabled:opacity-70"><span>{{ submitState === 'submitting' ? t('contact.sending') : t('contact.submit') }}</span><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
             <p v-if="submitState === 'success'" class="text-center text-emerald-600 dark:text-emerald-400" role="status" aria-live="polite">{{ t('contact.success') }}</p>
             <p v-else-if="submitState === 'error'" class="text-center text-red-600 dark:text-red-400" role="alert">{{ t('contact.error') }}</p>
           </form>

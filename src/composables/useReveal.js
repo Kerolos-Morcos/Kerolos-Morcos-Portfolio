@@ -25,7 +25,7 @@ export function useReveal() {
 
     observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
+        if (!entry.isIntersecting || entry.target.classList.contains("is-visible")) return;
         entry.target.classList.add("is-visible");
         observer.unobserve(entry.target);
       });

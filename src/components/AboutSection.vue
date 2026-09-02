@@ -40,7 +40,7 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
         </div>
 
         <div class="space-y-6">
-          <div class="code-editor rounded-2xl overflow-hidden shadow-2xl hover:shadow-primary/20 transition-all duration-500 transform hover:-translate-y-1" data-reveal>
+          <div class="code-editor rounded-2xl overflow-hidden shadow-2xl hover:shadow-primary/20 transition-interactive duration-500 transform hover:-translate-y-1" data-reveal>
             <div class="code-editor__header flex items-center gap-2 px-4 py-3"><span class="w-3 h-3 rounded-full bg-red-500"></span><span class="w-3 h-3 rounded-full bg-yellow-500"></span><span class="w-3 h-3 rounded-full bg-green-500"></span><span class="code-file-label text-sm font-mono">{{ t('about.codeFile') }}</span></div>
             <div class="code-editor__content p-6 font-mono text-sm md:text-base leading-relaxed overflow-x-auto" dir="ltr">
               <p class="code-comment">{{ t('about.codeComment') }}</p>
@@ -63,11 +63,11 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
           </div>
 
           <div class="grid grid-cols-3 gap-4" data-reveal>
-            <div v-for="(stat, index) in t('about.quickStats')" :key="stat.label" :class="['bg-slate-50 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-5 text-center border border-slate-200 dark:border-slate-700 hover:border-primary transition-all duration-300', index === 1 ? 'hover:border-secondary' : index === 2 ? 'hover:border-accent' : '']"><div :class="['text-3xl font-black mb-1', index === 1 ? 'text-secondary' : index === 2 ? 'text-accent' : 'text-primary']">{{ stat.value }}</div><div class="text-sm text-slate-600 dark:text-slate-400">{{ stat.label }}</div></div>
+            <div v-for="(stat, index) in t('about.quickStats')" :key="stat.label" :class="['bg-slate-50 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-5 text-center border border-slate-200 dark:border-slate-700 hover:border-primary transition-interactive duration-300', index === 1 ? 'hover:border-secondary' : index === 2 ? 'hover:border-accent' : '']"><div :class="['text-3xl font-black mb-1', index === 1 ? 'text-secondary' : index === 2 ? 'text-accent' : 'text-primary']">{{ stat.value }}</div><div class="text-sm text-slate-600 dark:text-slate-400">{{ stat.label }}</div></div>
           </div>
 
           <div class="flex gap-4 justify-center lg:justify-end" :aria-label="t('about.socialLabel')">
-            <a v-for="social in socials" :key="social.id" :href="social.href" :class="['w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-white transition-all duration-300 border border-slate-200 dark:border-slate-700', social.hover]" :aria-label="social.label" target="_blank" rel="noopener noreferrer"><i :class="social.icon" aria-hidden="true"></i></a>
+            <a v-for="social in socials" :key="social.id" :href="social.href" :class="['w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-white transition-interactive duration-300 border border-slate-200 dark:border-slate-700', social.hover]" :aria-label="social.label" target="_blank" rel="noopener noreferrer"><i :class="social.icon" aria-hidden="true"></i></a>
           </div>
         </div>
       </div>

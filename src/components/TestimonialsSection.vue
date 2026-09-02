@@ -40,7 +40,7 @@ onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
         <div class="overflow-hidden">
           <Transition name="credibility-fade" mode="out-in">
             <div :key="activeIndex" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <article v-for="(item, index) in visibleItems" :key="`${activeIndex}-${item.title}`" class="principle-card bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-200 dark:border-slate-700 hover:border-accent transition-all duration-300 flex flex-col h-full" data-reveal>
+              <article v-for="(item, index) in visibleItems" :key="`${activeIndex}-${item.title}`" class="principle-card bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-200 dark:border-slate-700 hover:border-accent transition-interactive duration-300 flex flex-col h-full" data-reveal>
                 <div class="flex items-center justify-between mb-6"><span :class="['w-14 h-14 rounded-xl flex items-center justify-center text-white text-xl', index === 0 ? 'bg-primary' : index === 1 ? 'bg-secondary' : 'bg-accent']"><i :class="index === 0 ? 'fa-solid fa-comments' : index === 1 ? 'fa-solid fa-magnifying-glass' : 'fa-solid fa-arrows-rotate'" aria-hidden="true"></i></span><span class="text-primary text-3xl font-black">0{{ (activeIndex + index) % 4 + 1 }}</span></div>
                 <h3 class="text-2xl font-bold mb-3">{{ item.title }}</h3>
                 <p class="text-slate-600 dark:text-slate-300 leading-relaxed flex-grow">{{ item.text }}</p>
@@ -51,18 +51,18 @@ onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
       </div>
 
       <div class="methodology-controls flex items-center justify-center gap-4 mt-8 mb-12" role="navigation" :aria-label="t('credibility.titleLead')">
-        <button type="button" class="methodology-nav-button bg-white/90 dark:bg-slate-800/90 hover:bg-secondary text-slate-900 dark:text-white w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 border border-slate-300 dark:border-slate-700" :aria-label="t('credibility.previous')" @click="previous"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
+        <button type="button" class="methodology-nav-button bg-white/90 dark:bg-slate-800/90 hover:bg-secondary text-slate-900 dark:text-white w-12 h-12 rounded-full flex items-center justify-center transition-interactive duration-300 hover:scale-110 border border-slate-300 dark:border-slate-700" :aria-label="t('credibility.previous')" @click="previous"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
         <div class="flex justify-center gap-3" role="tablist" :aria-label="t('credibility.titleLead')">
-          <button v-for="page in pageCount" :key="page" type="button" role="tab" :aria-selected="activeIndex === page - 1" :aria-label="`${t('credibility.indicator')} ${page}`" :class="['w-3 h-3 rounded-full transition-all duration-300 hover:scale-125', activeIndex === page - 1 ? 'bg-accent scale-125' : 'bg-slate-400 dark:bg-slate-600']" @click="selectPage(page - 1)"></button>
+          <button v-for="page in pageCount" :key="page" type="button" role="tab" :aria-selected="activeIndex === page - 1" :aria-label="`${t('credibility.indicator')} ${page}`" :class="['w-3 h-3 rounded-full transition-interactive duration-300 hover:scale-125', activeIndex === page - 1 ? 'bg-accent scale-125' : 'bg-slate-400 dark:bg-slate-600']" @click="selectPage(page - 1)"></button>
         </div>
-        <button type="button" class="methodology-nav-button bg-white/90 dark:bg-slate-800/90 hover:bg-primary text-slate-900 dark:text-white w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 border border-slate-300 dark:border-slate-700" :aria-label="t('credibility.next')" @click="next"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
+        <button type="button" class="methodology-nav-button bg-white/90 dark:bg-slate-800/90 hover:bg-primary text-slate-900 dark:text-white w-12 h-12 rounded-full flex items-center justify-center transition-interactive duration-300 hover:scale-110 border border-slate-300 dark:border-slate-700" :aria-label="t('credibility.next')" @click="next"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
       </div>
 
       <div class="bg-linear-to-r from-primary via-secondary to-accent p-1 rounded-3xl" data-reveal>
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center">
           <h3 class="text-3xl font-bold mb-4">{{ t('credibility.ctaTitle') }}</h3>
           <p class="text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">{{ t('credibility.ctaText') }}</p>
-          <div class="flex justify-center gap-4 flex-wrap"><a href="#contact" class="bg-linear-to-r from-primary to-secondary text-white px-10 py-4 rounded-xl font-bold hover:shadow-xl hover:shadow-primary/30 transition-all duration-300">{{ t('credibility.ctaContact') }}</a><a href="#portfolio" class="border-2 border-primary dark:border-white text-primary dark:text-white px-10 py-4 rounded-xl font-bold hover:bg-primary hover:text-white dark:hover:bg-white dark:hover:text-slate-900 transition-all duration-300">{{ t('credibility.ctaProjects') }}</a></div>
+          <div class="flex justify-center gap-4 flex-wrap"><a href="#contact" class="bg-linear-to-r from-primary to-secondary text-white px-10 py-4 rounded-xl font-bold hover:shadow-xl hover:shadow-primary/30 transition-interactive duration-300">{{ t('credibility.ctaContact') }}</a><a href="#portfolio" class="border-2 border-primary dark:border-white text-primary dark:text-white px-10 py-4 rounded-xl font-bold hover:bg-primary hover:text-white dark:hover:bg-white dark:hover:text-slate-900 transition-interactive duration-300">{{ t('credibility.ctaProjects') }}</a></div>
         </div>
       </div>
     </div>
