@@ -1,6 +1,4 @@
 <script setup>
-import { ref, watch } from "vue";
-
 const props = defineProps({
   lang: { type: String, required: true },
   t: { type: Function, required: true },
@@ -11,7 +9,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["toggle-menu", "close-menu", "navigate", "change-language", "toggle-theme"]);
-const menuButton = ref(null);
 
 const navItems = [
   { id: "hero-section", label: "nav.home", href: "#hero-section" },
@@ -36,10 +33,6 @@ function handleThemeChange() {
   emit("close-menu");
 }
 
-watch(() => props.menuOpen, (open, previousOpen) => {
-  if (open || !previousOpen) return;
-  window.requestAnimationFrame(() => menuButton.value?.focus({ preventScroll: true }));
-});
 </script>
 
 <template>
@@ -52,7 +45,7 @@ watch(() => props.menuOpen, (open, previousOpen) => {
         <span class="text-2xl font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">{{ t('about.titleAccent') }}</span>
       </a>
 
-      <button ref="menuButton" class="mobile-menu-btn w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 items-center justify-center" type="button" :aria-label="menuOpen ? t('nav.closeMenu') : t('nav.menu')" :aria-expanded="menuOpen" aria-controls="primary-navigation" @click="$emit('toggle-menu')">
+      <button class="mobile-menu-btn w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 items-center justify-center" type="button" :aria-label="menuOpen ? t('nav.closeMenu') : t('nav.menu')" :aria-expanded="menuOpen" aria-controls="primary-navigation" @click="$emit('toggle-menu')">
         <i :class="menuOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'" aria-hidden="true"></i>
       </button>
 

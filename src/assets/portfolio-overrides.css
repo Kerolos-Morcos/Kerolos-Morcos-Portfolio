@@ -46,7 +46,6 @@ body { min-height: 100dvh; margin: 0; background: var(--page-background); }
 .language-switcher { white-space: nowrap; }
 html { scroll-behavior: smooth; }
 body { overflow-x: hidden; }
-html.menu-scroll-locked, html.menu-scroll-locked body, html.menu-scroll-locked #app { overflow-anchor: none; }
 #settings-toggle { transform: translateY(-50%); }
 .section-title { line-height: 1.3; overflow: visible; }
 .section-title > span { display: inline-block; line-height: inherit; padding-block: .06em .12em; }
@@ -180,7 +179,7 @@ button:active, a:active { transform: scale(.98); }
   html[dir="ltr"] .nav-links.active { transform: translateX(0); }
   .nav-links:not(.is-ready) { visibility: hidden; pointer-events: none; transition: none !important; }
   .nav-links.is-ready { visibility: visible; }
-  .mobile-menu-backdrop { top: var(--nav-height); }
+  .mobile-menu-backdrop { top: var(--nav-height); bottom: auto; height: calc(100dvh - var(--nav-height)); }
 }
 @media (max-width: 768px) {
   body.reveal-ready [data-reveal] { transform: translateY(14px); transition-duration: .58s; }

@@ -25,8 +25,7 @@ const sectionIds = ["hero-section", "about", "skills-section", "portfolio", "exp
 let scrollFrame;
 let sectionObserver;
 let menuReadyFrame;
-let lockedScrollY = 0;
-let bodyScrollLockSnapshot;
+let menuScrollLockSnapshot;
 
 function updateScrollState() {
   showScrollTop.value = window.scrollY > 300;
@@ -69,7 +68,7 @@ function closeSettingsOnOutsideClick(event) {
 function handleMenuNavigation(sectionId) {
   const target = document.getElementById(sectionId);
   const shouldNavigate = activeSection.value !== sectionId && target;
-  menuOpen.value = false;
+  closeMenu();
   if (!shouldNavigate) return;
 
   window.requestAnimationFrame(() => {
@@ -77,47 +76,78 @@ function handleMenuNavigation(sectionId) {
   });
 }
 
-function setBodyScrollLock(locked) {
+function closeMenu() {
+  const wasOpen = menuOpen.value;
+  menuOpen.value = false;
+  if (wasOpen) document.querySelector(".mobile-menu-btn")?.focus({ preventScroll: true });
+}
+
+function toggleMenu() {
+  if (menuOpen.value) {
+    closeMenu();
+    return;
+  }
+  menuOpen.value = true;
+}
+
+function runMenuStateChange(update) {
+  const root = document.documentElement;
+  const body = document.body;
+  const previousRootAnchor = root.style.overflowAnchor;
+  const previousBodyAnchor = body.style.overflowAnchor;
+  root.style.overflowAnchor = "none";
+  body.style.overflowAnchor = "none";
+  update();
+  window.requestAnimationFrame(() => {
+    root.style.overflowAnchor = previousRootAnchor;
+    body.style.overflowAnchor = previousBodyAnchor;
+  });
+}
+
+function handleLanguageChange(nextLanguage) {
+  runMenuStateChange(() => setLanguage(nextLanguage));
+}
+
+function handleThemeChange() {
+  runMenuStateChange(toggleTheme);
+}
+
+function preventBackgroundScroll(event) {
+  if (event.target instanceof Element && event.target.closest("#primary-navigation")) return;
+  event.preventDefault();
+}
+
+function setMenuScrollLock(locked) {
   if (typeof document === "undefined") return;
 
   if (locked) {
-    if (bodyScrollLockSnapshot) return;
-    lockedScrollY = window.scrollY;
-    bodyScrollLockSnapshot = {
-      position: document.body.style.position,
-      top: document.body.style.top,
-      left: document.body.style.left,
-      right: document.body.style.right,
-      width: document.body.style.width,
-      overflow: document.body.style.overflow,
+    if (menuScrollLockSnapshot) return;
+    menuScrollLockSnapshot = {
+      htmlOverscrollBehavior: document.documentElement.style.overscrollBehavior,
+      bodyOverscrollBehavior: document.body.style.overscrollBehavior,
     };
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${lockedScrollY}px`;
-    document.body.style.left = "0";
-    document.body.style.right = "0";
-    document.body.style.width = "100%";
-    document.body.style.overflow = "hidden";
-    document.documentElement.classList.add("menu-scroll-locked");
+    document.documentElement.style.overscrollBehavior = "none";
+    document.body.style.overscrollBehavior = "none";
+    document.addEventListener("wheel", preventBackgroundScroll, { capture: true, passive: false });
+    document.addEventListener("touchmove", preventBackgroundScroll, { capture: true, passive: false });
     return;
   }
 
-  if (!bodyScrollLockSnapshot) return;
-  const scrollY = lockedScrollY;
-  Object.entries(bodyScrollLockSnapshot).forEach(([property, value]) => {
-    document.body.style[property] = value;
-  });
-  bodyScrollLockSnapshot = undefined;
-  document.documentElement.classList.remove("menu-scroll-locked");
-  window.scrollTo(0, scrollY);
+  if (!menuScrollLockSnapshot) return;
+  document.removeEventListener("wheel", preventBackgroundScroll, true);
+  document.removeEventListener("touchmove", preventBackgroundScroll, true);
+  document.documentElement.style.overscrollBehavior = menuScrollLockSnapshot.htmlOverscrollBehavior;
+  document.body.style.overscrollBehavior = menuScrollLockSnapshot.bodyOverscrollBehavior;
+  menuScrollLockSnapshot = undefined;
 }
 
 watch(menuOpen, (open) => {
   if (open) settingsOpen.value = false;
-  setBodyScrollLock(open);
+  setMenuScrollLock(open);
 }, { flush: "post" });
 
 function closeMenuOnEscape(event) {
-  if (event.key === "Escape" && menuOpen.value) menuOpen.value = false;
+  if (event.key === "Escape" && menuOpen.value) closeMenu();
 }
 
 onMounted(() => {
@@ -132,7 +162,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.cancelAnimationFrame(menuReadyFrame);
-  setBodyScrollLock(false);
+  setMenuScrollLock(false);
   window.cancelAnimationFrame(scrollFrame);
   sectionObserver?.disconnect();
   window.removeEventListener("scroll", scheduleScrollState);
@@ -144,7 +174,7 @@ onUnmounted(() => {
 
 <template>
   <a href="#main-content" class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-[100] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">{{ t('a11y.skip') }}</a>
-  <Navbar :lang="lang" :t="t" :active-section="activeSection" :menu-open="menuOpen" :menu-ready="menuReady" :is-dark="isDark" @toggle-menu="menuOpen = !menuOpen" @close-menu="menuOpen = false" @navigate="handleMenuNavigation" @change-language="setLanguage" @toggle-theme="toggleTheme" />
+  <Navbar :lang="lang" :t="t" :active-section="activeSection" :menu-open="menuOpen" :menu-ready="menuReady" :is-dark="isDark" @toggle-menu="toggleMenu" @close-menu="closeMenu" @navigate="handleMenuNavigation" @change-language="handleLanguageChange" @toggle-theme="handleThemeChange" />
 
   <main id="main-content">
     <HeroSection :lang="lang" :t="t" />

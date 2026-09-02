@@ -4,7 +4,7 @@ import { applyColorMode, applyThemeTokens, getTheme, themes } from "../theme";
 const fonts = ["tajawal", "alexandria", "cairo"];
 
 export function usePortfolio() {
-  const lang = ref(localStorage.getItem("portfolio-language") || "ar");
+  const lang = ref(localStorage.getItem("portfolio-language") || "en");
   const isDark = ref(localStorage.getItem("theme") !== "light");
   const font = ref(localStorage.getItem("selectedFont")?.replace("font-", "") || "tajawal");
   const themeName = ref(localStorage.getItem("activeTheme") || themes[0].name);
