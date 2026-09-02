@@ -36,7 +36,7 @@ onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
         <p class="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mt-6">{{ t('credibility.description') }}</p>
       </div>
 
-      <div class="relative mb-12 px-2 lg:px-8" aria-live="polite">
+      <div class="px-2 lg:px-8" aria-live="polite">
         <div class="overflow-hidden">
           <Transition name="credibility-fade" mode="out-in">
             <div :key="activeIndex" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -48,13 +48,14 @@ onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
             </div>
           </Transition>
         </div>
-
-        <button type="button" class="carousel-prev absolute top-1/2 -translate-y-1/2 bg-white/90 dark:bg-slate-800/90 hover:bg-secondary text-slate-900 dark:text-white w-12 h-12 rounded-full hidden md:flex items-center justify-center transition-all duration-300 hover:scale-110 z-10 border border-slate-300 dark:border-slate-700" :aria-label="t('credibility.previous')" @click="previous"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
-        <button type="button" class="carousel-next absolute top-1/2 -translate-y-1/2 bg-white/90 dark:bg-slate-800/90 hover:bg-primary text-slate-900 dark:text-white w-12 h-12 rounded-full hidden md:flex items-center justify-center transition-all duration-300 hover:scale-110 z-10 border border-slate-300 dark:border-slate-700" :aria-label="t('credibility.next')" @click="next"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
       </div>
 
-      <div class="flex justify-center gap-3 mb-12" role="tablist" :aria-label="t('credibility.titleLead')">
-        <button v-for="page in pageCount" :key="page" type="button" role="tab" :aria-selected="activeIndex === page - 1" :aria-label="`${t('credibility.indicator')} ${page}`" :class="['w-3 h-3 rounded-full transition-all duration-300 hover:scale-125', activeIndex === page - 1 ? 'bg-accent scale-125' : 'bg-slate-400 dark:bg-slate-600']" @click="selectPage(page - 1)"></button>
+      <div class="methodology-controls flex items-center justify-center gap-4 mt-8 mb-12" role="navigation" :aria-label="t('credibility.titleLead')">
+        <button type="button" class="methodology-nav-button bg-white/90 dark:bg-slate-800/90 hover:bg-secondary text-slate-900 dark:text-white w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 border border-slate-300 dark:border-slate-700" :aria-label="t('credibility.previous')" @click="previous"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
+        <div class="flex justify-center gap-3" role="tablist" :aria-label="t('credibility.titleLead')">
+          <button v-for="page in pageCount" :key="page" type="button" role="tab" :aria-selected="activeIndex === page - 1" :aria-label="`${t('credibility.indicator')} ${page}`" :class="['w-3 h-3 rounded-full transition-all duration-300 hover:scale-125', activeIndex === page - 1 ? 'bg-accent scale-125' : 'bg-slate-400 dark:bg-slate-600']" @click="selectPage(page - 1)"></button>
+        </div>
+        <button type="button" class="methodology-nav-button bg-white/90 dark:bg-slate-800/90 hover:bg-primary text-slate-900 dark:text-white w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 border border-slate-300 dark:border-slate-700" :aria-label="t('credibility.next')" @click="next"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
       </div>
 
       <div class="bg-linear-to-r from-primary via-secondary to-accent p-1 rounded-3xl" data-reveal>

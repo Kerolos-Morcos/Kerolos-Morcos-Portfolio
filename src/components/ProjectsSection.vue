@@ -1,23 +1,15 @@
 <script setup>
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { TransitionGroup } from "vue";
 import { projects } from "../data/projects";
 
 const props = defineProps({ lang: { type: String, required: true }, t: { type: Function, required: true } });
 const selectedFilter = ref("all");
 const filterKeys = ["all", "fullstack", "frontend", "mobile"];
-const projectsPerPage = 6;
-const currentPage = ref(1);
 const filteredProjects = computed(() => selectedFilter.value === "all" ? projects : projects.filter((project) => project.category === selectedFilter.value));
-const pageCount = computed(() => Math.max(1, Math.ceil(filteredProjects.value.length / projectsPerPage)));
-const paginatedProjects = computed(() => filteredProjects.value.slice((currentPage.value - 1) * projectsPerPage, currentPage.value * projectsPerPage));
 const localized = (value) => value[props.lang];
 
-watch(selectedFilter, () => { currentPage.value = 1; });
-watch(pageCount, (totalPages) => { if (currentPage.value > totalPages) currentPage.value = totalPages; });
-function goToPage(page) { currentPage.value = Math.min(Math.max(page, 1), pageCount.value); }
-function nextPage() { goToPage(currentPage.value + 1); }
-function previousPage() { goToPage(currentPage.value - 1); }
+function setFilter(filter) { selectedFilter.value = filter; }
 </script>
 
 <template>
@@ -32,11 +24,11 @@ function previousPage() { goToPage(currentPage.value - 1); }
       </div>
 
       <div id="portfolio-filters" class="flex justify-center gap-4 mb-12 flex-wrap" role="group" :aria-label="t('projects.filtersLabel')">
-        <button v-for="filter in filterKeys" :key="filter" type="button" :aria-pressed="selectedFilter === filter" :class="['px-8 py-3 rounded-xl transition-all duration-300 font-bold', selectedFilter === filter ? 'bg-linear-to-r from-primary to-secondary text-white hover:shadow-lg hover:shadow-primary/50' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700']" @click="selectedFilter = filter">{{ t(`projects.filters.${filter}`) }}</button>
+        <button v-for="filter in filterKeys" :key="filter" type="button" :aria-pressed="selectedFilter === filter" :class="['project-filter px-8 py-3 rounded-xl font-bold', selectedFilter === filter ? 'text-white' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700']" @click="setFilter(filter)"><span>{{ t(`projects.filters.${filter}`) }}</span></button>
       </div>
 
       <TransitionGroup name="project-list" tag="div" id="portfolio-grid" class="project-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-reveal>
-        <article v-for="project in paginatedProjects" :key="project.id" class="portfolio-item group relative bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-primary transition-all duration-300">
+        <article v-for="project in filteredProjects" :key="project.id" class="portfolio-item group relative bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-primary transition-all duration-300">
           <div class="relative h-72 overflow-hidden">
             <img :src="project.image" :alt="`${localized(project.title)} project preview`" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" decoding="async" />
             <div class="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -57,15 +49,7 @@ function previousPage() { goToPage(currentPage.value - 1); }
         </article>
       </TransitionGroup>
 
-      <div v-if="pageCount > 1" class="project-pagination flex items-center justify-center gap-4 mt-10" role="navigation" :aria-label="t('projects.page')">
-        <button type="button" class="w-12 h-12 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-primary hover:text-white transition-all duration-300 border border-slate-300 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-40" :aria-label="t('projects.previousPage')" :disabled="currentPage === 1" @click="previousPage"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
-        <div class="flex gap-3" role="tablist" :aria-label="t('projects.page')">
-          <button v-for="page in pageCount" :key="page" type="button" role="tab" :aria-selected="currentPage === page" :aria-label="`${t('projects.page')} ${page}`" :class="['w-3 h-3 rounded-full transition-all duration-300 hover:scale-125', currentPage === page ? 'bg-accent scale-125' : 'bg-slate-400 dark:bg-slate-600']" @click="goToPage(page)"></button>
-        </div>
-        <button type="button" class="w-12 h-12 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-secondary hover:text-white transition-all duration-300 border border-slate-300 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-40" :aria-label="t('projects.nextPage')" :disabled="currentPage === pageCount" @click="nextPage"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
-      </div>
-
-      <div class="text-center mt-12"><a href="#contact" class="inline-flex items-center gap-3 bg-linear-to-l from-primary to-secondary px-8 py-4 rounded-2xl text-lg font-bold text-white hover:-translate-y-1 transition-all duration-300"><span>{{ t('projects.moreCta') }}</span><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a></div>
+      <div class="text-center mt-12"><a href="#contact" class="project-cta inline-flex items-center gap-3 bg-linear-to-l from-orange-500 to-red-500 px-10 py-4 rounded-2xl text-lg font-bold text-white"><span>{{ t('projects.moreCta') }}</span><i class="fa-solid fa-rocket" aria-hidden="true"></i></a></div>
     </div>
   </section>
 </template>

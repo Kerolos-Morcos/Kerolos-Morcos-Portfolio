@@ -41,7 +41,7 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
 
         <div class="space-y-6">
           <div class="bg-slate-900 dark:bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-slate-700 hover:shadow-primary/20 hover:border-slate-600 transition-all duration-500 transform hover:-translate-y-1" data-reveal>
-            <div class="flex items-center gap-2 px-4 py-3 bg-slate-800 border-b border-slate-700"><span class="w-3 h-3 rounded-full bg-red-500"></span><span class="w-3 h-3 rounded-full bg-yellow-500"></span><span class="w-3 h-3 rounded-full bg-green-500"></span><span class="text-slate-400 text-sm mr-4 font-mono">{{ t('about.codeFile') }}</span></div>
+            <div class="flex items-center gap-2 px-4 py-3 bg-slate-800 border-b border-slate-700"><span class="w-3 h-3 rounded-full bg-red-500"></span><span class="w-3 h-3 rounded-full bg-yellow-500"></span><span class="w-3 h-3 rounded-full bg-green-500"></span><span class="code-file-label text-slate-400 text-sm font-mono">{{ t('about.codeFile') }}</span></div>
             <div class="p-6 font-mono text-sm md:text-base leading-relaxed overflow-x-auto text-slate-200" dir="ltr">
               <p class="text-slate-500">{{ t('about.codeComment') }}</p>
               <p class="mt-3"><span class="text-purple-400">const</span> <span class="text-blue-400">kerolos</span> = {</p>

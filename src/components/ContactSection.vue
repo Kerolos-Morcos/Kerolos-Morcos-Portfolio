@@ -99,11 +99,11 @@ onUnmounted(() => window.clearTimeout(successResetTimer));
             </div>
             <div>
               <label for="email" class="block text-lg font-medium mb-2">{{ t('contact.email') }}</label>
-              <input id="email" v-model="form.email" name="email" autocomplete="email" required type="email" :placeholder="t('contact.emailPlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
+              <input id="email" v-model="form.email" name="email" autocomplete="email" required type="email" dir="ltr" :placeholder="t('contact.emailPlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-left text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
             </div>
             <div>
               <label for="phone" class="block text-lg font-medium mb-2">{{ t('contact.phone') }}</label>
-              <input id="phone" v-model="form.phone" name="phone" autocomplete="tel" type="tel" :placeholder="t('contact.phonePlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
+              <input id="phone" v-model="form.phone" name="phone" autocomplete="tel" type="tel" dir="ltr" :placeholder="t('contact.phonePlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-left text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
             </div>
             <div>
               <label id="project-type-label" class="block text-lg font-medium mb-2">{{ t('contact.projectType') }}</label>
@@ -131,10 +131,9 @@ onUnmounted(() => window.clearTimeout(successResetTimer));
               <label for="project-details" class="block text-lg font-medium mb-2">{{ t('contact.details') }}</label>
               <textarea id="project-details" v-model="form.details" name="project-details" required rows="5" :placeholder="t('contact.detailsPlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors resize-none"></textarea>
             </div>
-            <button type="submit" :disabled="submitState === 'submitting'" class="w-full bg-linear-to-r from-primary to-secondary py-4 rounded-xl text-lg font-bold text-white hover:shadow-2xl hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105 disabled:cursor-wait disabled:opacity-70"><i class="fa-solid fa-paper-plane me-2" aria-hidden="true"></i>{{ submitState === 'submitting' ? t('contact.sending') : t('contact.submit') }}</button>
+            <button type="submit" :disabled="submitState === 'submitting'" class="w-full bg-linear-to-r from-primary to-secondary py-4 rounded-xl text-lg font-bold text-white flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105 disabled:cursor-wait disabled:opacity-70"><template v-if="lang === 'ar'"><span>{{ submitState === 'submitting' ? t('contact.sending') : t('contact.submit') }}</span><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></template><template v-else><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>{{ submitState === 'submitting' ? t('contact.sending') : t('contact.submit') }}</span></template></button>
             <p v-if="submitState === 'success'" class="text-center text-emerald-600 dark:text-emerald-400" role="status" aria-live="polite">{{ t('contact.success') }}</p>
             <p v-else-if="submitState === 'error'" class="text-center text-red-600 dark:text-red-400" role="alert">{{ t('contact.error') }}</p>
-            <p class="text-center text-sm text-slate-500 dark:text-slate-400">{{ t('contact.formNote') }}</p>
           </form>
         </div>
       </div>

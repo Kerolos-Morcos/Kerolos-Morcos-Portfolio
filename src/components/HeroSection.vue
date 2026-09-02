@@ -20,7 +20,7 @@ const techIcons = [
 
     <div class="container mx-auto pt-40 lg:pt-0 px-4 md:px-8 z-10">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-36 lg:gap-16 items-center">
-        <div class="order-2 lg:order-1 text-center lg:text-right" data-reveal="hero-content">
+        <div :class="['hero-copy order-2 lg:order-1 text-center', lang === 'ar' ? 'lg:text-right' : 'lg:text-left']" data-reveal="hero-content">
           <div class="inline-flex items-center gap-3 bg-gradient-to-l from-emerald-500/10 to-emerald-500/5 dark:from-emerald-500/20 dark:to-emerald-500/10 backdrop-blur-sm border border-emerald-500/30 rounded-full px-5 py-2.5 mb-8" data-reveal>
             <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
             <span class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{{ t('hero.available') }}</span>
@@ -36,16 +36,16 @@ const techIcons = [
             <span class="font-bold text-slate-800 dark:text-white">{{ t('hero.role') }}</span>
           </div>
 
-          <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-xl mx-auto lg:mx-0 lg:mr-0 leading-relaxed" data-reveal>
+          <p class="hero-description text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed" data-reveal>
             {{ t('hero.descriptionBefore') }} <span class="text-primary font-semibold">{{ t('hero.descriptionHighlight') }}</span>{{ t('hero.descriptionAfter') }}
           </p>
 
-          <div class="flex flex-wrap justify-center lg:justify-end gap-4 mb-10" data-reveal>
-            <a href="#portfolio" class="group relative inline-flex items-center gap-3 bg-gradient-to-l from-primary to-secondary px-8 py-4 rounded-2xl text-lg font-bold text-white overflow-hidden transition-all duration-300 hover:-translate-y-1"><span class="relative z-10">{{ t('hero.projectsCta') }}</span><i class="fa-solid fa-arrow-left relative z-10 transition-transform duration-300 group-hover:-translate-x-2" aria-hidden="true"></i><span class="absolute inset-0 bg-gradient-to-l from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span></a>
+          <div class="hero-actions flex flex-wrap justify-center gap-4 mb-10" data-reveal>
+            <a href="#portfolio" class="group relative inline-flex items-center gap-3 bg-gradient-to-l from-primary to-secondary px-8 py-4 rounded-2xl text-lg font-bold text-white overflow-hidden transition-all duration-300 hover:-translate-y-1"><span class="relative z-10">{{ t('hero.projectsCta') }}</span><i :class="['fa-solid relative z-10 transition-transform duration-300', lang === 'ar' ? 'fa-arrow-left group-hover:-translate-x-2' : 'fa-arrow-right group-hover:translate-x-2']" aria-hidden="true"></i><span class="absolute inset-0 bg-gradient-to-l from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span></a>
             <a href="#contact" class="group inline-flex items-center gap-3 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white px-8 py-4 rounded-2xl text-lg font-bold transition-all duration-300 hover:border-primary hover:text-primary hover:-translate-y-1 hover:shadow-lg"><span>{{ t('hero.contactCta') }}</span><i class="fa-solid fa-paper-plane transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" aria-hidden="true"></i></a>
           </div>
 
-          <div class="flex flex-wrap justify-center lg:justify-end gap-2" aria-label="Core technologies" data-reveal>
+          <div class="hero-tech-list flex flex-wrap justify-center gap-2" aria-label="Core technologies" data-reveal>
             <div v-for="(tech, index) in techIcons" :key="tech.name" class="hero-tech-chip flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all duration-300 group" :style="{ '--tech-color': tech.color, '--float-delay': `${index * 180}ms` }"><i :class="tech.icon" class="text-xl group-hover:rotate-180 transition-transform duration-500" :style="{ color: tech.color }" aria-hidden="true"></i><span class="text-sm font-semibold text-slate-700 dark:text-slate-300">{{ tech.name }}</span></div>
           </div>
         </div>

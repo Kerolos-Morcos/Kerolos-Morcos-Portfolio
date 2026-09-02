@@ -22,7 +22,7 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <article v-for="(skill, index) in skills" :key="skill.id" class="skill-card bg-white dark:bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 border border-slate-300 dark:border-slate-700 hover:border-primary transition-all duration-300 hover:transform hover:scale-105" data-reveal :style="{ '--reveal-delay': `${index * 70}ms` }">
+        <article v-for="(skill, index) in skills" :key="skill.id" class="skill-card main-skill-card bg-white dark:bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 border border-slate-300 dark:border-slate-700" data-reveal :style="{ '--reveal-delay': `${index * 70}ms` }">
           <div class="flex items-center justify-between mb-6"><h3 class="text-2xl font-bold">{{ skill.name }}</h3><i :class="skill.icon" :style="{ color: `var(--color-${skill.color})` }" class="text-4xl" aria-hidden="true"></i></div>
           <div class="skill-focus-line w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 mb-3" aria-hidden="true"><div :class="['h-3 rounded-full', skill.tone === 'secondary' ? 'bg-linear-to-r from-secondary to-accent' : skill.tone === 'accent' ? 'bg-linear-to-r from-accent to-primary' : 'bg-linear-to-r from-primary to-secondary']"></div></div>
           <p class="text-slate-500 dark:text-slate-400">{{ skill.description[lang] }}</p>
