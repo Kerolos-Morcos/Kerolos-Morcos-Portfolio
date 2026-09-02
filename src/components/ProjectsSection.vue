@@ -1,36 +1,36 @@
 <script setup>
-import { computed, onUnmounted, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { TransitionGroup } from "vue";
 import { projects } from "../data/projects";
 
 const props = defineProps({ lang: { type: String, required: true }, t: { type: Function, required: true } });
 const selectedFilter = ref("all");
 const filterKeys = ["all", "fullstack", "frontend", "mobile"];
-const projectsPerPage = 3;
 const currentPage = ref(1);
 const gridMinHeight = ref(0);
 const pointerStart = ref(null);
 const projectTransitionName = ref("project-list-next");
+const isMobile = ref(typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches);
 let releaseGridHeightTimer;
+let viewportQuery;
 const filteredProjects = computed(() => selectedFilter.value === "all" ? projects : projects.filter((project) => project.category === selectedFilter.value));
-const pageCount = computed(() => Math.max(1, Math.ceil(filteredProjects.value.length / projectsPerPage)));
-const paginatedProjects = computed(() => filteredProjects.value.slice((currentPage.value - 1) * projectsPerPage, currentPage.value * projectsPerPage));
+const projectsPerPage = computed(() => isMobile.value ? 1 : 3);
+const pageCount = computed(() => Math.max(1, Math.ceil(filteredProjects.value.length / projectsPerPage.value)));
+const paginatedProjects = computed(() => filteredProjects.value.slice((currentPage.value - 1) * projectsPerPage.value, currentPage.value * projectsPerPage.value));
 const localized = (value) => value[props.lang];
 
-function preserveGridHeight(releaseAfterTransition = false) {
-  const grid = document.getElementById("portfolio-grid");
-  if (!grid) return;
-  const scrollY = window.scrollY;
-  gridMinHeight.value = Math.max(gridMinHeight.value, Math.ceil(grid.getBoundingClientRect().height));
+function stabilizeProjectFrame() {
+  const frame = document.getElementById("portfolio-grid-frame");
+  if (!frame) return;
+  gridMinHeight.value = Math.max(gridMinHeight.value, Math.ceil(frame.getBoundingClientRect().height));
   window.clearTimeout(releaseGridHeightTimer);
-  if (releaseAfterTransition) releaseGridHeightTimer = window.setTimeout(() => {
+  releaseGridHeightTimer = window.setTimeout(() => {
     gridMinHeight.value = 0;
-    window.requestAnimationFrame(() => window.scrollTo({ top: scrollY, behavior: "auto" }));
-  }, 460);
+  }, 430);
 }
 function setFilter(filter) {
   if (filter === selectedFilter.value) return;
-  preserveGridHeight(true);
+  stabilizeProjectFrame();
   selectedFilter.value = filter;
 }
 function goToPage(page) {
@@ -38,18 +38,19 @@ function goToPage(page) {
   if (nextPage === currentPage.value) return;
   const movingNext = nextPage > currentPage.value;
   projectTransitionName.value = movingNext === (props.lang !== "ar") ? "project-list-next" : "project-list-previous";
-  preserveGridHeight();
+  stabilizeProjectFrame();
   currentPage.value = nextPage;
 }
 function nextPage() { goToPage(currentPage.value + 1); }
 function previousPage() { goToPage(currentPage.value - 1); }
 function startProjectSwipe(event) {
+  if (!isMobile.value) return;
   if (event.pointerType === "mouse" && event.button !== 0) return;
   if (event.target instanceof Element && event.target.closest("a, button")) return;
   pointerStart.value = { x: event.clientX, y: event.clientY };
 }
 function finishProjectSwipe(event) {
-  if (!pointerStart.value) return;
+  if (!isMobile.value || !pointerStart.value) return;
   const distanceX = event.clientX - pointerStart.value.x;
   const distanceY = event.clientY - pointerStart.value.y;
   pointerStart.value = null;
@@ -60,9 +61,27 @@ function finishProjectSwipe(event) {
 }
 function cancelProjectSwipe() { pointerStart.value = null; }
 
-watch(selectedFilter, () => { currentPage.value = 1; });
-watch(pageCount, (totalPages) => { if (currentPage.value > totalPages) currentPage.value = totalPages; });
-onUnmounted(() => window.clearTimeout(releaseGridHeightTimer));
+function updateViewportMode() { isMobile.value = viewportQuery.matches; }
+
+watch(selectedFilter, () => { currentPage.value = 1; }, { flush: "sync" });
+watch(pageCount, (totalPages) => {
+  currentPage.value = Math.min(Math.max(currentPage.value, 1), totalPages);
+}, { flush: "sync" });
+watch(projectsPerPage, () => {
+  stabilizeProjectFrame();
+  currentPage.value = 1;
+}, { flush: "sync" });
+
+onMounted(() => {
+  viewportQuery = window.matchMedia("(max-width: 767px)");
+  updateViewportMode();
+  viewportQuery.addEventListener("change", updateViewportMode);
+});
+
+onUnmounted(() => {
+  window.clearTimeout(releaseGridHeightTimer);
+  viewportQuery?.removeEventListener("change", updateViewportMode);
+});
 </script>
 
 <template>
@@ -80,15 +99,8 @@ onUnmounted(() => window.clearTimeout(releaseGridHeightTimer));
         <button v-for="filter in filterKeys" :key="filter" type="button" :aria-pressed="selectedFilter === filter" :class="['project-filter px-8 py-3 rounded-xl font-bold', selectedFilter === filter ? 'text-white' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700']" @click="setFilter(filter)"><span>{{ t(`projects.filters.${filter}`) }}</span></button>
       </div>
 
-      <div v-if="pageCount > 1" class="project-pagination project-pagination--mobile md:hidden" role="navigation" :aria-label="t('projects.page')">
-        <div class="project-pagination__panel">
-          <div class="project-pagination__indicators" role="tablist" :aria-label="t('projects.page')">
-            <button v-for="page in pageCount" :key="page" type="button" role="tab" :aria-selected="currentPage === page" :aria-label="`${t('projects.page')} ${page}`" :class="['project-pagination__indicator', { 'is-active': currentPage === page }]" @click="goToPage(page)"></button>
-          </div>
-        </div>
-      </div>
-
-      <TransitionGroup :name="projectTransitionName" tag="div" id="portfolio-grid" class="project-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" :style="{ minHeight: gridMinHeight ? `${gridMinHeight}px` : undefined }" data-reveal @pointerdown="startProjectSwipe" @pointerup="finishProjectSwipe" @pointercancel="cancelProjectSwipe" @pointerleave="cancelProjectSwipe">
+      <div id="portfolio-grid-frame" class="project-grid-frame" :style="{ minHeight: gridMinHeight ? `${gridMinHeight}px` : undefined }">
+        <TransitionGroup :name="projectTransitionName" tag="div" id="portfolio-grid" class="project-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-reveal @pointerdown="startProjectSwipe" @pointerup="finishProjectSwipe" @pointercancel="cancelProjectSwipe" @pointerleave="cancelProjectSwipe">
         <article v-for="project in paginatedProjects" :key="project.id" class="portfolio-item group relative bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-primary transition-all duration-300">
           <div class="relative h-72 overflow-hidden">
             <img :src="project.image" :alt="`${localized(project.title)} project preview`" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" width="1265" height="712" sizes="(min-width: 1024px) 27rem, (min-width: 768px) 43vw, 100vw" loading="lazy" decoding="async" />
@@ -108,10 +120,18 @@ onUnmounted(() => window.clearTimeout(releaseGridHeightTimer));
             <div class="flex flex-wrap gap-2"><span v-for="technology in project.technologies" :key="technology" class="px-3 py-1 bg-slate-100 dark:bg-slate-700 rounded-lg text-xs">{{ technology }}</span></div>
           </div>
         </article>
-      </TransitionGroup>
+        </TransitionGroup>
+      </div>
 
-      <div v-if="pageCount > 1" class="project-pagination project-pagination--desktop hidden md:flex" role="navigation" :aria-label="t('projects.page')">
-        <div class="project-pagination__panel">
+      <div v-if="isMobile" class="project-mobile-navigation" :class="{ 'is-empty': filteredProjects.length <= 1 }" :aria-hidden="filteredProjects.length <= 1 ? 'true' : undefined">
+        <div v-if="filteredProjects.length > 1" class="project-mobile-navigation__controls" role="navigation" :aria-label="t('projects.page')">
+          <button type="button" class="project-mobile-navigation__button" :aria-label="t('projects.previousPage')" :disabled="currentPage === 1" @click="previousPage"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
+          <button type="button" class="project-mobile-navigation__button" :aria-label="t('projects.nextPage')" :disabled="currentPage === pageCount" @click="nextPage"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
+        </div>
+      </div>
+
+      <div v-if="!isMobile" class="project-pagination project-pagination--desktop" :class="{ 'is-empty': pageCount <= 1 }" :aria-hidden="pageCount <= 1 ? 'true' : undefined">
+        <div v-if="pageCount > 1" class="project-pagination__panel" role="navigation" :aria-label="t('projects.page')">
           <button type="button" class="project-pagination__control project-pagination__control--previous" :aria-label="t('projects.previousPage')" :disabled="currentPage === 1" @click="previousPage"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
           <div class="project-pagination__indicators" role="tablist" :aria-label="t('projects.page')">
             <button v-for="page in pageCount" :key="page" type="button" role="tab" :aria-selected="currentPage === page" :aria-label="`${t('projects.page')} ${page}`" :class="['project-pagination__indicator', { 'is-active': currentPage === page }]" @click="goToPage(page)"></button>

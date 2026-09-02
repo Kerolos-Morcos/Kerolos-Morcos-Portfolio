@@ -68,6 +68,17 @@ function closeSettingsOnOutsideClick(event) {
 
 watch(lang, () => { menuOpen.value = false; });
 
+function handleMenuNavigation(sectionId) {
+  const target = document.getElementById(sectionId);
+  const shouldNavigate = activeSection.value !== sectionId && target;
+  menuOpen.value = false;
+  if (!shouldNavigate) return;
+
+  window.requestAnimationFrame(() => {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
 function setBodyScrollLock(locked) {
   if (typeof document === "undefined") return;
 
@@ -100,7 +111,10 @@ function setBodyScrollLock(locked) {
   window.scrollTo(0, scrollY);
 }
 
-watch(menuOpen, setBodyScrollLock);
+watch(menuOpen, (open) => {
+  if (open) settingsOpen.value = false;
+  setBodyScrollLock(open);
+});
 
 function closeMenuOnEscape(event) {
   if (event.key === "Escape" && menuOpen.value) menuOpen.value = false;
@@ -130,7 +144,7 @@ onUnmounted(() => {
 
 <template>
   <a href="#main-content" class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-[100] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">{{ t('a11y.skip') }}</a>
-  <Navbar :lang="lang" :t="t" :active-section="activeSection" :menu-open="menuOpen" :menu-ready="menuReady" :is-dark="isDark" @toggle-menu="menuOpen = !menuOpen" @close-menu="menuOpen = false" @change-language="setLanguage" @toggle-theme="toggleTheme" />
+  <Navbar :lang="lang" :t="t" :active-section="activeSection" :menu-open="menuOpen" :menu-ready="menuReady" :is-dark="isDark" @toggle-menu="menuOpen = !menuOpen" @close-menu="menuOpen = false" @navigate="handleMenuNavigation" @change-language="setLanguage" @toggle-theme="toggleTheme" />
 
   <main id="main-content">
     <HeroSection :lang="lang" :t="t" />

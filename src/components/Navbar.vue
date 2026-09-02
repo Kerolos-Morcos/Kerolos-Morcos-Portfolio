@@ -1,5 +1,5 @@
 <script setup>
-defineProps({
+const props = defineProps({
   lang: { type: String, required: true },
   t: { type: Function, required: true },
   activeSection: { type: String, default: "hero-section" },
@@ -8,7 +8,7 @@ defineProps({
   isDark: { type: Boolean, default: true },
 });
 
-defineEmits(["toggle-menu", "close-menu", "change-language", "toggle-theme"]);
+const emit = defineEmits(["toggle-menu", "close-menu", "navigate", "change-language", "toggle-theme"]);
 
 const navItems = [
   { id: "hero-section", label: "nav.home", href: "#hero-section" },
@@ -18,6 +18,12 @@ const navItems = [
   { id: "testimonials", label: "nav.testimonials", href: "#testimonials" },
   { id: "contact", label: "nav.contact", href: "#contact" },
 ];
+
+function handleNavigation(event, item) {
+  if (!props.menuOpen) return;
+  event.preventDefault();
+  emit("navigate", item.id);
+}
 </script>
 
 <template>
@@ -37,7 +43,7 @@ const navItems = [
       <button v-if="menuOpen" class="mobile-menu-backdrop fixed inset-0 z-[60] bg-slate-950/30" type="button" :aria-label="t('nav.closeMenu')" @click="$emit('close-menu')"></button>
 
       <div id="primary-navigation" class="nav-links flex gap-8 items-center" :class="{ active: menuOpen, 'is-ready': menuReady }" role="menubar">
-        <a v-for="item in navItems" :key="item.id" :href="item.href" role="menuitem" :class="{ active: activeSection === item.id }" :aria-current="activeSection === item.id ? 'page' : undefined" @click="$emit('close-menu')">{{ t(item.label) }}</a>
+        <a v-for="item in navItems" :key="item.id" :href="item.href" role="menuitem" :class="{ active: activeSection === item.id }" :aria-current="activeSection === item.id ? 'page' : undefined" @click="handleNavigation($event, item)">{{ t(item.label) }}</a>
         <button class="language-switcher inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:border-primary hover:text-primary transition-all" type="button" :aria-label="t('nav.language')" @click="$emit('change-language', lang === 'ar' ? 'en' : 'ar'); $emit('close-menu')">
           <i class="fa-solid fa-language" aria-hidden="true"></i>
           <span>{{ t('nav.language') }}</span>
