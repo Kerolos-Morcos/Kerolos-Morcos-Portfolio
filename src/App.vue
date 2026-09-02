@@ -18,11 +18,15 @@ const { lang, isDark, font, themeName, themes, t, setLanguage, setFont, toggleTh
 useReveal();
 const activeSection = ref("hero-section");
 const menuOpen = ref(false);
+const menuReady = ref(false);
 const settingsOpen = ref(false);
 const showScrollTop = ref(false);
 const sectionIds = ["hero-section", "about", "skills-section", "portfolio", "experience", "testimonials", "statistics-section", "contact"];
 let scrollFrame;
 let sectionObserver;
+let menuReadyFrame;
+let lockedScrollY = 0;
+let bodyScrollLockSnapshot;
 
 function updateScrollState() {
   showScrollTop.value = window.scrollY > 300;
@@ -64,26 +68,69 @@ function closeSettingsOnOutsideClick(event) {
 
 watch(lang, () => { menuOpen.value = false; });
 
+function setBodyScrollLock(locked) {
+  if (typeof document === "undefined") return;
+
+  if (locked) {
+    if (bodyScrollLockSnapshot) return;
+    lockedScrollY = window.scrollY;
+    bodyScrollLockSnapshot = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      left: document.body.style.left,
+      right: document.body.style.right,
+      width: document.body.style.width,
+      overflow: document.body.style.overflow,
+    };
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${lockedScrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
+    return;
+  }
+
+  if (!bodyScrollLockSnapshot) return;
+  const scrollY = lockedScrollY;
+  Object.entries(bodyScrollLockSnapshot).forEach(([property, value]) => {
+    document.body.style[property] = value;
+  });
+  bodyScrollLockSnapshot = undefined;
+  window.scrollTo(0, scrollY);
+}
+
+watch(menuOpen, setBodyScrollLock);
+
+function closeMenuOnEscape(event) {
+  if (event.key === "Escape" && menuOpen.value) menuOpen.value = false;
+}
+
 onMounted(() => {
   scheduleScrollState();
   observeActiveSections();
+  menuReadyFrame = window.requestAnimationFrame(() => { menuReady.value = true; });
   window.addEventListener("scroll", scheduleScrollState, { passive: true });
   window.addEventListener("resize", observeActiveSections, { passive: true });
   document.addEventListener("click", closeSettingsOnOutsideClick);
+  document.addEventListener("keydown", closeMenuOnEscape);
 });
 
 onUnmounted(() => {
+  window.cancelAnimationFrame(menuReadyFrame);
+  setBodyScrollLock(false);
   window.cancelAnimationFrame(scrollFrame);
   sectionObserver?.disconnect();
   window.removeEventListener("scroll", scheduleScrollState);
   window.removeEventListener("resize", observeActiveSections);
   document.removeEventListener("click", closeSettingsOnOutsideClick);
+  document.removeEventListener("keydown", closeMenuOnEscape);
 });
 </script>
 
 <template>
   <a href="#main-content" class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-[100] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">{{ t('a11y.skip') }}</a>
-  <Navbar :lang="lang" :t="t" :active-section="activeSection" :menu-open="menuOpen" :is-dark="isDark" @toggle-menu="menuOpen = !menuOpen" @close-menu="menuOpen = false" @change-language="setLanguage" @toggle-theme="toggleTheme" />
+  <Navbar :lang="lang" :t="t" :active-section="activeSection" :menu-open="menuOpen" :menu-ready="menuReady" :is-dark="isDark" @toggle-menu="menuOpen = !menuOpen" @close-menu="menuOpen = false" @change-language="setLanguage" @toggle-theme="toggleTheme" />
 
   <main id="main-content">
     <HeroSection :lang="lang" :t="t" />
@@ -99,5 +146,5 @@ onUnmounted(() => {
   <FooterSection :t="t" />
 
   <button id="scroll-to-top" class="fixed left-8 bottom-8 bg-gradient-to-tr from-primary to-accent hover:from-secondary hover:to-primary text-white w-14 h-14 rounded-full shadow-lg hover:shadow-2xl hover:shadow-primary/50 flex items-center justify-center transition-all duration-300 z-50 hover:scale-110 group" :class="showScrollTop ? 'opacity-100 visible' : 'opacity-0 invisible'" type="button" :aria-label="t('a11y.scrollTop')" @click="scrollToTop"><i class="fa-solid fa-rocket text-2xl transform -rotate-45 group-hover:translate-y-[-3px] transition-transform duration-300" aria-hidden="true"></i></button>
-  <SettingsPanel :is-open="settingsOpen" :lang="lang" :t="t" :themes="themes" :theme-name="themeName" :font="font" @close="settingsOpen = $event" @set-font="setFont" @set-theme="chooseTheme" @reset="resetSettings" />
+  <SettingsPanel :is-open="settingsOpen" :menu-open="menuOpen" :lang="lang" :t="t" :themes="themes" :theme-name="themeName" :font="font" @close="settingsOpen = $event" @set-font="setFont" @set-theme="chooseTheme" @reset="resetSettings" />
 </template>

@@ -10,6 +10,7 @@ const projectsPerPage = 3;
 const currentPage = ref(1);
 const gridMinHeight = ref(0);
 const pointerStart = ref(null);
+const projectTransitionName = ref("project-list-next");
 let releaseGridHeightTimer;
 const filteredProjects = computed(() => selectedFilter.value === "all" ? projects : projects.filter((project) => project.category === selectedFilter.value));
 const pageCount = computed(() => Math.max(1, Math.ceil(filteredProjects.value.length / projectsPerPage)));
@@ -35,6 +36,8 @@ function setFilter(filter) {
 function goToPage(page) {
   const nextPage = Math.min(Math.max(page, 1), pageCount.value);
   if (nextPage === currentPage.value) return;
+  const movingNext = nextPage > currentPage.value;
+  projectTransitionName.value = movingNext === (props.lang !== "ar") ? "project-list-next" : "project-list-previous";
   preserveGridHeight();
   currentPage.value = nextPage;
 }
@@ -79,15 +82,13 @@ onUnmounted(() => window.clearTimeout(releaseGridHeightTimer));
 
       <div v-if="pageCount > 1" class="project-pagination project-pagination--mobile md:hidden" role="navigation" :aria-label="t('projects.page')">
         <div class="project-pagination__panel">
-          <button type="button" class="project-pagination__control project-pagination__control--previous" :aria-label="t('projects.previousPage')" :disabled="currentPage === 1" @click="previousPage"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
           <div class="project-pagination__indicators" role="tablist" :aria-label="t('projects.page')">
             <button v-for="page in pageCount" :key="page" type="button" role="tab" :aria-selected="currentPage === page" :aria-label="`${t('projects.page')} ${page}`" :class="['project-pagination__indicator', { 'is-active': currentPage === page }]" @click="goToPage(page)"></button>
           </div>
-          <button type="button" class="project-pagination__control project-pagination__control--next" :aria-label="t('projects.nextPage')" :disabled="currentPage === pageCount" @click="nextPage"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
         </div>
       </div>
 
-      <TransitionGroup name="project-list" tag="div" id="portfolio-grid" class="project-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" :style="{ minHeight: gridMinHeight ? `${gridMinHeight}px` : undefined }" data-reveal @pointerdown="startProjectSwipe" @pointerup="finishProjectSwipe" @pointercancel="cancelProjectSwipe" @pointerleave="cancelProjectSwipe">
+      <TransitionGroup :name="projectTransitionName" tag="div" id="portfolio-grid" class="project-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" :style="{ minHeight: gridMinHeight ? `${gridMinHeight}px` : undefined }" data-reveal @pointerdown="startProjectSwipe" @pointerup="finishProjectSwipe" @pointercancel="cancelProjectSwipe" @pointerleave="cancelProjectSwipe">
         <article v-for="project in paginatedProjects" :key="project.id" class="portfolio-item group relative bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-primary transition-all duration-300">
           <div class="relative h-72 overflow-hidden">
             <img :src="project.image" :alt="`${localized(project.title)} project preview`" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" width="1265" height="712" sizes="(min-width: 1024px) 27rem, (min-width: 768px) 43vw, 100vw" loading="lazy" decoding="async" />
