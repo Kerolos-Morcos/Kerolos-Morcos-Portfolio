@@ -20,7 +20,8 @@ const techIcons = [
 
     <div class="container mx-auto pt-40 lg:pt-0 px-4 md:px-8 z-10">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-36 lg:gap-16 items-center">
-        <div :class="['hero-copy order-2 lg:order-1 text-center', lang === 'ar' ? 'lg:text-right' : 'lg:text-left']" data-reveal="hero-content">
+        <div class="hero-copy order-2 lg:order-1 text-center" data-reveal="hero-content">
+          <div :class="lang === 'ar' ? 'lg:text-right' : 'lg:text-left'">
           <div class="inline-flex items-center gap-3 mt-3 lg:mt-0 bg-gradient-to-l from-emerald-500/10 to-emerald-500/5 dark:from-emerald-500/20 dark:to-emerald-500/10 backdrop-blur-sm border border-emerald-500/30 rounded-full px-5 py-2.5 mb-8" data-reveal>
             <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
             <span class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{{ t('hero.available') }}</span>
@@ -47,6 +48,7 @@ const techIcons = [
 
           <div class="hero-tech-list flex flex-wrap justify-center gap-2" aria-label="Core technologies" data-reveal>
             <div v-for="(tech, index) in techIcons" :key="tech.name" class="hero-tech-chip flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all duration-300 group" :style="{ '--tech-color': tech.color, '--float-delay': `${index * 180}ms` }"><i :class="tech.icon" class="text-xl group-hover:rotate-180 transition-transform duration-500" :style="{ color: tech.color }" aria-hidden="true"></i><span class="text-sm font-semibold text-slate-700 dark:text-slate-300">{{ tech.name }}</span></div>
+          </div>
           </div>
         </div>
 
