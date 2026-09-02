@@ -6,7 +6,7 @@ import { projects } from "../data/projects";
 const props = defineProps({ lang: { type: String, required: true }, t: { type: Function, required: true } });
 const selectedFilter = ref("all");
 const filterKeys = ["all", "fullstack", "frontend", "mobile"];
-const projectsPerPage = 6;
+const projectsPerPage = 3;
 const currentPage = ref(1);
 const gridMinHeight = ref(0);
 let releaseGridHeightTimer;
@@ -15,16 +15,20 @@ const pageCount = computed(() => Math.max(1, Math.ceil(filteredProjects.value.le
 const paginatedProjects = computed(() => filteredProjects.value.slice((currentPage.value - 1) * projectsPerPage, currentPage.value * projectsPerPage));
 const localized = (value) => value[props.lang];
 
-function preserveGridHeight() {
+function preserveGridHeight(releaseAfterTransition = false) {
   const grid = document.getElementById("portfolio-grid");
   if (!grid) return;
-  gridMinHeight.value = Math.ceil(grid.getBoundingClientRect().height);
+  const scrollY = window.scrollY;
+  gridMinHeight.value = Math.max(gridMinHeight.value, Math.ceil(grid.getBoundingClientRect().height));
   window.clearTimeout(releaseGridHeightTimer);
-  releaseGridHeightTimer = window.setTimeout(() => { gridMinHeight.value = 0; }, 460);
+  if (releaseAfterTransition) releaseGridHeightTimer = window.setTimeout(() => {
+    gridMinHeight.value = 0;
+    window.requestAnimationFrame(() => window.scrollTo({ top: scrollY, behavior: "auto" }));
+  }, 460);
 }
 function setFilter(filter) {
   if (filter === selectedFilter.value) return;
-  preserveGridHeight();
+  preserveGridHeight(true);
   selectedFilter.value = filter;
 }
 function goToPage(page) {
@@ -78,15 +82,17 @@ onUnmounted(() => window.clearTimeout(releaseGridHeightTimer));
         </article>
       </TransitionGroup>
 
-      <div v-if="pageCount > 1" class="project-pagination flex items-center justify-center gap-4 mt-10" role="navigation" :aria-label="t('projects.page')">
-        <button type="button" class="w-12 h-12 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-primary hover:text-white transition-all duration-300 border border-slate-300 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-40" :aria-label="t('projects.previousPage')" :disabled="currentPage === 1" @click="previousPage"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
-        <div class="flex gap-3" role="tablist" :aria-label="t('projects.page')">
-          <button v-for="page in pageCount" :key="page" type="button" role="tab" :aria-selected="currentPage === page" :aria-label="`${t('projects.page')} ${page}`" :class="['w-3 h-3 rounded-full transition-all duration-300 hover:scale-125', currentPage === page ? 'bg-accent scale-125' : 'bg-slate-400 dark:bg-slate-600']" @click="goToPage(page)"></button>
+      <div v-if="pageCount > 1" class="project-pagination" role="navigation" :aria-label="t('projects.page')">
+        <div class="project-pagination__panel">
+          <button type="button" class="project-pagination__control project-pagination__control--previous" :aria-label="t('projects.previousPage')" :disabled="currentPage === 1" @click="previousPage"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
+          <div class="project-pagination__indicators" role="tablist" :aria-label="t('projects.page')">
+            <button v-for="page in pageCount" :key="page" type="button" role="tab" :aria-selected="currentPage === page" :aria-label="`${t('projects.page')} ${page}`" :class="['project-pagination__indicator', { 'is-active': currentPage === page }]" @click="goToPage(page)"></button>
+          </div>
+          <button type="button" class="project-pagination__control project-pagination__control--next" :aria-label="t('projects.nextPage')" :disabled="currentPage === pageCount" @click="nextPage"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
         </div>
-        <button type="button" class="w-12 h-12 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-secondary hover:text-white transition-all duration-300 border border-slate-300 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-40" :aria-label="t('projects.nextPage')" :disabled="currentPage === pageCount" @click="nextPage"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
       </div>
 
-      <div class="text-center mt-12"><a href="#contact" class="project-cta inline-flex items-center gap-3 bg-linear-to-r from-orange-500 to-red-500 px-12 py-4 rounded-xl text-lg font-bold text-white"><span>{{ t('projects.moreCta') }}</span><i class="fa-solid fa-rocket" aria-hidden="true"></i></a></div>
+      <div class="project-cta-wrap text-center"><a href="#contact" class="project-cta inline-flex items-center gap-3 bg-linear-to-r from-orange-500 to-red-500 px-12 py-4 rounded-xl text-lg font-bold text-white"><span>{{ t('projects.moreCta') }}</span><i class="fa-solid fa-rocket" aria-hidden="true"></i></a></div>
     </div>
   </section>
 </template>
