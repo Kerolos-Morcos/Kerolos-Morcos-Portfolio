@@ -97,6 +97,7 @@ function setBodyScrollLock(locked) {
     document.body.style.right = "0";
     document.body.style.width = "100%";
     document.body.style.overflow = "hidden";
+    document.documentElement.classList.add("menu-scroll-locked");
     return;
   }
 
@@ -106,6 +107,7 @@ function setBodyScrollLock(locked) {
     document.body.style[property] = value;
   });
   bodyScrollLockSnapshot = undefined;
+  document.documentElement.classList.remove("menu-scroll-locked");
   window.scrollTo(0, scrollY);
 }
 
