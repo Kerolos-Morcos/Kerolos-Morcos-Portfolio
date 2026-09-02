@@ -92,7 +92,7 @@ onUnmounted(() => window.clearTimeout(releaseGridHeightTimer));
         </div>
       </div>
 
-      <div class="project-cta-wrap text-center"><a href="#contact" class="project-cta inline-flex items-center gap-3 bg-linear-to-r from-orange-500 to-red-500 px-12 py-4 rounded-xl text-lg font-bold text-white"><span>{{ t('projects.moreCta') }}</span><i class="fa-solid fa-rocket" aria-hidden="true"></i></a></div>
+      <div class="project-cta-wrap text-center"><a href="#contact" class="project-cta inline-flex items-center gap-3 px-12 py-4 rounded-xl text-lg font-bold text-white"><span>{{ t('projects.moreCta') }}</span><i class="fa-solid fa-rocket" aria-hidden="true"></i></a></div>
     </div>
   </section>
 </template>

@@ -84,7 +84,7 @@ html.dark .project-pagination__panel { border-color: rgb(51 65 85 / .9); backgro
 html.dark .project-pagination__control { border-color: rgb(51 65 85 / .9); color: rgb(226 232 240); background: rgb(30 41 59 / .88); }
 html.dark .project-pagination__indicator::after { background: rgb(100 116 139); }
 html.dark .project-pagination__indicator:hover::after { background: var(--color-primary); }
-.project-cta { background: linear-gradient(to right, var(--color-orange-500), var(--color-red-500)); transition: transform .3s cubic-bezier(.22, 1, .36, 1); }
+.project-cta { background: linear-gradient(to right, var(--color-primary), var(--color-secondary)); transition: transform .3s cubic-bezier(.22, 1, .36, 1); }
 html[dir="rtl"] .project-cta { flex-direction: row; }
 html[dir="ltr"] .project-cta { flex-direction: row-reverse; }
 .project-cta:hover { transform: translateY(-4px); }
