@@ -6,6 +6,7 @@ const props = defineProps({ lang: { type: String, required: true }, t: { type: F
 const form = reactive({ name: "", email: "", phone: "", projectType: "", budget: "", details: "", website: "" });
 const openSelect = ref(null);
 const submitState = ref("idle");
+const lastDeliveryDebug = ref(null);
 let successResetTimer;
 
 function toggleSelect(name) { openSelect.value = openSelect.value === name ? null : name; }
@@ -14,6 +15,7 @@ async function submitForm() {
   if (submitState.value === "submitting") return;
 
   submitState.value = "submitting";
+  lastDeliveryDebug.value = null;
   try {
     const response = await fetch("/api/contact", {
       method: "POST",
@@ -29,13 +31,22 @@ async function submitForm() {
       }),
     });
     const result = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(result.message || "Contact request failed");
+    if (!response.ok || result.success !== true) {
+      lastDeliveryDebug.value = {
+        status: response.status,
+        apiError: typeof result.message === "string" ? result.message : "Contact request failed",
+        response: result,
+      };
+      throw new Error(lastDeliveryDebug.value.apiError);
+    }
 
     Object.assign(form, { name: "", email: "", phone: "", projectType: "", budget: "", details: "", website: "" });
     submitState.value = "success";
     window.clearTimeout(successResetTimer);
     successResetTimer = window.setTimeout(() => { submitState.value = "idle"; }, 7000);
-  } catch {
+  } catch (error) {
+    lastDeliveryDebug.value ??= { status: null, apiError: error?.message || "Contact request failed", response: null };
+    if (import.meta.env.DEV) console.error("Contact form delivery failed", lastDeliveryDebug.value);
     submitState.value = "error";
   }
 }
