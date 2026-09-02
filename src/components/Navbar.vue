@@ -53,7 +53,7 @@ function handleThemeChange() {
 
       <div id="primary-navigation" class="nav-links flex gap-8 items-center" :class="{ active: menuOpen, 'is-ready': menuReady }" role="menubar">
         <a v-for="item in navItems" :key="item.id" :href="item.href" role="menuitem" :class="{ active: activeSection === item.id }" :aria-current="activeSection === item.id ? 'page' : undefined" @click="handleNavigation($event, item)">{{ t(item.label) }}</a>
-        <button class="language-switcher inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:border-primary hover:text-primary transition-interactive" type="button" :aria-label="t('nav.language')" @click="handleLanguageChange">
+        <button class="language-switcher inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:border-primary hover:text-primary transition-polished" type="button" :aria-label="t('nav.language')" @click="handleLanguageChange">
           <i class="fa-solid fa-language" aria-hidden="true"></i>
           <span>{{ t('nav.language') }}</span>
         </button>

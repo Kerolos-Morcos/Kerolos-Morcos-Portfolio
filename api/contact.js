@@ -58,6 +58,8 @@ export default async function handler(req, res) {
     ["message", MAX_MESSAGE_LENGTH],
     ["phone", MAX_OPTIONAL_LENGTH],
     ["budget", MAX_OPTIONAL_LENGTH],
+    ["projectType", MAX_OPTIONAL_LENGTH],
+    ["otherProjectType", MAX_OPTIONAL_LENGTH],
   ];
   if (lengthChecks.some(([field, maxLength]) => typeof body[field] === "string" && body[field].trim().length > maxLength)) {
     return respond(res, 400, { success: false, message: "One or more fields are too long." });
@@ -65,13 +67,17 @@ export default async function handler(req, res) {
 
   const name = normalize(body.name);
   const email = normalize(body.email);
-  const subject = (normalize(body.subject) || "New portfolio inquiry").replace(/[\r\n]+/g, " ");
+  const projectTypeKey = normalize(body.projectType);
+  const otherProjectType = normalize(body.otherProjectType).replace(/[\r\n]+/g, " ");
+  const subject = (normalize(body.subject) || (projectTypeKey === "other" ? "Other" : "New portfolio inquiry")).replace(/[\r\n]+/g, " ");
+  const projectType = projectTypeKey === "other" && otherProjectType ? `${subject} — ${otherProjectType}` : subject;
   const message = normalize(body.message);
   const phone = normalize(body.phone);
   const budget = normalize(body.budget);
 
   if (!name || !email || !message) return respond(res, 400, { success: false, message: "Name, email, and message are required." });
   if (!isValidEmail(email)) return respond(res, 400, { success: false, message: "Please provide a valid email address." });
+  if (projectTypeKey === "other" && !otherProjectType) return respond(res, 400, { success: false, message: "Please specify the other project type." });
 
   const apiKey = process.env.RESEND_API_KEY;
   const configuredRecipient = normalize(process.env.CONTACT_TO_EMAIL);
@@ -90,7 +96,7 @@ export default async function handler(req, res) {
     ["Name", name],
     ["Email", email],
     ["Phone", phone || "Not provided"],
-    ["Project type", subject],
+    ["Project type", projectType],
     ["Budget", budget || "Not provided"],
     ["Message", message],
     ["Source", "Portfolio contact form"],
@@ -110,7 +116,7 @@ export default async function handler(req, res) {
         from: sender,
         to: [recipient],
         reply_to: email,
-        subject: `[Portfolio] ${subject}`,
+        subject: `[Portfolio] ${projectType}`,
         html: `<div style="background:#020617;padding:32px;font-family:Arial,sans-serif;color:#e2e8f0"><div style="max-width:620px;margin:0 auto;background:#0f172a;border:1px solid #334155;border-radius:18px;padding:28px"><div style="height:4px;background:linear-gradient(90deg,#6366f1,#8b5cf6,#a855f7);border-radius:99px;margin-bottom:24px"></div><h1 style="margin:0 0 20px;color:#fff;font-size:22px">New portfolio contact message</h1><table style="width:100%;border-collapse:collapse">${fieldRows}</table><p style="margin:24px 0 0;color:#64748b;font-size:12px">Received at ${escapeHtml(receivedAt)}</p></div></div>`,
       }),
     });

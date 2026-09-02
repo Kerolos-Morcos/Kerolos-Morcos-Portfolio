@@ -3,14 +3,55 @@ import { onUnmounted, reactive, ref } from "vue";
 import { socials } from "../data/socials";
 
 const props = defineProps({ lang: { type: String, required: true }, t: { type: Function, required: true } });
-const form = reactive({ name: "", email: "", phone: "", projectType: "", budget: "", details: "", website: "" });
+const form = reactive({ name: "", email: "", phone: "", projectType: "", otherProjectType: "", budget: "", details: "", website: "" });
 const openSelect = ref(null);
 const submitState = ref("idle");
 const lastDeliveryDebug = ref(null);
+const projectTypeValues = ["fullstack", "frontend", "restApis", "bugFixing", "other"];
+let outsideClickListenerAttached = false;
 let successResetTimer;
 
-function toggleSelect(name) { openSelect.value = openSelect.value === name ? null : name; }
-function selectOption(name, value) { form[name] = value; openSelect.value = null; }
+function getProjectTypeLabel(value) {
+  const optionIndex = projectTypeValues.indexOf(value);
+  return optionIndex >= 0 ? props.t(`contact.projectTypes.${optionIndex}`) : "";
+}
+
+function closeSelect() {
+  openSelect.value = null;
+  if (outsideClickListenerAttached) {
+    document.removeEventListener("pointerdown", handleOutsidePointerDown);
+    outsideClickListenerAttached = false;
+  }
+}
+
+function handleOutsidePointerDown(event) {
+  if (!openSelect.value) return;
+  const target = event.target;
+  if (target?.closest?.(".custom-select-wrapper")) return;
+  closeSelect();
+}
+
+function openOutsideClickListener() {
+  if (outsideClickListenerAttached) return;
+  document.addEventListener("pointerdown", handleOutsidePointerDown);
+  outsideClickListenerAttached = true;
+}
+
+function toggleSelect(name) {
+  if (openSelect.value === name) {
+    closeSelect();
+    return;
+  }
+  openSelect.value = name;
+  openOutsideClickListener();
+}
+
+function selectOption(name, value) {
+  form[name] = value;
+  if (name === "projectType" && value !== "other") form.otherProjectType = "";
+  closeSelect();
+}
+
 async function submitForm() {
   if (submitState.value === "submitting") return;
 
@@ -24,7 +65,9 @@ async function submitForm() {
         name: form.name,
         email: form.email,
         phone: form.phone,
-        subject: form.projectType,
+        subject: getProjectTypeLabel(form.projectType),
+        projectType: form.projectType,
+        otherProjectType: form.otherProjectType,
         budget: form.budget,
         message: form.details,
         website: form.website,
@@ -40,7 +83,7 @@ async function submitForm() {
       throw new Error(lastDeliveryDebug.value.apiError);
     }
 
-    Object.assign(form, { name: "", email: "", phone: "", projectType: "", budget: "", details: "", website: "" });
+    Object.assign(form, { name: "", email: "", phone: "", projectType: "", otherProjectType: "", budget: "", details: "", website: "" });
     submitState.value = "success";
     window.clearTimeout(successResetTimer);
     successResetTimer = window.setTimeout(() => { submitState.value = "idle"; }, 7000);
@@ -51,7 +94,10 @@ async function submitForm() {
   }
 }
 
-onUnmounted(() => window.clearTimeout(successResetTimer));
+onUnmounted(() => {
+  window.clearTimeout(successResetTimer);
+  closeSelect();
+});
 </script>
 
 <template>
@@ -74,12 +120,12 @@ onUnmounted(() => window.clearTimeout(successResetTimer));
             </div>
           </a>
 
-          <a href="tel:+201206868603" class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-interactive duration-300">
+          <div class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-secondary hover:shadow-lg hover:-translate-y-1 transition-interactive duration-300">
             <div class="flex items-center gap-5">
-              <div class="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-2xl flex items-center justify-center text-white shadow-lg shadow-secondary/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-solid fa-phone text-3xl" aria-hidden="true"></i></div>
-              <div><h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1">{{ t('contact.phone') }}</h3><p class="text-xl font-bold text-slate-800 dark:text-white direction-ltr" dir="ltr">{{ t('contact.phoneValue') }}</p><p class="text-sm text-slate-400 mt-1">{{ t('contact.phoneNote') }}</p></div>
+              <div class="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-2xl flex items-center justify-center text-white shadow-lg shadow-secondary/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-brands fa-whatsapp text-3xl" aria-hidden="true"></i></div>
+              <div><h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1">{{ t('contact.whatsapp') }}</h3><p class="text-xl font-bold text-slate-800 dark:text-white direction-ltr" dir="ltr">{{ t('contact.whatsappValue') }}</p><p class="text-sm text-slate-400 mt-1">{{ t('contact.whatsappNote') }}</p></div>
             </div>
-          </a>
+          </div>
 
           <div class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-interactive duration-300">
             <div class="flex items-center gap-5">
@@ -119,18 +165,22 @@ onUnmounted(() => window.clearTimeout(successResetTimer));
             <div>
               <label id="project-type-label" class="block text-lg font-medium mb-2">{{ t('contact.projectType') }}</label>
               <div class="custom-select-wrapper relative">
-                <div class="custom-select w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white focus:border-primary transition-interactive cursor-pointer flex justify-between items-center hover:border-primary" role="combobox" aria-labelledby="project-type-label" aria-haspopup="listbox" :aria-expanded="openSelect === 'projectType'" tabindex="0" @click="toggleSelect('projectType')" @keydown.enter.prevent="toggleSelect('projectType')" @keydown.space.prevent="toggleSelect('projectType')">
-                  <span :class="form.projectType ? '' : 'text-slate-500 dark:text-slate-400'">{{ form.projectType || t('contact.projectTypePlaceholder') }}</span><i class="fa-solid fa-chevron-down transition-transform duration-300 text-slate-600 dark:text-slate-400" :class="{ 'rotate-180': openSelect === 'projectType' }" aria-hidden="true"></i>
+                <div class="custom-select w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white focus:border-primary transition-interactive cursor-pointer flex justify-between items-center hover:border-primary" role="combobox" aria-labelledby="project-type-label" aria-haspopup="listbox" :aria-expanded="openSelect === 'projectType'" tabindex="0" @click="toggleSelect('projectType')" @keydown.enter.prevent="toggleSelect('projectType')" @keydown.space.prevent="toggleSelect('projectType')" @keydown.escape.prevent="closeSelect">
+                  <span :class="form.projectType ? '' : 'text-slate-500 dark:text-slate-400'">{{ getProjectTypeLabel(form.projectType) || t('contact.projectTypePlaceholder') }}</span><i class="fa-solid fa-chevron-down transition-transform duration-300 text-slate-600 dark:text-slate-400" :class="{ 'rotate-180': openSelect === 'projectType' }" aria-hidden="true"></i>
                 </div>
                 <div v-if="openSelect === 'projectType'" class="custom-options absolute w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl mt-2 shadow-2xl z-50 overflow-hidden" role="listbox" aria-labelledby="project-type-label">
-                  <div v-for="option in t('contact.projectTypes')" :key="option" class="custom-option px-6 py-3 hover:bg-primary/20 cursor-pointer transition-colors text-slate-700 dark:text-slate-200" role="option" @click.stop="selectOption('projectType', option)">{{ option }}</div>
+                  <div v-for="(option, index) in t('contact.projectTypes')" :key="option" class="custom-option px-6 py-3 hover:bg-primary/20 cursor-pointer transition-colors text-slate-700 dark:text-slate-200" role="option" @click.stop="selectOption('projectType', projectTypeValues[index])">{{ option }}</div>
                 </div>
               </div>
+            </div>
+            <div v-if="form.projectType === 'other'">
+              <label for="other-project-type" class="block text-lg font-medium mb-2">{{ t('contact.otherProjectType') }}</label>
+              <input id="other-project-type" v-model="form.otherProjectType" name="other-project-type" required type="text" :placeholder="t('contact.otherProjectTypePlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
             </div>
             <div>
               <label id="budget-label" class="block text-lg font-medium mb-2">{{ t('contact.budget') }}</label>
               <div class="custom-select-wrapper relative">
-                <div class="custom-select w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white focus:border-primary transition-interactive cursor-pointer flex justify-between items-center hover:border-primary" role="combobox" aria-labelledby="budget-label" aria-haspopup="listbox" :aria-expanded="openSelect === 'budget'" tabindex="0" @click="toggleSelect('budget')" @keydown.enter.prevent="toggleSelect('budget')" @keydown.space.prevent="toggleSelect('budget')">
+                <div class="custom-select w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white focus:border-primary transition-interactive cursor-pointer flex justify-between items-center hover:border-primary" role="combobox" aria-labelledby="budget-label" aria-haspopup="listbox" :aria-expanded="openSelect === 'budget'" tabindex="0" @click="toggleSelect('budget')" @keydown.enter.prevent="toggleSelect('budget')" @keydown.space.prevent="toggleSelect('budget')" @keydown.escape.prevent="closeSelect">
                   <span :class="form.budget ? '' : 'text-slate-500 dark:text-slate-400'">{{ form.budget || t('contact.budgetPlaceholder') }}</span><i class="fa-solid fa-chevron-down transition-transform duration-300 text-slate-600 dark:text-slate-400" :class="{ 'rotate-180': openSelect === 'budget' }" aria-hidden="true"></i>
                 </div>
                 <div v-if="openSelect === 'budget'" class="custom-options absolute w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl mt-2 shadow-2xl z-50 overflow-hidden" role="listbox" aria-labelledby="budget-label">
