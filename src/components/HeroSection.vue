@@ -21,7 +21,7 @@ const techIcons = [
     <div class="container mx-auto pt-40 lg:pt-0 px-4 md:px-8 z-10">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-36 lg:gap-16 items-center">
         <div :class="['hero-copy order-2 lg:order-1 text-center', lang === 'ar' ? 'lg:text-right' : 'lg:text-left']" data-reveal="hero-content">
-          <div class="inline-flex items-center gap-3 bg-gradient-to-l from-emerald-500/10 to-emerald-500/5 dark:from-emerald-500/20 dark:to-emerald-500/10 backdrop-blur-sm border border-emerald-500/30 rounded-full px-5 py-2.5 mb-8" data-reveal>
+          <div class="inline-flex items-center gap-3 mt-3 lg:mt-0 bg-gradient-to-l from-emerald-500/10 to-emerald-500/5 dark:from-emerald-500/20 dark:to-emerald-500/10 backdrop-blur-sm border border-emerald-500/30 rounded-full px-5 py-2.5 mb-8" data-reveal>
             <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
             <span class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{{ t('hero.available') }}</span>
           </div>

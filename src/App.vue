@@ -22,15 +22,9 @@ const settingsOpen = ref(false);
 const showScrollTop = ref(false);
 const sectionIds = ["hero-section", "about", "skills-section", "portfolio", "experience", "testimonials", "statistics-section", "contact"];
 let scrollFrame;
+let sectionObserver;
 
 function updateScrollState() {
-  const headerHeight = document.getElementById("header")?.offsetHeight || 85;
-  let current = sectionIds[0];
-  sectionIds.forEach((id) => {
-    const section = document.getElementById(id);
-    if (section && window.scrollY >= section.offsetTop - headerHeight - 24) current = id;
-  });
-  activeSection.value = current;
   showScrollTop.value = window.scrollY > 300;
 }
 
@@ -43,6 +37,27 @@ function scheduleScrollState() {
   });
 }
 
+function observeActiveSections() {
+  sectionObserver?.disconnect();
+  if (!("IntersectionObserver" in window)) return;
+
+  const activationOffset = (document.getElementById("header")?.offsetHeight || 85) + 24;
+  const observationLineHeight = Math.max(1, window.innerHeight - activationOffset - 1);
+  sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) activeSection.value = entry.target.id;
+    });
+  }, {
+    rootMargin: `-${activationOffset}px 0px -${observationLineHeight}px`,
+    threshold: 0,
+  });
+
+  sectionIds.forEach((id) => {
+    const section = document.getElementById(id);
+    if (section) sectionObserver.observe(section);
+  });
+}
+
 function closeSettingsOnOutsideClick(event) {
   if (settingsOpen.value && !event.target.closest("#settings-sidebar") && !event.target.closest("#settings-toggle")) settingsOpen.value = false;
 }
@@ -51,13 +66,17 @@ watch(lang, () => { menuOpen.value = false; });
 
 onMounted(() => {
   scheduleScrollState();
+  observeActiveSections();
   window.addEventListener("scroll", scheduleScrollState, { passive: true });
+  window.addEventListener("resize", observeActiveSections, { passive: true });
   document.addEventListener("click", closeSettingsOnOutsideClick);
 });
 
 onUnmounted(() => {
   window.cancelAnimationFrame(scrollFrame);
+  sectionObserver?.disconnect();
   window.removeEventListener("scroll", scheduleScrollState);
+  window.removeEventListener("resize", observeActiveSections);
   document.removeEventListener("click", closeSettingsOnOutsideClick);
 });
 </script>
