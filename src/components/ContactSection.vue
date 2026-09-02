@@ -113,21 +113,21 @@ onUnmounted(() => {
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <div class="space-y-8" data-reveal>
-          <a :href="`mailto:${t('contact.emailValue')}`" class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-primary hover:shadow-lg hover:-translate-y-1 transition-interactive duration-300">
+          <a :href="`mailto:${t('contact.emailValue')}`" class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-primary hover:shadow-lg contact-card-transition duration-300">
             <div class="flex items-center gap-5">
               <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-solid fa-envelope text-3xl" aria-hidden="true"></i></div>
               <div><h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1">{{ t('contact.email') }}</h3><p class="text-xl font-bold text-slate-800 dark:text-white direction-ltr" dir="ltr">{{ t('contact.emailValue') }}</p><p class="text-sm text-slate-400 mt-1">{{ t('contact.emailNote') }}</p></div>
             </div>
           </a>
 
-          <a href="https://wa.me/201206868603" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-secondary hover:shadow-lg transition-interactive duration-300">
+          <a href="https://wa.me/201206868603" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-secondary hover:shadow-lg contact-card-transition duration-300">
             <div class="flex items-center gap-5">
               <div class="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-2xl flex items-center justify-center text-white shadow-lg shadow-secondary/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-brands fa-whatsapp text-3xl" aria-hidden="true"></i></div>
               <div><h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1">{{ t('contact.whatsapp') }}</h3><p class="text-xl font-bold text-slate-800 dark:text-white direction-ltr" dir="ltr">{{ t('contact.whatsappValue') }}</p><p class="text-sm text-slate-400 mt-1">{{ t('contact.whatsappNote') }}</p></div>
             </div>
           </a>
 
-          <div class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-accent hover:shadow-lg transition-interactive duration-300">
+          <div class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-accent hover:shadow-lg contact-card-transition duration-300">
             <div class="flex items-center gap-5">
               <div class="w-16 h-16 bg-gradient-to-br from-accent to-primary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-accent/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-solid fa-location-dot text-3xl" aria-hidden="true"></i></div>
               <div><h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1">{{ t('contact.location') }}</h3><p class="text-xl font-bold text-slate-800 dark:text-white">{{ t('contact.locationValue') }}</p><p class="text-sm text-slate-400 mt-1">{{ t('contact.locationNote') }}</p></div>
@@ -201,3 +201,10 @@ onUnmounted(() => {
     </div>
   </section>
 </template>
+
+<style scoped>
+.contact-card-transition {
+  transition-property: border-color, box-shadow;
+  transition-timing-function: var(--default-transition-timing-function, cubic-bezier(.4, 0, .2, 1));
+}
+</style>
