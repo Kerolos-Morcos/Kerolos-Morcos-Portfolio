@@ -66,8 +66,6 @@ function closeSettingsOnOutsideClick(event) {
   if (settingsOpen.value && !event.target.closest("#settings-sidebar") && !event.target.closest("#settings-toggle")) settingsOpen.value = false;
 }
 
-watch(lang, () => { menuOpen.value = false; });
-
 function handleMenuNavigation(sectionId) {
   const target = document.getElementById(sectionId);
   const shouldNavigate = activeSection.value !== sectionId && target;
@@ -114,7 +112,7 @@ function setBodyScrollLock(locked) {
 watch(menuOpen, (open) => {
   if (open) settingsOpen.value = false;
   setBodyScrollLock(open);
-});
+}, { flush: "post" });
 
 function closeMenuOnEscape(event) {
   if (event.key === "Escape" && menuOpen.value) menuOpen.value = false;

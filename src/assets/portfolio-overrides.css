@@ -192,6 +192,8 @@ button:active, a:active { transform: scale(.98); }
   .project-cta-wrap { margin-top: 2.75rem; }
   .project-list-next-leave-active, .project-list-previous-leave-active { width: calc(100% - 0rem); }
   .experience-section .relative.flex.items-center { flex-direction: column; gap: 1.5rem; }
+  .experience-section .space-y-16 { display: flex; flex-direction: column; gap: 1.25rem; }
+  .experience-section .space-y-16 > div { margin-top: 0 !important; }
   .experience-section .relative.flex.items-center > .timeline-side { width: 100%; padding-inline: 1rem !important; text-align: right !important; }
   .experience-section .relative.flex.items-center > .timeline-side:not(:has(article)) { display: none; }
   .experience-section .relative > .absolute.top-0.bottom-0,
