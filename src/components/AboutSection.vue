@@ -40,25 +40,25 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
         </div>
 
         <div class="space-y-6">
-          <div class="bg-slate-900 dark:bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-slate-700 hover:shadow-primary/20 hover:border-slate-600 transition-all duration-500 transform hover:-translate-y-1" data-reveal>
-            <div class="flex items-center gap-2 px-4 py-3 bg-slate-800 border-b border-slate-700"><span class="w-3 h-3 rounded-full bg-red-500"></span><span class="w-3 h-3 rounded-full bg-yellow-500"></span><span class="w-3 h-3 rounded-full bg-green-500"></span><span class="code-file-label text-slate-400 text-sm font-mono">{{ t('about.codeFile') }}</span></div>
-            <div class="p-6 font-mono text-sm md:text-base leading-relaxed overflow-x-auto text-slate-200" dir="ltr">
-              <p class="text-slate-500">{{ t('about.codeComment') }}</p>
-              <p class="mt-3"><span class="text-purple-400">const</span> <span class="text-blue-400">kerolos</span> = {</p>
-              <p class="ml-4"><span class="text-green-400">name</span>: <span class="text-yellow-400">&quot;{{ t('about.code.name') }}&quot;</span>,</p>
-              <p class="ml-4"><span class="text-green-400">role</span>: <span class="text-yellow-400">&quot;{{ t('about.code.role') }}&quot;</span>,</p>
-              <p class="ml-4"><span class="text-green-400">experience</span>: <span class="text-yellow-400">&quot;{{ t('about.code.experience') }}&quot;</span>,</p>
-              <p class="ml-4"><span class="text-green-400">location</span>: <span class="text-yellow-400">&quot;{{ t('about.code.location') }}&quot;</span>,</p>
-              <p class="ml-4"><span class="text-green-400">skills</span>: [</p>
-              <p class="ml-8"><span class="text-yellow-400">&quot;Vue.js&quot;</span>,</p>
-              <p class="ml-8"><span class="text-yellow-400">&quot;Node.js&quot;</span>,</p>
-              <p class="ml-8"><span class="text-yellow-400">&quot;Express.js&quot;</span>,</p>
-              <p class="ml-8"><span class="text-yellow-400">&quot;MySQL&quot;</span></p>
+          <div class="code-editor rounded-2xl overflow-hidden shadow-2xl hover:shadow-primary/20 transition-all duration-500 transform hover:-translate-y-1" data-reveal>
+            <div class="code-editor__header flex items-center gap-2 px-4 py-3"><span class="w-3 h-3 rounded-full bg-red-500"></span><span class="w-3 h-3 rounded-full bg-yellow-500"></span><span class="w-3 h-3 rounded-full bg-green-500"></span><span class="code-file-label text-sm font-mono">{{ t('about.codeFile') }}</span></div>
+            <div class="code-editor__content p-6 font-mono text-sm md:text-base leading-relaxed overflow-x-auto" dir="ltr">
+              <p class="code-comment">{{ t('about.codeComment') }}</p>
+              <p class="mt-3"><span class="code-keyword">const</span> <span class="code-boolean">kerolos</span> = {</p>
+              <p class="ml-4"><span class="code-property">name</span>: <span class="code-string">&quot;{{ t('about.code.name') }}&quot;</span>,</p>
+              <p class="ml-4"><span class="code-property">role</span>: <span class="code-string">&quot;{{ t('about.code.role') }}&quot;</span>,</p>
+              <p class="ml-4"><span class="code-property">experience</span>: <span class="code-string">&quot;{{ t('about.code.experience') }}&quot;</span>,</p>
+              <p class="ml-4"><span class="code-property">location</span>: <span class="code-string">&quot;{{ t('about.code.location') }}&quot;</span>,</p>
+              <p class="ml-4"><span class="code-property">skills</span>: [</p>
+              <p class="ml-8"><span class="code-string">&quot;Vue.js&quot;</span>,</p>
+              <p class="ml-8"><span class="code-string">&quot;Node.js&quot;</span>,</p>
+              <p class="ml-8"><span class="code-string">&quot;Express.js&quot;</span>,</p>
+              <p class="ml-8"><span class="code-string">&quot;MySQL&quot;</span></p>
               <p class="ml-4">],</p>
-              <p class="ml-4"><span class="text-green-400">passion</span>: <span class="text-yellow-400">&quot;{{ t('about.code.passion') }}&quot;</span>,</p>
-              <p class="ml-4"><span class="text-green-400">available</span>: <span class="text-blue-400">true</span></p>
+              <p class="ml-4"><span class="code-property">passion</span>: <span class="code-string">&quot;{{ t('about.code.passion') }}&quot;</span>,</p>
+              <p class="ml-4"><span class="code-property">available</span>: <span class="code-boolean">true</span></p>
               <p>};</p>
-              <p class="mt-4"><span class="text-purple-400">export default</span> <span class="text-blue-400">kerolos</span>;</p>
+              <p class="mt-4"><span class="code-keyword">export default</span> <span class="code-boolean">kerolos</span>;</p>
             </div>
           </div>
 

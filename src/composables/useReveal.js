@@ -8,7 +8,14 @@ export function useReveal() {
     const root = document.getElementById("app");
     if (!root) return;
 
-    const elements = () => [...root.querySelectorAll("[data-reveal]")].filter((element) => !element.classList.contains("is-visible"));
+    const observeElement = (element) => {
+      if (!element.classList.contains("is-visible")) observer.observe(element);
+    };
+    const observeWithin = (element) => {
+      if (!(element instanceof Element)) return;
+      if (element.matches("[data-reveal]")) observeElement(element);
+      element.querySelectorAll("[data-reveal]").forEach(observeElement);
+    };
     document.body.classList.add("reveal-ready");
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
@@ -24,9 +31,10 @@ export function useReveal() {
       });
     }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
 
-    const observeElements = () => elements().forEach((element) => observer.observe(element));
-    observeElements();
-    mutationObserver = new MutationObserver(observeElements);
+    observeWithin(root);
+    mutationObserver = new MutationObserver((records) => {
+      records.forEach((record) => record.addedNodes.forEach(observeWithin));
+    });
     mutationObserver.observe(root, { childList: true, subtree: true });
   });
 

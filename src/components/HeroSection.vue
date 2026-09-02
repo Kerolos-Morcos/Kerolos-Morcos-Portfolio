@@ -62,7 +62,7 @@ const techIcons = [
             <div class="absolute -inset-3 bg-gradient-to-br from-primary via-secondary to-accent rounded-full opacity-75 blur-sm animate-pulse"></div>
             <div class="absolute -inset-2 bg-gradient-to-br from-primary via-secondary to-accent rounded-full"></div>
             <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-800 border-4 border-white dark:border-slate-900">
-              <img :src="profileImage" :alt="t('hero.heroImageAlt')" class="w-full h-full object-cover" fetchpriority="high" decoding="async" />
+              <img :src="profileImage" :alt="t('hero.heroImageAlt')" class="w-full h-full object-cover" width="900" height="900" loading="eager" fetchpriority="high" decoding="async" />
             </div>
 
             <div class="absolute -top-4 -right-4 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="animation-duration: 3s" aria-hidden="true"><i class="fa-brands fa-vuejs text-3xl text-[#4FC08D]"></i></div>

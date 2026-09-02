@@ -21,6 +21,7 @@ const menuOpen = ref(false);
 const settingsOpen = ref(false);
 const showScrollTop = ref(false);
 const sectionIds = ["hero-section", "about", "skills-section", "portfolio", "experience", "testimonials", "statistics-section", "contact"];
+let scrollFrame;
 
 function updateScrollState() {
   const headerHeight = document.getElementById("header")?.offsetHeight || 85;
@@ -34,6 +35,13 @@ function updateScrollState() {
 }
 
 function scrollToTop() { window.scrollTo({ top: 0, behavior: "smooth" }); }
+function scheduleScrollState() {
+  if (scrollFrame) return;
+  scrollFrame = window.requestAnimationFrame(() => {
+    scrollFrame = undefined;
+    updateScrollState();
+  });
+}
 
 function closeSettingsOnOutsideClick(event) {
   if (settingsOpen.value && !event.target.closest("#settings-sidebar") && !event.target.closest("#settings-toggle")) settingsOpen.value = false;
@@ -42,13 +50,14 @@ function closeSettingsOnOutsideClick(event) {
 watch(lang, () => { menuOpen.value = false; });
 
 onMounted(() => {
-  updateScrollState();
-  window.addEventListener("scroll", updateScrollState, { passive: true });
+  scheduleScrollState();
+  window.addEventListener("scroll", scheduleScrollState, { passive: true });
   document.addEventListener("click", closeSettingsOnOutsideClick);
 });
 
 onUnmounted(() => {
-  window.removeEventListener("scroll", updateScrollState);
+  window.cancelAnimationFrame(scrollFrame);
+  window.removeEventListener("scroll", scheduleScrollState);
   document.removeEventListener("click", closeSettingsOnOutsideClick);
 });
 </script>

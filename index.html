@@ -1,17 +1,33 @@
 <!doctype html>
-<html lang="ar" dir="rtl" class="dark">
+<html lang="en" dir="ltr" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#6366f1" />
+    <meta name="theme-color" content="#020617" />
     <meta name="author" content="Kerolos Morcos" />
-    <meta name="description" content="كيرلس مرقس، مطور Full-Stack باستخدام Vue.js وNode.js، يبني تطبيقات ويب قابلة للصيانة باستخدام Express.js وREST APIs وقواعد بيانات MySQL." />
+    <meta name="description" content="Kerolos Morcos is a Full-Stack Developer using Vue.js & Node.js, building maintainable web applications with Express.js, REST APIs, and MySQL." />
     <meta name="keywords" content="Kerolos Morcos, Full-Stack Developer, Vue.js, Node.js, Express.js, MySQL" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="كيرلس مرقس | مطور Full-Stack باستخدام Vue.js وNode.js" />
-    <meta property="og:description" content="مطور Full-Stack باستخدام Vue.js وNode.js، يبني تطبيقات ويب قابلة للصيانة باستخدام Express.js وREST APIs وقواعد بيانات MySQL." />
+    <meta property="og:title" content="Kerolos Morcos | Full-Stack Developer using Vue.js & Node.js" />
+    <meta property="og:description" content="Kerolos Morcos is a Full-Stack Developer using Vue.js & Node.js, building maintainable web applications with Express.js, REST APIs, and MySQL." />
     <meta property="og:image" content="/assets/imgs/linkedin-cover.webp" />
-    <meta property="og:locale" content="ar_EG" />
+    <meta property="og:locale" content="en_US" />
+    <script>
+      (() => {
+        try {
+          const root = document.documentElement;
+          const savedLanguage = localStorage.getItem("portfolio-language");
+          const language = savedLanguage === "ar" ? "ar" : "en";
+          root.lang = language;
+          root.dir = language === "ar" ? "rtl" : "ltr";
+          const isDark = localStorage.getItem("theme") !== "light";
+          root.classList.toggle("dark", isDark);
+          document.querySelector('meta[name="theme-color"]')?.setAttribute("content", isDark ? "#020617" : "#f8fafc");
+        } catch {
+          // The HTML defaults already provide English, LTR, and dark mode.
+        }
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
@@ -20,7 +36,7 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@100..900&family=Cairo:wght@200..1000&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@100..900&family=Cairo:wght@200..1000&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet" /></noscript>
     <link rel="icon" type="image/png" href="/assets/imgs/favicon.png" />
-    <title>كيرلس مرقس | مطور Full-Stack باستخدام Vue.js وNode.js</title>
+    <title>Kerolos Morcos | Full-Stack Developer using Vue.js & Node.js</title>
   </head>
   <body class="font-tajawal bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-slate-900 dark:text-white transition-colors duration-300">
     <div id="app"></div>

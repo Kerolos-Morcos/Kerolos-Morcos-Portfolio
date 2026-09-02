@@ -6,6 +6,29 @@ export const themes = [
   { name: "Red Rose", primary: "#ef4444", secondary: "#f43f5e", accent: "#fb7185" },
   { name: "Amber Orange", primary: "#f59e0b", secondary: "#ea580c", accent: "#fbbf24" },
 ];
+export const DEFAULT_THEME_MODE = "dark";
+export const PAGE_THEME_COLORS = { dark: "#020617", light: "#f8fafc" };
+
+function readStorage(key) {
+  if (typeof localStorage === "undefined") return null;
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+export function getInitialThemeMode() {
+  return readStorage("theme") === "light" ? "light" : DEFAULT_THEME_MODE;
+}
+
+export function applyColorMode(mode) {
+  if (typeof document === "undefined") return mode !== "light";
+  const isDark = mode !== "light";
+  document.documentElement.classList.toggle("dark", isDark);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", isDark ? PAGE_THEME_COLORS.dark : PAGE_THEME_COLORS.light);
+  return isDark;
+}
 
 function hexToRgb(hex) {
   const normalized = hex.replace("#", "");
@@ -43,8 +66,7 @@ export function applyThemeTokens(theme) {
 
 export function initializeTheme() {
   if (typeof document === "undefined") return;
-  const savedTheme = typeof localStorage === "undefined" ? null : localStorage.getItem("activeTheme");
-  const savedMode = typeof localStorage === "undefined" ? null : localStorage.getItem("theme");
+  const savedTheme = readStorage("activeTheme");
   applyThemeTokens(getTheme(savedTheme));
-  document.documentElement.classList.toggle("dark", savedMode !== "light");
+  applyColorMode(getInitialThemeMode());
 }
