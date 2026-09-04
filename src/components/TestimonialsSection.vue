@@ -40,7 +40,7 @@ onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
         <div class="overflow-hidden">
           <Transition name="credibility-fade" mode="out-in">
             <div :key="activeIndex" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <article v-for="(item, index) in visibleItems" :key="`${activeIndex}-${item.title}`" class="principle-card bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-200 dark:border-slate-700 hover:border-accent transition-interactive duration-300 flex flex-col h-full" data-reveal>
+              <article v-for="(item, index) in visibleItems" :key="`${activeIndex}-${item.title}`" class="principle-card bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-200 dark:border-slate-700 hover:border-accent transition-interactive duration-300 flex flex-col h-full">
                 <div class="flex items-center justify-between mb-6"><span :class="['w-14 h-14 rounded-xl flex items-center justify-center text-white text-xl', index === 0 ? 'bg-primary' : index === 1 ? 'bg-secondary' : 'bg-accent']"><i :class="index === 0 ? 'fa-solid fa-comments' : index === 1 ? 'fa-solid fa-magnifying-glass' : 'fa-solid fa-arrows-rotate'" aria-hidden="true"></i></span><span class="text-primary text-3xl font-black">0{{ (activeIndex + index) % 4 + 1 }}</span></div>
                 <h3 class="text-2xl font-bold mb-3">{{ item.title }}</h3>
                 <p class="text-slate-600 dark:text-slate-300 leading-relaxed flex-grow">{{ item.text }}</p>

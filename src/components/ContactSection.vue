@@ -112,7 +112,7 @@ onUnmounted(() => {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        <div class="space-y-8" data-reveal>
+        <div class="space-y-8">
           <a :href="`mailto:${t('contact.emailValue')}`" class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-primary hover:shadow-lg contact-card-transition duration-300">
             <div class="flex items-center gap-5">
               <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-solid fa-envelope text-3xl" aria-hidden="true"></i></div>

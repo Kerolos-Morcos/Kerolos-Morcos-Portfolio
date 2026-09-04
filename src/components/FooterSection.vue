@@ -22,7 +22,7 @@ const currentYear = new Date().getFullYear();
     aria-labelledby="footer-title"
   >
     <div class="container mx-auto max-w-7xl">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12" data-reveal>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
         <div class="col-span-1 md:col-span-2">
           <a href="#hero-section" class="inline-flex items-center gap-3 mb-6" aria-label="Back to the hero section">
             <span class="w-12 h-12 rounded-xl bg-linear-to-br from-primary to-secondary flex items-center justify-center text-white text-xl font-black shadow-lg shadow-primary/20" aria-hidden="true">K</span>

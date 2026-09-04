@@ -100,7 +100,7 @@ onUnmounted(() => {
       </div>
 
       <div id="portfolio-grid-frame" class="project-grid-frame" :style="{ minHeight: gridMinHeight ? `${gridMinHeight}px` : undefined }">
-        <TransitionGroup :name="projectTransitionName" tag="div" id="portfolio-grid" class="project-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-reveal @pointerdown="startProjectSwipe" @pointerup="finishProjectSwipe" @pointercancel="cancelProjectSwipe" @pointerleave="cancelProjectSwipe">
+        <TransitionGroup :name="projectTransitionName" tag="div" id="portfolio-grid" class="project-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" @pointerdown="startProjectSwipe" @pointerup="finishProjectSwipe" @pointercancel="cancelProjectSwipe" @pointerleave="cancelProjectSwipe">
         <article v-for="project in paginatedProjects" :key="project.id" class="portfolio-item group relative bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-primary transition-all duration-300">
           <div class="relative h-72 overflow-hidden">
             <img :src="project.image" :alt="`${localized(project.title)} project preview`" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" width="1265" height="712" sizes="(min-width: 1024px) 27rem, (min-width: 768px) 43vw, 100vw" loading="lazy" decoding="async" />
