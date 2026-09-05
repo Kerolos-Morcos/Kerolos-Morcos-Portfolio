@@ -10,10 +10,10 @@ const stats = [
 </script>
 
 <template>
-  <section id="statistics-section" class="py-24 px-4 md:px-8 bg-slate-50 dark:bg-transparent relative overflow-hidden" aria-label="Professional highlights">
+  <section id="statistics-section" class="py-24 px-4 md:px-8 bg-slate-50 dark:bg-transparent relative overflow-hidden" aria-label="Professional highlights" data-motion-section>
     <div class="container mx-auto max-w-7xl relative z-10">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8" data-motion="fade-up" data-motion-mobile="only">
-        <div v-for="(stat, index) in stats" :key="stat.key" class="text-center" data-motion="fade-up" data-motion-mobile="skip" :data-motion-step="index">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8" data-motion="fade-up">
+        <div v-for="stat in stats" :key="stat.key" class="text-center">
           <div :class="['w-24 h-24 bg-linear-to-br rounded-2xl flex items-center justify-center mx-auto mb-4', stat.tone === 'secondary' ? 'from-secondary to-accent' : stat.tone === 'accent' ? 'from-accent to-primary' : 'from-primary to-secondary']"><i :class="[stat.icon, 'text-4xl text-white']" aria-hidden="true"></i></div>
           <div :class="['text-5xl font-black bg-linear-to-r bg-clip-text text-transparent mb-2', stat.tone === 'secondary' ? 'from-secondary to-accent' : stat.tone === 'accent' ? 'from-accent to-primary' : 'from-primary to-secondary']">{{ stat.value }}</div>
           <p class="text-slate-400 text-lg">{{ t(`stats.${stat.key}`) }}</p>

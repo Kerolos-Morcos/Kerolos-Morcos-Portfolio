@@ -61,6 +61,9 @@ body { overflow-x: hidden; }
 .project-grid { position: relative; align-items: stretch; overflow-anchor: none; touch-action: pan-y; }
 .nav-links a { font-weight: 600; transition: color var(--transition-normal) ease, background-color var(--transition-normal) ease, border-color var(--transition-normal) ease; }
 .scroll-top-transition { transition-property: transform, translate, scale, opacity, visibility, background-color, border-color, color, box-shadow; transition-duration: 300ms; transition-timing-function: cubic-bezier(.22, 1, .36, 1); }
+.hero-orbit { animation-duration: var(--hero-orbit-duration, 24s); }
+.hero-orbit--inner { animation-direction: reverse; }
+.hero-floating-icon { animation-duration: var(--hero-float-duration, 3s); animation-delay: var(--hero-float-delay, 0s); }
 .main-skill-card { transition: transform .32s cubic-bezier(.22, 1, .36, 1), border-color .32s ease, box-shadow .32s ease, background-color .32s ease; }
 .project-filter { position: relative; isolation: isolate; overflow: hidden; transition: color .3s ease, border-color .3s ease, box-shadow .3s ease, transform .3s ease, background-color .3s ease; }
 .project-filter::before { content: ""; position: absolute; inset: 0; z-index: 0; opacity: 0; background: linear-gradient(to right, var(--color-primary), var(--color-secondary)); transition: opacity .3s ease; }
@@ -153,22 +156,34 @@ html[dir="ltr"] #settings-sidebar [role="radio"] { text-align: left; }
 }
 
 @media (max-width: 767px) {
-  /* Avoid live backdrop sampling and large offscreen raster work on touch devices. */
+  /* Keep the soft decoration as a static radial layer: no live blur rastering. */
   .backdrop-blur-sm, .backdrop-blur-md, .backdrop-blur-xl {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
-  section > .absolute.filter.blur-3xl { display: none; }
-  #hero-section .animate-spin,
-  #hero-section .animate-pulse,
-  #hero-section .animate-bounce,
-  #hero-section .animate-ping,
-  #hero-section .animate-gradient { animation: none; }
+  section > .absolute.filter.blur-3xl { display: block; filter: none; background-color: transparent !important; background-image: radial-gradient(circle, var(--color-primary) 0%, transparent 70%) !important; }
+  section > .absolute.filter.blur-3xl.bg-secondary { background-image: radial-gradient(circle, var(--color-secondary) 0%, transparent 70%) !important; }
+  section > .absolute.filter.blur-3xl.bg-accent { background-image: radial-gradient(circle, var(--color-accent) 0%, transparent 70%) !important; }
+
+  /* Mobile keeps the same living hero cues with transform/opacity only. */
+  #hero-section .hero-orbit { animation: hero-mobile-orbit 10s linear infinite; }
+  #hero-section .hero-orbit--inner { animation-duration: 8s; animation-direction: reverse; }
+  #hero-section .hero-profile-pulse { animation: hero-mobile-pulse 3.4s ease-in-out infinite; }
+  #hero-section .hero-floating-icon { animation: hero-mobile-float 2.8s ease-in-out infinite; animation-delay: var(--hero-float-delay, 0s); }
+  #hero-section .hero-availability-ping { animation: hero-mobile-ping 2.5s cubic-bezier(0, 0, .2, 1) infinite; }
+  #hero-section .hero-name-gradient { position: relative; display: inline-block; animation: none; }
+  #hero-section .hero-name-gradient::after { position: absolute; inset: 0; content: attr(data-text); white-space: nowrap; background-image: linear-gradient(to left, var(--color-primary), var(--color-secondary), var(--color-accent)); -webkit-background-clip: text; background-clip: text; color: transparent; opacity: .26; pointer-events: none; transform: translateX(-2%); animation: hero-mobile-gradient-sheen 5.5s ease-in-out infinite; }
   .code-editor { --code-shadow: 0 12px 24px rgb(15 23 42 / .10); }
   html.dark .code-editor { --code-shadow: 0 12px 24px rgb(0 0 0 / .20); }
   .project-pagination__panel { box-shadow: 0 8px 18px rgb(15 23 42 / .07); }
   html.dark .project-pagination__panel { box-shadow: 0 8px 18px rgb(0 0 0 / .18); }
 }
+
+@keyframes hero-mobile-orbit { to { transform: rotate(360deg); } }
+@keyframes hero-mobile-pulse { 0%, 100% { opacity: .6; transform: scale(.985); } 50% { opacity: .82; transform: scale(1.025); } }
+@keyframes hero-mobile-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes hero-mobile-ping { 75%, 100% { opacity: 0; transform: scale(1.7); } }
+@keyframes hero-mobile-gradient-sheen { 0%, 100% { opacity: .18; transform: translateX(-2%); } 50% { opacity: .56; transform: translateX(2%); } }
 
 @media (min-width: 1024px) {
   html[dir="ltr"] .hero-copy { text-align: left; }

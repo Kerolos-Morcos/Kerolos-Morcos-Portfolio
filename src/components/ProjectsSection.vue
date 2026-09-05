@@ -85,7 +85,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section id="portfolio" class="py-24 px-4 md:px-8 bg-white dark:bg-slate-900/50 relative overflow-hidden" aria-labelledby="portfolio-title">
+  <section id="portfolio" class="py-24 px-4 md:px-8 bg-white dark:bg-slate-900/50 relative overflow-hidden" aria-labelledby="portfolio-title" data-motion-section>
     <div class="absolute top-1/4 left-0 w-96 h-96 bg-primary rounded-full filter blur-3xl opacity-10"></div>
     <div class="container mx-auto max-w-7xl relative z-10">
       <div class="text-center mb-16" data-motion="fade-up" data-motion-heading>
@@ -99,15 +99,16 @@ onUnmounted(() => {
         <button v-for="filter in filterKeys" :key="filter" type="button" :aria-pressed="selectedFilter === filter" :class="['project-filter px-8 py-3 rounded-xl font-bold', selectedFilter === filter ? 'text-white' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700']" @click="setFilter(filter)"><span>{{ t(`projects.filters.${filter}`) }}</span></button>
       </div>
 
+      <div class="project-results" data-motion="fade-up" data-motion-step="2">
       <div id="portfolio-grid-frame" class="project-grid-frame" :style="{ minHeight: gridMinHeight ? `${gridMinHeight}px` : undefined }">
         <TransitionGroup :name="projectTransitionName" tag="div" id="portfolio-grid" class="project-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" @pointerdown="startProjectSwipe" @pointerup="finishProjectSwipe" @pointercancel="cancelProjectSwipe" @pointerleave="cancelProjectSwipe">
         <article v-for="(project, index) in paginatedProjects" :key="project.id" class="portfolio-item group relative bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-primary transition-interactive duration-300">
-          <div class="relative h-72 overflow-hidden" data-motion="fade-in" :data-motion-step="index">
+          <div class="relative h-72 overflow-hidden">
             <img :src="project.image" :alt="`${localized(project.title)} project preview`" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" width="1265" height="712" sizes="(min-width: 1024px) 27rem, (min-width: 768px) 43vw, 100vw" loading="lazy" decoding="async" />
             <div class="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <span v-if="project.live" class="absolute top-4 left-4 px-3 py-1 rounded-full bg-emerald-500 text-white text-xs font-bold shadow-lg"><i class="fa-solid fa-circle text-[8px] mr-1" aria-hidden="true"></i>{{ t('projects.live') }}</span>
           </div>
-          <div class="p-6" data-motion="fade-up" :data-motion-step="index + 1">
+          <div class="p-6">
             <div class="flex items-center justify-between gap-4 mb-3">
               <span :class="['px-4 py-1 rounded-full text-sm font-medium', project.tone === 'secondary' ? 'bg-secondary/20 text-secondary' : project.tone === 'accent' ? 'bg-accent/20 text-accent' : 'bg-primary/20 text-primary']">{{ t(`projects.filters.${project.category}`) }}</span>
               <div class="flex gap-2">
@@ -138,6 +139,7 @@ onUnmounted(() => {
           </div>
           <button type="button" class="project-pagination__control project-pagination__control--next" :aria-label="t('projects.nextPage')" :disabled="currentPage === pageCount" @click="nextPage"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
         </div>
+      </div>
       </div>
 
       <div class="project-cta-wrap text-center" data-motion="fade-up" data-motion-step="3"><a href="#contact" class="project-cta inline-flex items-center gap-3 px-12 py-4 rounded-xl text-lg font-bold text-white"><span>{{ t('projects.moreCta') }}</span><i class="fa-solid fa-rocket" aria-hidden="true"></i></a></div>

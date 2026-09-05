@@ -26,7 +26,7 @@ onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
 </script>
 
 <template>
-  <section id="testimonials" class="py-24 px-4 md:px-8 bg-white dark:bg-slate-900/50 relative overflow-hidden" aria-labelledby="testimonials-title">
+  <section id="testimonials" class="py-24 px-4 md:px-8 bg-white dark:bg-slate-900/50 relative overflow-hidden" aria-labelledby="testimonials-title" data-motion-section>
     <div class="absolute top-0 left-1/3 w-96 h-96 bg-accent rounded-full filter blur-3xl opacity-10"></div>
     <div class="container mx-auto max-w-7xl relative z-10">
       <div class="text-center mb-16" data-motion="fade-up" data-motion-heading>
@@ -36,7 +36,7 @@ onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
         <p class="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mt-6">{{ t('credibility.description') }}</p>
       </div>
 
-      <div class="px-2 lg:px-8" aria-live="polite">
+      <div class="px-2 lg:px-8" aria-live="polite" data-motion="fade-up" data-motion-step="1">
         <div class="overflow-hidden">
           <Transition name="credibility-fade" mode="out-in">
             <div :key="activeIndex" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -50,7 +50,7 @@ onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
         </div>
       </div>
 
-      <div class="methodology-controls flex items-center justify-center gap-4 mt-8 mb-12" data-motion="fade-in" data-motion-step="1" role="navigation" :aria-label="t('credibility.titleLead')">
+      <div class="methodology-controls flex items-center justify-center gap-4 mt-8 mb-12" data-motion="fade-in" data-motion-step="2" role="navigation" :aria-label="t('credibility.titleLead')">
         <button type="button" class="methodology-nav-button bg-white/90 dark:bg-slate-800/90 hover:bg-secondary text-slate-900 dark:text-white w-12 h-12 rounded-full flex items-center justify-center transition-interactive duration-300 hover:scale-110 border border-slate-300 dark:border-slate-700" :aria-label="t('credibility.previous')" @click="previous"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
         <div class="flex justify-center gap-3" role="tablist" :aria-label="t('credibility.titleLead')">
           <button v-for="page in pageCount" :key="page" type="button" role="tab" :aria-selected="activeIndex === page - 1" :aria-label="`${t('credibility.indicator')} ${page}`" :class="['w-3 h-3 rounded-full transition-interactive duration-300 hover:scale-125', activeIndex === page - 1 ? 'bg-accent scale-125' : 'bg-slate-400 dark:bg-slate-600']" @click="selectPage(page - 1)"></button>
@@ -58,11 +58,11 @@ onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
         <button type="button" class="methodology-nav-button bg-white/90 dark:bg-slate-800/90 hover:bg-primary text-slate-900 dark:text-white w-12 h-12 rounded-full flex items-center justify-center transition-interactive duration-300 hover:scale-110 border border-slate-300 dark:border-slate-700" :aria-label="t('credibility.next')" @click="next"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
       </div>
 
-      <div class="bg-linear-to-r from-primary via-secondary to-accent p-1 rounded-3xl">
+      <div class="bg-linear-to-r from-primary via-secondary to-accent p-1 rounded-3xl" data-motion="fade-up" data-motion-step="3">
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center">
-          <h3 class="text-3xl font-bold mb-4" data-motion="fade-up">{{ t('credibility.ctaTitle') }}</h3>
-          <p class="text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto" data-motion="fade-up" data-motion-step="1">{{ t('credibility.ctaText') }}</p>
-          <div class="flex justify-center gap-4 flex-wrap" data-motion="fade-up" data-motion-step="2"><a href="#contact" class="bg-linear-to-r from-primary to-secondary text-white px-10 py-4 rounded-xl font-bold hover:shadow-xl hover:shadow-primary/30 transition-interactive duration-300">{{ t('credibility.ctaContact') }}</a><a href="#portfolio" class="border-2 border-primary dark:border-white text-primary dark:text-white px-10 py-4 rounded-xl font-bold hover:bg-primary hover:text-white dark:hover:bg-white dark:hover:text-slate-900 transition-interactive duration-300">{{ t('credibility.ctaProjects') }}</a></div>
+          <h3 class="text-3xl font-bold mb-4">{{ t('credibility.ctaTitle') }}</h3>
+          <p class="text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">{{ t('credibility.ctaText') }}</p>
+          <div class="flex justify-center gap-4 flex-wrap"><a href="#contact" class="bg-linear-to-r from-primary to-secondary text-white px-10 py-4 rounded-xl font-bold hover:shadow-xl hover:shadow-primary/30 transition-interactive duration-300">{{ t('credibility.ctaContact') }}</a><a href="#portfolio" class="border-2 border-primary dark:border-white text-primary dark:text-white px-10 py-4 rounded-xl font-bold hover:bg-primary hover:text-white dark:hover:bg-white dark:hover:text-slate-900 transition-interactive duration-300">{{ t('credibility.ctaProjects') }}</a></div>
         </div>
       </div>
     </div>

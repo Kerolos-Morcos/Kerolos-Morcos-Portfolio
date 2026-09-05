@@ -20,6 +20,7 @@ const currentYear = new Date().getFullYear();
     id="footer"
     class="bg-slate-100 dark:bg-slate-950 py-16 px-4 md:px-8 border-t border-slate-200 dark:border-slate-800"
     aria-labelledby="footer-title"
+    data-motion-section
   >
     <div class="container mx-auto max-w-7xl" data-motion="fade-up">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">

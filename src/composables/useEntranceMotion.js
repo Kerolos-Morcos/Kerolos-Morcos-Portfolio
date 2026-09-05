@@ -2,9 +2,9 @@ import { nextTick, onMounted, onUnmounted } from "vue";
 
 const EASING = "cubic-bezier(.22, 1, .36, 1)";
 const PROFILES = {
-  mobile: { duration: 540, distance: 12, heading: 10, stagger: 35, maxDelay: 140, opacity: 0.2, lead: 0.18, maxConcurrent: 5, activationInset: 120 },
-  tablet: { duration: 650, distance: 18, heading: 16, stagger: 55, maxDelay: 220, opacity: 0.2, lead: 0.12, activationInset: 96 },
-  desktop: { duration: 820, distance: 28, heading: 20, stagger: 75, maxDelay: 300, opacity: 0.1, lead: 0.12, activationInset: 72 },
+  mobile: { duration: 460, distance: 10, heading: 9, stagger: 30, maxDelay: 120, opacity: 0.16, lead: 0.16, maxConcurrent: 4, activationInset: 96 },
+  tablet: { duration: 560, distance: 16, heading: 14, stagger: 45, maxDelay: 180, opacity: 0.14, lead: 0.12, maxConcurrent: 4, activationInset: 84 },
+  desktop: { duration: 640, distance: 22, heading: 18, stagger: 55, maxDelay: 220, opacity: 0.08, lead: 0.1, maxConcurrent: 4, activationInset: 72 },
 };
 
 export function useEntranceMotion() {
@@ -14,7 +14,9 @@ export function useEntranceMotion() {
   let disposed = false;
   const waiting = new Set();
   const completed = new WeakSet();
+  const completedSections = new WeakSet();
   const animations = new Map();
+  const activeSectionAnimations = new Set();
   const profile = () => PROFILES[window.innerWidth <= 640 ? "mobile" : window.innerWidth < 1024 ? "tablet" : "desktop"];
   const shouldEnroll = (element) => {
     const mobileVariant = element.dataset.motionMobile;
@@ -22,13 +24,14 @@ export function useEntranceMotion() {
   };
 
   function finishAnimations() {
-    // Underlying styles are always visible. Cancel releases opacity/transform
-    // immediately, including when the browser suspends a tab during a delay.
+    // Underlying styles are always visible. Cancel releases the compositor
+    // animation immediately, including when the browser suspends a tab.
     animations.forEach((animation, element) => {
       completed.add(element);
       animation.cancel();
     });
     animations.clear();
+    activeSectionAnimations.clear();
   }
 
   function settle() {
@@ -40,9 +43,9 @@ export function useEntranceMotion() {
   function animate(element, hero = false) {
     if (completed.has(element) || reducedMotion.matches || document.hidden || !element.isConnected) return;
     const settings = profile();
-    // Mobile keeps a hard cap on concurrent non-Hero entrances. Any excess
-    // target remains at its normal fully visible style instead of queueing.
-    if (!hero && settings.maxConcurrent && animations.size >= settings.maxConcurrent) {
+    // Sections use no more than four visual groups. Any excess remains visible
+    // rather than creating a delayed waterfall after a fast navigation.
+    if (!hero && activeSectionAnimations.size >= settings.maxConcurrent) {
       completed.add(element);
       return;
     }
@@ -53,17 +56,14 @@ export function useEntranceMotion() {
     if (element.dataset.motion === "fade-side" && window.innerWidth >= 1024) {
       const direction = document.documentElement.dir === "rtl" ? -1 : 1;
       const side = element.dataset.motionSide === "end" ? -1 : 1;
-      transform = `translateX(${18 * direction * side}px)`;
+      transform = `translateX(${16 * direction * side}px)`;
     }
 
-    // Backwards fill coordinates only the short active entrance delay.
-    // There is no forwards fill or CSS hiding queued/completed content.
-    // A readable opacity floor also protects fast desktop/tablet scrolling.
     const animation = element.animate([
       { opacity: settings.opacity, transform },
       { opacity: 1, transform: "none" },
     ], {
-      id: hero ? "entrance-hero" : "entrance-section",
+      id: hero ? "entrance-hero" : "entrance-section-group",
       duration: settings.duration,
       delay: Math.min(settings.maxDelay, step * settings.stagger),
       easing: EASING,
@@ -71,9 +71,34 @@ export function useEntranceMotion() {
     });
     completed.add(element);
     animations.set(element, animation);
-    const release = () => animations.delete(element);
+    if (!hero) activeSectionAnimations.add(element);
+    const release = () => {
+      animations.delete(element);
+      activeSectionAnimations.delete(element);
+    };
     animation.onfinish = release;
     animation.oncancel = release;
+  }
+
+  function targetsFor(section) {
+    return [...section.querySelectorAll("[data-motion]")]
+      .filter((element) => element.closest("[data-motion-section]") === section)
+      .filter((element) => shouldEnroll(element) && !completed.has(element));
+  }
+
+  function coordinate(section) {
+    if (completedSections.has(section)) return;
+    completedSections.add(section);
+    // Every presentation group shares the same observer callback and timing
+    // origin. Internal delays express hierarchy without independent triggers.
+    targetsFor(section).forEach((element) => animate(element));
+  }
+
+  function hasVisiblePresentation(section, inset = 0) {
+    return targetsFor(section).some((element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.bottom > 0 && rect.top < window.innerHeight - inset;
+    });
   }
 
   function handleVisibility() {
@@ -89,9 +114,8 @@ export function useEntranceMotion() {
   }
 
   onMounted(async () => {
-    // Child carousels choose their first responsive page during mount.
-    // Enroll that initial composition only; replacements use their own
-    // existing transitions and never start another section entrance.
+    // Child carousels choose their first responsive page before the
+    // coordinator reads the initial composition.
     await nextTick();
     if (disposed) return;
     root = document.getElementById("app");
@@ -101,35 +125,40 @@ export function useEntranceMotion() {
 
     const height = window.innerHeight;
     const lead = Math.round(height * profile().lead);
-    const initial = [...root.querySelectorAll("[data-motion]:not([data-motion-hero])")]
-      .filter((element) => shouldEnroll(element) && !completed.has(element))
-      .map((element) => ({ element, rect: element.getBoundingClientRect() }));
+    const sections = [...root.querySelectorAll("[data-motion-section]")]
+      .filter((section) => !completedSections.has(section))
+      .map((section) => ({ section, rect: section.getBoundingClientRect() }));
 
     if ("IntersectionObserver" in window) {
       observer = new IntersectionObserver((entries) => {
-        // These reads run once per entering target, never in a scroll loop.
         const incoming = entries.filter((entry) => entry.isIntersecting && waiting.has(entry.target))
           .map((entry) => ({ entry, rect: entry.target.getBoundingClientRect() }));
         incoming.forEach(({ entry, rect }) => {
-          waiting.delete(entry.target);
-          observer.unobserve(entry.target);
-          // A late callback or a fast jump must not fade out readable content.
-          // Visible/above-viewport targets simply retain their default styles.
-          const settings = profile();
-          // A bounded activation inset accommodates normal scroll increments
-          // at the viewport edge without fading a target already deep in view.
-          if (performance.now() - entry.time > 100 || rect.top < window.innerHeight - settings.activationInset || rect.width === 0 || rect.height === 0) {
-            completed.add(entry.target);
+          const section = entry.target;
+          waiting.delete(section);
+          observer.unobserve(section);
+          // A late callback or restored/deep viewport keeps all of its
+          // presentation layers visible rather than applying backwards fill.
+          if (performance.now() - entry.time > 100 || hasVisiblePresentation(section, profile().activationInset) || rect.width === 0 || rect.height === 0) {
+            completedSections.add(section);
+            targetsFor(section).forEach((element) => completed.add(element));
             return;
           }
-          animate(entry.target);
+          coordinate(section);
         });
       }, { threshold: 0, rootMargin: `${lead}px 0px ${lead}px 0px` });
 
-      initial.forEach(({ element, rect }) => {
-        if (rect.top <= height + lead || rect.width === 0 || rect.height === 0) return;
-        waiting.add(element);
-        observer.observe(element);
+      sections.forEach(({ section, rect }) => {
+        // Never animate presentation content already in the initial viewport.
+        // A structural section at the fold can still be enrolled when its
+        // heading is below the fold, avoiding a missed first reveal.
+        if (hasVisiblePresentation(section) || rect.width === 0 || rect.height === 0) {
+          completedSections.add(section);
+          targetsFor(section).forEach((element) => completed.add(element));
+          return;
+        }
+        waiting.add(section);
+        observer.observe(section);
       });
     }
 

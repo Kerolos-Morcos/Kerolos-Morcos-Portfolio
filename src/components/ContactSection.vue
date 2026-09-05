@@ -101,7 +101,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section id="contact" class="py-24 px-4 md:px-8 bg-white dark:bg-slate-900/50 relative overflow-hidden" aria-labelledby="contact-title">
+  <section id="contact" class="py-24 px-4 md:px-8 bg-white dark:bg-slate-900/50 relative overflow-hidden" aria-labelledby="contact-title" data-motion-section>
     <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-primary rounded-full filter blur-3xl opacity-10"></div>
     <div class="container mx-auto max-w-7xl relative z-10">
       <div class="text-center mb-16" data-motion="fade-up" data-motion-heading>
