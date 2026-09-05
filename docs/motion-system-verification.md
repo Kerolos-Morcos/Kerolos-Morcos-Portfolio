@@ -100,3 +100,12 @@ This follow-up supersedes the profile values and navbar-layout-shift note above.
 - **Navigation:** every nav link is 600 weight, so changing the active state does not change its text width. Its effective transition is limited to color, background-color, and border-color.
 - **Images/fonts:** project images reserve their 1265x712 aspect ratio, use lazy loading and async decoding below the fold, and the Hero remains eager. Current WebP project assets range from 4.93KB to 108.02KB; the preloaded font stylesheet already uses `display=swap` and the selected families/variable weights are in active use.
 - **Validation:** child-frame checks at 360x800, 390x844, and 430x932 confirmed the mobile reductions and found no visible target below the 0.55 opacity floor during sampled forward/reverse scrolling. A clean production-preview console reported no warnings or errors. The test browser does not expose a physical-device GPU or DevTools frame trace, so no device-specific FPS or long-task claim is made.
+
+## Follow-up: UI motion polish pass
+
+This follow-up supersedes the entrance-profile values above.
+
+- **Desktop profile:** 820ms, a 0.1-to-1 fade, 28px content / 20px heading motion, 75ms steps capped at 300ms, and the shared `cubic-bezier(.22, 1, .36, 1)` easing. The seven-part Hero sequence completes within 1,120ms. Experience retains its 18px logical side entrance while its timeline structure remains static.
+- **Mobile profile:** 540ms, a 0.2-to-1 fade, 12px content / 10px heading motion, 35ms steps capped at 140ms, and a maximum of five concurrent non-Hero entrances. Mobile now enrolls 42 meaningful targets: supporting technologies, quick statistics, and highlights animate as compact mobile-only groups; Contact animates the information stack and form as groups rather than individual fields.
+- **One-time guarantee:** the shared observer unobserves every incoming target and a `WeakSet` records every started, skipped, or cancelled entrance. There is no re-enrollment on scroll reversal, resize, language/theme changes, or carousel/page replacement.
+- **Interactive controls:** Contact social icons, Send Message, Download CV, and Back to top now use explicit 300ms transform/individual-transform, color, background, border, and shadow transitions with `cubic-bezier(.22, 1, .36, 1)`. Their hover movement is limited to `(hover: hover) and (pointer: fine)`.

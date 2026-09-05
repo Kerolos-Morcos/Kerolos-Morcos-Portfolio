@@ -2,9 +2,9 @@ import { nextTick, onMounted, onUnmounted } from "vue";
 
 const EASING = "cubic-bezier(.22, 1, .36, 1)";
 const PROFILES = {
-  mobile: { duration: 340, distance: 6, heading: 5, stagger: 18, maxDelay: 72, opacity: 0.62, lead: 0.18, maxConcurrent: 3, activationInset: 0 },
-  tablet: { duration: 580, distance: 15, heading: 13, stagger: 45, maxDelay: 180, opacity: 0.28, lead: 0.12, activationInset: 0 },
-  desktop: { duration: 680, distance: 22, heading: 17, stagger: 65, maxDelay: 260, opacity: 0.16, lead: 0.12, activationInset: 72 },
+  mobile: { duration: 540, distance: 12, heading: 10, stagger: 35, maxDelay: 140, opacity: 0.2, lead: 0.18, maxConcurrent: 5, activationInset: 120 },
+  tablet: { duration: 650, distance: 18, heading: 16, stagger: 55, maxDelay: 220, opacity: 0.2, lead: 0.12, activationInset: 96 },
+  desktop: { duration: 820, distance: 28, heading: 20, stagger: 75, maxDelay: 300, opacity: 0.1, lead: 0.12, activationInset: 72 },
 };
 
 export function useEntranceMotion() {
@@ -13,13 +13,21 @@ export function useEntranceMotion() {
   let reducedMotion;
   let disposed = false;
   const waiting = new Set();
+  const completed = new WeakSet();
   const animations = new Map();
   const profile = () => PROFILES[window.innerWidth <= 640 ? "mobile" : window.innerWidth < 1024 ? "tablet" : "desktop"];
+  const shouldEnroll = (element) => {
+    const mobileVariant = element.dataset.motionMobile;
+    return window.innerWidth <= 640 ? mobileVariant !== "skip" : mobileVariant !== "only";
+  };
 
   function finishAnimations() {
     // Underlying styles are always visible. Cancel releases opacity/transform
     // immediately, including when the browser suspends a tab during a delay.
-    animations.forEach((animation) => animation.cancel());
+    animations.forEach((animation, element) => {
+      completed.add(element);
+      animation.cancel();
+    });
     animations.clear();
   }
 
@@ -30,11 +38,14 @@ export function useEntranceMotion() {
   }
 
   function animate(element, hero = false) {
-    if (reducedMotion.matches || document.hidden || !element.isConnected) return;
+    if (completed.has(element) || reducedMotion.matches || document.hidden || !element.isConnected) return;
     const settings = profile();
     // Mobile keeps a hard cap on concurrent non-Hero entrances. Any excess
     // target remains at its normal fully visible style instead of queueing.
-    if (!hero && settings.maxConcurrent && animations.size >= settings.maxConcurrent) return;
+    if (!hero && settings.maxConcurrent && animations.size >= settings.maxConcurrent) {
+      completed.add(element);
+      return;
+    }
     const step = Math.min(4, Math.max(0, Number(element.dataset.motionStep) || 0));
     const distance = element.hasAttribute("data-motion-heading") ? settings.heading : settings.distance;
     let transform = `translateY(${distance}px)`;
@@ -58,6 +69,7 @@ export function useEntranceMotion() {
       easing: EASING,
       fill: "backwards",
     });
+    completed.add(element);
     animations.set(element, animation);
     const release = () => animations.delete(element);
     animation.onfinish = release;
@@ -90,7 +102,7 @@ export function useEntranceMotion() {
     const height = window.innerHeight;
     const lead = Math.round(height * profile().lead);
     const initial = [...root.querySelectorAll("[data-motion]:not([data-motion-hero])")]
-      .filter((element) => window.innerWidth > 640 || element.dataset.motionMobile !== "skip")
+      .filter((element) => shouldEnroll(element) && !completed.has(element))
       .map((element) => ({ element, rect: element.getBoundingClientRect() }));
 
     if ("IntersectionObserver" in window) {
@@ -104,10 +116,12 @@ export function useEntranceMotion() {
           // A late callback or a fast jump must not fade out readable content.
           // Visible/above-viewport targets simply retain their default styles.
           const settings = profile();
-          // Desktop may start in the final 72px of the viewport. This retains
-          // a visible entrance when observer delivery lands at the bottom edge,
-          // while mobile/tablet keep the stricter no-fade-in-view safeguard.
-          if (performance.now() - entry.time > 100 || rect.top < window.innerHeight - settings.activationInset || rect.width === 0 || rect.height === 0) return;
+          // A bounded activation inset accommodates normal scroll increments
+          // at the viewport edge without fading a target already deep in view.
+          if (performance.now() - entry.time > 100 || rect.top < window.innerHeight - settings.activationInset || rect.width === 0 || rect.height === 0) {
+            completed.add(entry.target);
+            return;
+          }
           animate(entry.target);
         });
       }, { threshold: 0, rootMargin: `${lead}px 0px ${lead}px 0px` });

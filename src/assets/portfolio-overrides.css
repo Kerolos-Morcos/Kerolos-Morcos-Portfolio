@@ -60,6 +60,7 @@ body { overflow-x: hidden; }
 .project-grid-frame { position: relative; }
 .project-grid { position: relative; align-items: stretch; overflow-anchor: none; touch-action: pan-y; }
 .nav-links a { font-weight: 600; transition: color var(--transition-normal) ease, background-color var(--transition-normal) ease, border-color var(--transition-normal) ease; }
+.scroll-top-transition { transition-property: transform, translate, scale, opacity, visibility, background-color, border-color, color, box-shadow; transition-duration: 300ms; transition-timing-function: cubic-bezier(.22, 1, .36, 1); }
 .main-skill-card { transition: transform .32s cubic-bezier(.22, 1, .36, 1), border-color .32s ease, box-shadow .32s ease, background-color .32s ease; }
 .project-filter { position: relative; isolation: isolate; overflow: hidden; transition: color .3s ease, border-color .3s ease, box-shadow .3s ease, transform .3s ease, background-color .3s ease; }
 .project-filter::before { content: ""; position: absolute; inset: 0; z-index: 0; opacity: 0; background: linear-gradient(to right, var(--color-primary), var(--color-secondary)); transition: opacity .3s ease; }
@@ -140,6 +141,7 @@ html[dir="ltr"] #settings-sidebar [role="radio"] { text-align: left; }
 
 @media (hover: hover) and (pointer: fine) {
   .main-skill-card:hover { transform: translateY(-5px); border-color: var(--color-primary); box-shadow: 0 16px 32px rgb(var(--accent-primary-rgb) / .18); }
+  .scroll-top-transition:hover { scale: 1.1; }
   .project-filter:hover { transform: translateY(-1px); border-color: rgb(var(--accent-primary-rgb) / .5); }
   .project-pagination__control--previous:hover:not(:disabled) { color: white; border-color: var(--color-secondary); background: var(--color-secondary); box-shadow: 0 10px 22px rgb(var(--accent-secondary-rgb) / .26); transform: translateY(-2px) scale(1.04); }
   .project-pagination__control--next:hover:not(:disabled) { color: white; border-color: var(--color-primary); background: var(--color-primary); box-shadow: 0 10px 22px rgb(var(--accent-primary-rgb) / .26); transform: translateY(-2px) scale(1.04); }

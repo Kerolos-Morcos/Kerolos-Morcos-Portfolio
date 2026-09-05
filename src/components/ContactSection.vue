@@ -112,23 +112,23 @@ onUnmounted(() => {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        <div class="space-y-8">
+        <div class="space-y-8" data-motion="fade-up" data-motion-step="1">
           <a :href="`mailto:${t('contact.emailValue')}`" class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-primary hover:shadow-lg contact-card-transition duration-300">
-            <div class="flex items-center gap-5" data-motion="fade-up" data-motion-step="2">
+            <div class="flex items-center gap-5">
               <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-solid fa-envelope text-3xl" aria-hidden="true"></i></div>
               <div><h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1">{{ t('contact.email') }}</h3><p class="text-xl font-bold text-slate-800 dark:text-white direction-ltr" dir="ltr">{{ t('contact.emailValue') }}</p><p class="text-sm text-slate-400 mt-1">{{ t('contact.emailNote') }}</p></div>
             </div>
           </a>
 
           <a href="https://wa.me/201206868603" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-secondary hover:shadow-lg contact-card-transition duration-300">
-            <div class="flex items-center gap-5" data-motion="fade-up" data-motion-step="3">
+            <div class="flex items-center gap-5">
               <div class="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-2xl flex items-center justify-center text-white shadow-lg shadow-secondary/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-brands fa-whatsapp text-3xl" aria-hidden="true"></i></div>
               <div><h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1">{{ t('contact.whatsapp') }}</h3><p class="text-xl font-bold text-slate-800 dark:text-white direction-ltr" dir="ltr">{{ t('contact.whatsappValue') }}</p><p class="text-sm text-slate-400 mt-1">{{ t('contact.whatsappNote') }}</p></div>
             </div>
           </a>
 
           <div class="group block bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:border-accent hover:shadow-lg contact-card-transition duration-300">
-            <div class="flex items-center gap-5" data-motion="fade-up" data-motion-step="4">
+            <div class="flex items-center gap-5">
               <div class="w-16 h-16 bg-gradient-to-br from-accent to-primary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-accent/30 group-hover:scale-110 transition-transform duration-300 shrink-0"><i class="fa-solid fa-location-dot text-3xl" aria-hidden="true"></i></div>
               <div><h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1">{{ t('contact.location') }}</h3><p class="text-xl font-bold text-slate-800 dark:text-white">{{ t('contact.locationValue') }}</p><p class="text-sm text-slate-400 mt-1">{{ t('contact.locationNote') }}</p></div>
             </div>
@@ -138,31 +138,31 @@ onUnmounted(() => {
             <div class="bg-white dark:bg-slate-900 rounded-2xl p-8">
               <h3 class="text-2xl font-bold mb-4 text-center text-slate-800 dark:text-white">{{ t('contact.follow') }}</h3>
               <div class="flex justify-center gap-4">
-                <a v-for="social in socials" :key="social.id" :href="social.href" class="w-14 h-14 bg-slate-200 dark:bg-slate-800 rounded-xl flex items-center justify-center hover:bg-primary transition-interactive duration-300 transform hover:scale-110 group" :aria-label="social.label" target="_blank" rel="noopener noreferrer"><i :class="social.icon" class="text-2xl text-slate-700 dark:text-white group-hover:text-white" aria-hidden="true"></i></a>
+                <a v-for="social in socials" :key="social.id" :href="social.href" class="social-icon-transition w-14 h-14 bg-slate-200 dark:bg-slate-800 rounded-xl flex items-center justify-center hover:bg-primary group" :aria-label="social.label" target="_blank" rel="noopener noreferrer"><i :class="social.icon" class="text-2xl text-slate-700 dark:text-white group-hover:text-white" aria-hidden="true"></i></a>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
+        <div class="bg-slate-50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-200 dark:border-slate-700" data-motion="fade-up" data-motion-step="2">
           <form class="space-y-6" :aria-label="t('contact.formTitle')" @submit.prevent="submitForm">
             <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
               <label for="website">Website</label>
               <input id="website" v-model="form.website" name="website" tabindex="-1" autocomplete="off" type="text" />
             </div>
-            <div data-motion="fade-in" data-motion-mobile="skip">
+            <div>
               <label for="full-name" class="block text-lg font-medium mb-2">{{ t('contact.fullName') }}</label>
               <input id="full-name" v-model="form.name" name="full-name" autocomplete="name" required type="text" :placeholder="t('contact.fullNamePlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
             </div>
-            <div data-motion="fade-in" data-motion-mobile="skip">
+            <div>
               <label for="email" class="block text-lg font-medium mb-2">{{ t('contact.email') }}</label>
               <input id="email" v-model="form.email" name="email" autocomplete="email" required type="email" dir="ltr" :placeholder="t('contact.emailPlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-left text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
             </div>
-            <div data-motion="fade-in" data-motion-mobile="skip">
+            <div>
               <label for="phone" class="block text-lg font-medium mb-2">{{ t('contact.phone') }}</label>
               <input id="phone" v-model="form.phone" name="phone" autocomplete="tel" type="tel" dir="ltr" :placeholder="t('contact.phonePlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-left text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
             </div>
-            <div data-motion="fade-in" data-motion-mobile="skip">
+            <div>
               <label id="project-type-label" class="block text-lg font-medium mb-2">{{ t('contact.projectType') }}</label>
               <div class="custom-select-wrapper relative">
                 <div class="custom-select w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white focus:border-primary transition-interactive cursor-pointer flex justify-between items-center hover:border-primary" role="combobox" aria-labelledby="project-type-label" aria-haspopup="listbox" :aria-expanded="openSelect === 'projectType'" tabindex="0" @click="toggleSelect('projectType')" @keydown.enter.prevent="toggleSelect('projectType')" @keydown.space.prevent="toggleSelect('projectType')" @keydown.escape.prevent="closeSelect">
@@ -177,7 +177,7 @@ onUnmounted(() => {
               <label for="other-project-type" class="block text-lg font-medium mb-2">{{ t('contact.otherProjectType') }}</label>
               <input id="other-project-type" v-model="form.otherProjectType" name="other-project-type" required type="text" :placeholder="t('contact.otherProjectTypePlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
             </div>
-            <div data-motion="fade-in" data-motion-mobile="skip">
+            <div>
               <label id="budget-label" class="block text-lg font-medium mb-2">{{ t('contact.budget') }}</label>
               <div class="custom-select-wrapper relative">
                 <div class="custom-select w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white focus:border-primary transition-interactive cursor-pointer flex justify-between items-center hover:border-primary" role="combobox" aria-labelledby="budget-label" aria-haspopup="listbox" :aria-expanded="openSelect === 'budget'" tabindex="0" @click="toggleSelect('budget')" @keydown.enter.prevent="toggleSelect('budget')" @keydown.space.prevent="toggleSelect('budget')" @keydown.escape.prevent="closeSelect">
@@ -188,11 +188,11 @@ onUnmounted(() => {
                 </div>
               </div>
             </div>
-            <div data-motion="fade-in" data-motion-mobile="skip">
+            <div>
               <label for="project-details" class="block text-lg font-medium mb-2">{{ t('contact.details') }}</label>
               <textarea id="project-details" v-model="form.details" name="project-details" required rows="5" :placeholder="t('contact.detailsPlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors resize-none"></textarea>
             </div>
-            <button type="submit" :disabled="submitState === 'submitting'" class="w-full bg-linear-to-r from-primary to-secondary py-4 rounded-xl text-lg font-bold text-white flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-primary/50 transition-interactive duration-300 transform hover:scale-105 disabled:cursor-wait disabled:opacity-70"><span>{{ submitState === 'submitting' ? t('contact.sending') : t('contact.submit') }}</span><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
+            <button type="submit" :disabled="submitState === 'submitting'" class="contact-submit-transition w-full bg-linear-to-r from-primary to-secondary py-4 rounded-xl text-lg font-bold text-white flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-primary/50 disabled:cursor-wait disabled:opacity-70"><span>{{ submitState === 'submitting' ? t('contact.sending') : t('contact.submit') }}</span><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
             <p v-if="submitState === 'success'" class="text-center text-emerald-600 dark:text-emerald-400" role="status" aria-live="polite">{{ t('contact.success') }}</p>
             <p v-else-if="submitState === 'error'" class="text-center text-red-600 dark:text-red-400" role="alert">{{ t('contact.error') }}</p>
           </form>
@@ -206,5 +206,15 @@ onUnmounted(() => {
 .contact-card-transition {
   transition-property: border-color, box-shadow;
   transition-timing-function: var(--default-transition-timing-function, cubic-bezier(.4, 0, .2, 1));
+}
+.social-icon-transition,
+.contact-submit-transition {
+  transition-property: transform, translate, scale, background-color, border-color, color, box-shadow, opacity;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(.22, 1, .36, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .social-icon-transition:hover { scale: 1.1; }
+  .contact-submit-transition:hover:not(:disabled) { scale: 1.05; }
 }
 </style>

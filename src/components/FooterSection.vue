@@ -21,7 +21,7 @@ const currentYear = new Date().getFullYear();
     class="bg-slate-100 dark:bg-slate-950 py-16 px-4 md:px-8 border-t border-slate-200 dark:border-slate-800"
     aria-labelledby="footer-title"
   >
-    <div class="container mx-auto max-w-7xl">
+    <div class="container mx-auto max-w-7xl" data-motion="fade-up">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
         <div class="col-span-1 md:col-span-2">
           <a href="#hero-section" class="inline-flex items-center gap-3 mb-6" aria-label="Back to the hero section">
@@ -33,7 +33,7 @@ const currentYear = new Date().getFullYear();
           <a
             href="/Kerolos-Morcos-Full-Stack-Developer-CV.pdf"
             download
-            class="inline-flex items-center gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-5 py-4 rounded-xl hover:border-primary/50 hover:-translate-y-1 transition-interactive group w-full md:w-auto"
+            class="download-cv-transition inline-flex items-center gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-5 py-4 rounded-xl hover:border-primary/50 group w-full md:w-auto"
           >
             <span class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary text-xl" aria-hidden="true">
               <i class="fa-solid fa-file-arrow-down"></i>
@@ -87,3 +87,14 @@ const currentYear = new Date().getFullYear();
     </div>
   </footer>
 </template>
+
+<style scoped>
+.download-cv-transition {
+  transition-property: transform, translate, scale, background-color, border-color, color, box-shadow;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(.22, 1, .36, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .download-cv-transition:hover { translate: 0 -.25rem; }
+}
+</style>
