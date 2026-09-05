@@ -2,9 +2,9 @@ import { nextTick, onMounted, onUnmounted } from "vue";
 
 const EASING = "cubic-bezier(.22, 1, .36, 1)";
 const PROFILES = {
-  mobile: { duration: 420, distance: 8, heading: 7, stagger: 25, maxDelay: 100, opacity: 0.35, lead: 0.18 },
-  tablet: { duration: 560, distance: 14, heading: 12, stagger: 40, maxDelay: 160, opacity: 0.35, lead: 0.12 },
-  desktop: { duration: 640, distance: 20, heading: 16, stagger: 60, maxDelay: 240, opacity: 0.35, lead: 0.12 },
+  mobile: { duration: 340, distance: 6, heading: 5, stagger: 18, maxDelay: 72, opacity: 0.62, lead: 0.18, maxConcurrent: 3, activationInset: 0 },
+  tablet: { duration: 580, distance: 15, heading: 13, stagger: 45, maxDelay: 180, opacity: 0.28, lead: 0.12, activationInset: 0 },
+  desktop: { duration: 680, distance: 22, heading: 17, stagger: 65, maxDelay: 260, opacity: 0.16, lead: 0.12, activationInset: 72 },
 };
 
 export function useEntranceMotion() {
@@ -32,6 +32,9 @@ export function useEntranceMotion() {
   function animate(element, hero = false) {
     if (reducedMotion.matches || document.hidden || !element.isConnected) return;
     const settings = profile();
+    // Mobile keeps a hard cap on concurrent non-Hero entrances. Any excess
+    // target remains at its normal fully visible style instead of queueing.
+    if (!hero && settings.maxConcurrent && animations.size >= settings.maxConcurrent) return;
     const step = Math.min(4, Math.max(0, Number(element.dataset.motionStep) || 0));
     const distance = element.hasAttribute("data-motion-heading") ? settings.heading : settings.distance;
     let transform = `translateY(${distance}px)`;
@@ -39,7 +42,7 @@ export function useEntranceMotion() {
     if (element.dataset.motion === "fade-side" && window.innerWidth >= 1024) {
       const direction = document.documentElement.dir === "rtl" ? -1 : 1;
       const side = element.dataset.motionSide === "end" ? -1 : 1;
-      transform = `translateX(${16 * direction * side}px)`;
+      transform = `translateX(${18 * direction * side}px)`;
     }
 
     // Backwards fill coordinates only the short active entrance delay.
@@ -87,6 +90,7 @@ export function useEntranceMotion() {
     const height = window.innerHeight;
     const lead = Math.round(height * profile().lead);
     const initial = [...root.querySelectorAll("[data-motion]:not([data-motion-hero])")]
+      .filter((element) => window.innerWidth > 640 || element.dataset.motionMobile !== "skip")
       .map((element) => ({ element, rect: element.getBoundingClientRect() }));
 
     if ("IntersectionObserver" in window) {
@@ -99,7 +103,11 @@ export function useEntranceMotion() {
           observer.unobserve(entry.target);
           // A late callback or a fast jump must not fade out readable content.
           // Visible/above-viewport targets simply retain their default styles.
-          if (performance.now() - entry.time > 100 || rect.top < window.innerHeight || rect.width === 0 || rect.height === 0) return;
+          const settings = profile();
+          // Desktop may start in the final 72px of the viewport. This retains
+          // a visible entrance when observer delivery lands at the bottom edge,
+          // while mobile/tablet keep the stricter no-fade-in-view safeguard.
+          if (performance.now() - entry.time > 100 || rect.top < window.innerHeight - settings.activationInset || rect.width === 0 || rect.height === 0) return;
           animate(entry.target);
         });
       }, { threshold: 0, rootMargin: `${lead}px 0px ${lead}px 0px` });

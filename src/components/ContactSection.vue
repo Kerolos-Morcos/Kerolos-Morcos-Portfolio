@@ -150,19 +150,19 @@ onUnmounted(() => {
               <label for="website">Website</label>
               <input id="website" v-model="form.website" name="website" tabindex="-1" autocomplete="off" type="text" />
             </div>
-            <div data-motion="fade-in">
+            <div data-motion="fade-in" data-motion-mobile="skip">
               <label for="full-name" class="block text-lg font-medium mb-2">{{ t('contact.fullName') }}</label>
               <input id="full-name" v-model="form.name" name="full-name" autocomplete="name" required type="text" :placeholder="t('contact.fullNamePlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
             </div>
-            <div data-motion="fade-in">
+            <div data-motion="fade-in" data-motion-mobile="skip">
               <label for="email" class="block text-lg font-medium mb-2">{{ t('contact.email') }}</label>
               <input id="email" v-model="form.email" name="email" autocomplete="email" required type="email" dir="ltr" :placeholder="t('contact.emailPlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-left text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
             </div>
-            <div data-motion="fade-in">
+            <div data-motion="fade-in" data-motion-mobile="skip">
               <label for="phone" class="block text-lg font-medium mb-2">{{ t('contact.phone') }}</label>
               <input id="phone" v-model="form.phone" name="phone" autocomplete="tel" type="tel" dir="ltr" :placeholder="t('contact.phonePlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-left text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
             </div>
-            <div data-motion="fade-in">
+            <div data-motion="fade-in" data-motion-mobile="skip">
               <label id="project-type-label" class="block text-lg font-medium mb-2">{{ t('contact.projectType') }}</label>
               <div class="custom-select-wrapper relative">
                 <div class="custom-select w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white focus:border-primary transition-interactive cursor-pointer flex justify-between items-center hover:border-primary" role="combobox" aria-labelledby="project-type-label" aria-haspopup="listbox" :aria-expanded="openSelect === 'projectType'" tabindex="0" @click="toggleSelect('projectType')" @keydown.enter.prevent="toggleSelect('projectType')" @keydown.space.prevent="toggleSelect('projectType')" @keydown.escape.prevent="closeSelect">
@@ -177,7 +177,7 @@ onUnmounted(() => {
               <label for="other-project-type" class="block text-lg font-medium mb-2">{{ t('contact.otherProjectType') }}</label>
               <input id="other-project-type" v-model="form.otherProjectType" name="other-project-type" required type="text" :placeholder="t('contact.otherProjectTypePlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors" />
             </div>
-            <div data-motion="fade-in">
+            <div data-motion="fade-in" data-motion-mobile="skip">
               <label id="budget-label" class="block text-lg font-medium mb-2">{{ t('contact.budget') }}</label>
               <div class="custom-select-wrapper relative">
                 <div class="custom-select w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white focus:border-primary transition-interactive cursor-pointer flex justify-between items-center hover:border-primary" role="combobox" aria-labelledby="budget-label" aria-haspopup="listbox" :aria-expanded="openSelect === 'budget'" tabindex="0" @click="toggleSelect('budget')" @keydown.enter.prevent="toggleSelect('budget')" @keydown.space.prevent="toggleSelect('budget')" @keydown.escape.prevent="closeSelect">
@@ -188,7 +188,7 @@ onUnmounted(() => {
                 </div>
               </div>
             </div>
-            <div data-motion="fade-in">
+            <div data-motion="fade-in" data-motion-mobile="skip">
               <label for="project-details" class="block text-lg font-medium mb-2">{{ t('contact.details') }}</label>
               <textarea id="project-details" v-model="form.details" name="project-details" required rows="5" :placeholder="t('contact.detailsPlaceholder')" class="w-full bg-white dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl px-6 py-4 text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:border-primary transition-colors resize-none"></textarea>
             </div>

@@ -87,3 +87,16 @@ This workaround provides useful behavior and layout evidence, but not an exact r
 - Added this report: `docs/motion-system-verification.md`.
 
 No production deployment, contact submission, WhatsApp navigation, or production application data change was performed.
+
+## Follow-up: desktop motion and mobile performance pass
+
+This follow-up supersedes the profile values and navbar-layout-shift note above.
+
+- **Desktop:** section entrances use 680ms, `cubic-bezier(.22, 1, .36, 1)`, a 0.16-to-1 fade, 22px content motion, 17px heading motion, and 65ms steps capped at 260ms. The Hero's seven staged targets complete within 940ms. Alternating Experience cards use 18px logical side motion while the timeline structure remains static.
+- **Tablet:** the intermediate profile is 580ms with a 0.28 opacity floor, 15px content / 13px heading movement, and 45ms steps capped at 180ms.
+- **Mobile:** the profile is 340ms with a 0.62 opacity floor, 6px content / 5px heading movement, and 18ms steps capped at 72ms. There are 41 mobile-eligible targets (down from 57), and only three non-Hero native entrances can run concurrently. Skipped targets retain their normal fully visible DOM styling.
+- **Mobile paint/compositing reduction:** live backdrop filters are disabled below 768px; large section `blur-3xl` decorations are omitted; Hero spin, ping, pulse, bounce, and gradient animations are static; and code-editor/pagination shadows use smaller mobile-only values. Desktop remains unchanged by these reductions.
+- **Scroll state:** the only scroll listener is passive and coalesced by one requestAnimationFrame; it only writes `showScrollTop` when its boolean value changes. Active navigation remains IntersectionObserver-driven.
+- **Navigation:** every nav link is 600 weight, so changing the active state does not change its text width. Its effective transition is limited to color, background-color, and border-color.
+- **Images/fonts:** project images reserve their 1265x712 aspect ratio, use lazy loading and async decoding below the fold, and the Hero remains eager. Current WebP project assets range from 4.93KB to 108.02KB; the preloaded font stylesheet already uses `display=swap` and the selected families/variable weights are in active use.
+- **Validation:** child-frame checks at 360x800, 390x844, and 430x932 confirmed the mobile reductions and found no visible target below the 0.55 opacity floor during sampled forward/reverse scrolling. A clean production-preview console reported no warnings or errors. The test browser does not expose a physical-device GPU or DevTools frame trace, so no device-specific FPS or long-task claim is made.

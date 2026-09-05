@@ -63,7 +63,7 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
           </div>
 
           <div class="grid grid-cols-3 gap-4">
-            <div v-for="(stat, index) in t('about.quickStats')" :key="stat.label" data-motion="fade-up" :data-motion-step="index" :class="['bg-slate-50 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-5 text-center border border-slate-200 dark:border-slate-700 hover:border-primary transition-interactive duration-300', index === 1 ? 'hover:border-secondary' : index === 2 ? 'hover:border-accent' : '']"><div :class="['text-3xl font-black mb-1', index === 1 ? 'text-secondary' : index === 2 ? 'text-accent' : 'text-primary']">{{ stat.value }}</div><div class="text-sm text-slate-600 dark:text-slate-400">{{ stat.label }}</div></div>
+            <div v-for="(stat, index) in t('about.quickStats')" :key="stat.label" data-motion="fade-up" data-motion-mobile="skip" :data-motion-step="index" :class="['bg-slate-50 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-5 text-center border border-slate-200 dark:border-slate-700 hover:border-primary transition-interactive duration-300', index === 1 ? 'hover:border-secondary' : index === 2 ? 'hover:border-accent' : '']"><div :class="['text-3xl font-black mb-1', index === 1 ? 'text-secondary' : index === 2 ? 'text-accent' : 'text-primary']">{{ stat.value }}</div><div class="text-sm text-slate-600 dark:text-slate-400">{{ stat.label }}</div></div>
           </div>
 
           <div class="flex gap-4 justify-center lg:justify-end" :aria-label="t('about.socialLabel')">

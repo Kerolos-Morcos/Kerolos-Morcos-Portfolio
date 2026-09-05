@@ -31,7 +31,7 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
         </article>
       </div>
       <div class="secondary-tech-list mt-16 grid grid-cols-2 md:grid-cols-4 gap-6" aria-label="Supporting technologies">
-        <div v-for="(tech, index) in secondarySkills" :key="tech.name" data-motion="fade-in" :data-motion-step="index" class="supporting-tech-card text-center p-6 bg-slate-100 dark:bg-slate-800/20 rounded-xl border border-slate-300 dark:border-slate-700">
+        <div v-for="(tech, index) in secondarySkills" :key="tech.name" data-motion="fade-in" data-motion-mobile="skip" :data-motion-step="index" class="supporting-tech-card text-center p-6 bg-slate-100 dark:bg-slate-800/20 rounded-xl border border-slate-300 dark:border-slate-700">
           <i :class="tech.icon" :style="{ color: tech.color }" class="text-5xl mb-3" aria-hidden="true"></i>
           <p class="text-slate-600 dark:text-slate-300 font-medium">{{ tech.name }}</p>
         </div>
