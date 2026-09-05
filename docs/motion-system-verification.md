@@ -129,3 +129,15 @@ This follow-up supersedes the entrance profile and target-count statements above
 - A 1440×900 visual check confirmed the restored Hero presentation; mobile 390×844 visual inspection confirmed the animated rings, pulse, ping, floating icons, and gradient sheen without live blur/backdrop-filter restoration.
 - A slow desktop scroll recorded About as a two-group entrance and Skills as a three-group entrance. A reverse then repeat downward pass held the native entrance count at 10. English → Arabic → English and Dark → Light → Dark also held it at 10 while correctly restoring `lang`, `dir`, and dark mode.
 - A local production-preview console check returned no warnings or errors. The in-app browser does not expose a physical-device GPU trace or DevTools paint/frame timeline, so physical-device frame consistency and paint cost remain advisable before making an absolute device-performance claim.
+
+## Follow-up: visible-edge trigger refinement
+
+This follow-up supersedes the coordinator trigger timing above.
+
+- **Why real recordings could look static:** the coordinator observed the padded structural section with a positive vertical root margin (desktop +10%, mobile +16%). The section animation could therefore finish before its heading reached the viewport.
+- **New trigger:** the single shared observer now observes each coordinator's first presentation group instead—its heading when one exists, otherwise its first visual group. This preserves section-level coordination but aligns the trigger with the pixels the visitor sees.
+- **Root margins:** desktop `0px 0px -6% 0px`; tablet `0px 0px -5% 0px`; mobile `0px 0px -3% 0px`; threshold remains `0`.
+- **Safety split:** initial load only skips a group that is already in or above the viewport. A normal observer delivery starts the coordinated reveal until the trigger has reached the upper 45% of the viewport. Callback age is tolerated through 180ms; stale or deeply visible content remains immediately visible.
+- **Profiles:** desktop is 660ms, 0.05 opacity, 24px content / 20px heading motion, and 55ms stagger capped at 220ms. Mobile is 520ms, 0.12 opacity, 12px content / 11px heading motion, and 30ms stagger capped at 135ms.
+- **Hero cadence:** desktop orbit rings are 24s/18s; mobile rings are 28s/21s. Floating icons use a 5px compositor-only float at 4.4–5.2s desktop and 4.6s mobile. Pulse is 3.8s desktop / 4s mobile at 1–1.02 scale, ping is 3.6s / 4s, and the transform/opacity gradient sheen is 7.5s / 8s.
+- **Verification:** rendered desktop testing started About at its heading near the visible lower edge (about 53px before it crossed a 720px viewport), and 390×844 mobile testing started it at a 782px heading position. Slow and normal paths animated; fast paths intentionally retained fully visible content. Reverse/second-down and language/theme checks did not add entrances.

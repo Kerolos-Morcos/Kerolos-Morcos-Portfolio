@@ -2,9 +2,9 @@ import { nextTick, onMounted, onUnmounted } from "vue";
 
 const EASING = "cubic-bezier(.22, 1, .36, 1)";
 const PROFILES = {
-  mobile: { duration: 460, distance: 10, heading: 9, stagger: 30, maxDelay: 120, opacity: 0.16, lead: 0.16, maxConcurrent: 4, activationInset: 96 },
-  tablet: { duration: 560, distance: 16, heading: 14, stagger: 45, maxDelay: 180, opacity: 0.14, lead: 0.12, maxConcurrent: 4, activationInset: 84 },
-  desktop: { duration: 640, distance: 22, heading: 18, stagger: 55, maxDelay: 220, opacity: 0.08, lead: 0.1, maxConcurrent: 4, activationInset: 72 },
+  mobile: { duration: 520, distance: 12, heading: 11, stagger: 30, maxDelay: 135, opacity: 0.12, rootMargin: "0px 0px -3% 0px", maxConcurrent: 4, staleAfter: 180 },
+  tablet: { duration: 600, distance: 20, heading: 17, stagger: 50, maxDelay: 200, opacity: 0.08, rootMargin: "0px 0px -5% 0px", maxConcurrent: 4, staleAfter: 180 },
+  desktop: { duration: 660, distance: 24, heading: 20, stagger: 55, maxDelay: 220, opacity: 0.05, rootMargin: "0px 0px -6% 0px", maxConcurrent: 4, staleAfter: 180 },
 };
 
 export function useEntranceMotion() {
@@ -12,7 +12,7 @@ export function useEntranceMotion() {
   let root;
   let reducedMotion;
   let disposed = false;
-  const waiting = new Set();
+  const waiting = new Map();
   const completed = new WeakSet();
   const completedSections = new WeakSet();
   const animations = new Map();
@@ -80,10 +80,19 @@ export function useEntranceMotion() {
     animation.oncancel = release;
   }
 
-  function targetsFor(section) {
+  function presentationTargets(section) {
     return [...section.querySelectorAll("[data-motion]")]
       .filter((element) => element.closest("[data-motion-section]") === section)
-      .filter((element) => shouldEnroll(element) && !completed.has(element));
+      .filter((element) => shouldEnroll(element));
+  }
+
+  function targetsFor(section) {
+    return presentationTargets(section).filter((element) => !completed.has(element));
+  }
+
+  function triggerFor(section) {
+    const targets = presentationTargets(section);
+    return targets.find((element) => element.hasAttribute("data-motion-heading")) || targets[0];
   }
 
   function coordinate(section) {
@@ -94,11 +103,20 @@ export function useEntranceMotion() {
     targetsFor(section).forEach((element) => animate(element));
   }
 
-  function hasVisiblePresentation(section, inset = 0) {
-    return targetsFor(section).some((element) => {
-      const rect = element.getBoundingClientRect();
-      return rect.bottom > 0 && rect.top < window.innerHeight - inset;
-    });
+  function isInitiallyVisible(section) {
+    const trigger = triggerFor(section);
+    if (!trigger) return true;
+    const rect = trigger.getBoundingClientRect();
+    return rect.bottom <= 0 || rect.top < window.innerHeight;
+  }
+
+  function isTooDeepToAnimate(section) {
+    const trigger = triggerFor(section);
+    if (!trigger) return true;
+    const rect = trigger.getBoundingClientRect();
+    // Normal entries begin near the lower edge. Only a heading that has
+    // already reached the upper half is considered too late to animate.
+    return rect.bottom <= 0 || rect.top < window.innerHeight * 0.45;
   }
 
   function handleVisibility() {
@@ -123,42 +141,40 @@ export function useEntranceMotion() {
     reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (reducedMotion.matches || document.hidden) return;
 
-    const height = window.innerHeight;
-    const lead = Math.round(height * profile().lead);
     const sections = [...root.querySelectorAll("[data-motion-section]")]
       .filter((section) => !completedSections.has(section))
-      .map((section) => ({ section, rect: section.getBoundingClientRect() }));
+      .map((section) => ({ section, trigger: triggerFor(section) }));
 
     if ("IntersectionObserver" in window) {
       observer = new IntersectionObserver((entries) => {
-        const incoming = entries.filter((entry) => entry.isIntersecting && waiting.has(entry.target))
-          .map((entry) => ({ entry, rect: entry.target.getBoundingClientRect() }));
-        incoming.forEach(({ entry, rect }) => {
-          const section = entry.target;
-          waiting.delete(section);
-          observer.unobserve(section);
-          // A late callback or restored/deep viewport keeps all of its
-          // presentation layers visible rather than applying backwards fill.
-          if (performance.now() - entry.time > 100 || hasVisiblePresentation(section, profile().activationInset) || rect.width === 0 || rect.height === 0) {
+        const incoming = entries.filter((entry) => entry.isIntersecting && waiting.has(entry.target));
+        incoming.forEach((entry) => {
+          const trigger = entry.target;
+          const section = waiting.get(trigger);
+          waiting.delete(trigger);
+          observer.unobserve(trigger);
+          const rect = trigger.getBoundingClientRect();
+          // Late deliveries and restored/deep viewports stay visible. A normal
+          // entry is judged from its heading trigger, not the section padding.
+          if (performance.now() - entry.time > profile().staleAfter || isTooDeepToAnimate(section) || rect.width === 0 || rect.height === 0) {
             completedSections.add(section);
             targetsFor(section).forEach((element) => completed.add(element));
             return;
           }
           coordinate(section);
         });
-      }, { threshold: 0, rootMargin: `${lead}px 0px ${lead}px 0px` });
+      }, { threshold: 0, rootMargin: profile().rootMargin });
 
-      sections.forEach(({ section, rect }) => {
-        // Never animate presentation content already in the initial viewport.
-        // A structural section at the fold can still be enrolled when its
-        // heading is below the fold, avoiding a missed first reveal.
-        if (hasVisiblePresentation(section) || rect.width === 0 || rect.height === 0) {
+      sections.forEach(({ section, trigger }) => {
+        // Initial content remains fully visible. During later scrolling the
+        // same section uses its first presentation group as a precise trigger.
+        if (!trigger || isInitiallyVisible(section) || trigger.getBoundingClientRect().width === 0 || trigger.getBoundingClientRect().height === 0) {
           completedSections.add(section);
           targetsFor(section).forEach((element) => completed.add(element));
           return;
         }
-        waiting.add(section);
-        observer.observe(section);
+        waiting.set(trigger, section);
+        observer.observe(trigger);
       });
     }
 

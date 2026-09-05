@@ -63,7 +63,11 @@ body { overflow-x: hidden; }
 .scroll-top-transition { transition-property: transform, translate, scale, opacity, visibility, background-color, border-color, color, box-shadow; transition-duration: 300ms; transition-timing-function: cubic-bezier(.22, 1, .36, 1); }
 .hero-orbit { animation-duration: var(--hero-orbit-duration, 24s); }
 .hero-orbit--inner { animation-direction: reverse; }
-.hero-floating-icon { animation-duration: var(--hero-float-duration, 3s); animation-delay: var(--hero-float-delay, 0s); }
+.hero-floating-icon { animation: hero-ambient-float var(--hero-float-duration, 4.6s) ease-in-out infinite; animation-delay: var(--hero-float-delay, 0s); }
+.hero-profile-pulse { animation: hero-ambient-pulse 3.8s ease-in-out infinite; }
+.hero-availability-ping { animation: hero-ambient-ping 3.6s cubic-bezier(0, 0, .2, 1) infinite; }
+.hero-name-gradient { position: relative; display: inline-block; animation: none; }
+.hero-name-gradient::after { position: absolute; inset: 0; content: attr(data-text); white-space: nowrap; background-image: linear-gradient(to left, var(--color-primary), var(--color-secondary), var(--color-accent)); -webkit-background-clip: text; background-clip: text; color: transparent; opacity: .22; pointer-events: none; transform: translateX(-1.5%); animation: hero-gradient-sheen 7.5s ease-in-out infinite; }
 .main-skill-card { transition: transform .32s cubic-bezier(.22, 1, .36, 1), border-color .32s ease, box-shadow .32s ease, background-color .32s ease; }
 .project-filter { position: relative; isolation: isolate; overflow: hidden; transition: color .3s ease, border-color .3s ease, box-shadow .3s ease, transform .3s ease, background-color .3s ease; }
 .project-filter::before { content: ""; position: absolute; inset: 0; z-index: 0; opacity: 0; background: linear-gradient(to right, var(--color-primary), var(--color-secondary)); transition: opacity .3s ease; }
@@ -166,13 +170,12 @@ html[dir="ltr"] #settings-sidebar [role="radio"] { text-align: left; }
   section > .absolute.filter.blur-3xl.bg-accent { background-image: radial-gradient(circle, var(--color-accent) 0%, transparent 70%) !important; }
 
   /* Mobile keeps the same living hero cues with transform/opacity only. */
-  #hero-section .hero-orbit { animation: hero-mobile-orbit 10s linear infinite; }
-  #hero-section .hero-orbit--inner { animation-duration: 8s; animation-direction: reverse; }
-  #hero-section .hero-profile-pulse { animation: hero-mobile-pulse 3.4s ease-in-out infinite; }
-  #hero-section .hero-floating-icon { animation: hero-mobile-float 2.8s ease-in-out infinite; animation-delay: var(--hero-float-delay, 0s); }
-  #hero-section .hero-availability-ping { animation: hero-mobile-ping 2.5s cubic-bezier(0, 0, .2, 1) infinite; }
-  #hero-section .hero-name-gradient { position: relative; display: inline-block; animation: none; }
-  #hero-section .hero-name-gradient::after { position: absolute; inset: 0; content: attr(data-text); white-space: nowrap; background-image: linear-gradient(to left, var(--color-primary), var(--color-secondary), var(--color-accent)); -webkit-background-clip: text; background-clip: text; color: transparent; opacity: .26; pointer-events: none; transform: translateX(-2%); animation: hero-mobile-gradient-sheen 5.5s ease-in-out infinite; }
+  #hero-section .hero-orbit { animation: hero-mobile-orbit 28s linear infinite; }
+  #hero-section .hero-orbit--inner { animation-duration: 21s; animation-direction: reverse; }
+  #hero-section .hero-profile-pulse { animation: hero-mobile-pulse 4s ease-in-out infinite; }
+  #hero-section .hero-floating-icon { animation: hero-mobile-float 4.6s ease-in-out infinite; animation-delay: var(--hero-float-delay, 0s); }
+  #hero-section .hero-availability-ping { animation: hero-mobile-ping 4s cubic-bezier(0, 0, .2, 1) infinite; }
+  #hero-section .hero-name-gradient::after { opacity: .2; animation-duration: 8s; }
   .code-editor { --code-shadow: 0 12px 24px rgb(15 23 42 / .10); }
   html.dark .code-editor { --code-shadow: 0 12px 24px rgb(0 0 0 / .20); }
   .project-pagination__panel { box-shadow: 0 8px 18px rgb(15 23 42 / .07); }
@@ -180,10 +183,13 @@ html[dir="ltr"] #settings-sidebar [role="radio"] { text-align: left; }
 }
 
 @keyframes hero-mobile-orbit { to { transform: rotate(360deg); } }
-@keyframes hero-mobile-pulse { 0%, 100% { opacity: .6; transform: scale(.985); } 50% { opacity: .82; transform: scale(1.025); } }
+@keyframes hero-ambient-pulse { 0%, 100% { opacity: .62; transform: scale(1); } 50% { opacity: .78; transform: scale(1.02); } }
+@keyframes hero-mobile-pulse { 0%, 100% { opacity: .62; transform: scale(1); } 50% { opacity: .78; transform: scale(1.02); } }
+@keyframes hero-ambient-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 @keyframes hero-mobile-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-@keyframes hero-mobile-ping { 75%, 100% { opacity: 0; transform: scale(1.7); } }
-@keyframes hero-mobile-gradient-sheen { 0%, 100% { opacity: .18; transform: translateX(-2%); } 50% { opacity: .56; transform: translateX(2%); } }
+@keyframes hero-ambient-ping { 75%, 100% { opacity: 0; transform: scale(1.45); } }
+@keyframes hero-mobile-ping { 75%, 100% { opacity: 0; transform: scale(1.45); } }
+@keyframes hero-gradient-sheen { 0%, 100% { opacity: .16; transform: translateX(-1.5%); } 50% { opacity: .42; transform: translateX(1.5%); } }
 
 @media (min-width: 1024px) {
   html[dir="ltr"] .hero-copy { text-align: left; }

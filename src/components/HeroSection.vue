@@ -54,10 +54,10 @@ const techIcons = [
 
         <div class="order-1 lg:order-2 relative flex justify-center lg:justify-start">
           <div class="absolute inset-0 flex items-center justify-center">
-            <div class="hero-orbit w-[350px] h-[350px] md:w-[450px] md:h-[450px] rounded-full border-2 border-dashed border-primary/30 animate-spin" style="--hero-orbit-duration: 30s"></div>
+            <div class="hero-orbit w-[350px] h-[350px] md:w-[450px] md:h-[450px] rounded-full border-2 border-dashed border-primary/30 animate-spin" style="--hero-orbit-duration: 24s"></div>
           </div>
           <div class="absolute inset-0 flex items-center justify-center">
-            <div class="hero-orbit hero-orbit--inner w-[280px] h-[280px] md:w-[380px] md:h-[380px] rounded-full border-2 border-secondary/20 animate-spin" style="--hero-orbit-duration: 20s"></div>
+            <div class="hero-orbit hero-orbit--inner w-[280px] h-[280px] md:w-[380px] md:h-[380px] rounded-full border-2 border-secondary/20 animate-spin" style="--hero-orbit-duration: 18s"></div>
           </div>
 
           <div class="relative z-10">
@@ -67,10 +67,10 @@ const techIcons = [
               <img :src="profileImage" :alt="t('hero.heroImageAlt')" class="w-full h-full object-cover" width="900" height="900" loading="eager" fetchpriority="high" decoding="async" />
             </div>
 
-            <div class="hero-floating-icon absolute -top-4 -right-4 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 3s" aria-hidden="true"><i class="fa-brands fa-vuejs text-3xl text-[#4FC08D]"></i></div>
-            <div class="hero-floating-icon absolute top-1/4 -left-6 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 2.5s; --hero-float-delay: .5s" aria-hidden="true"><i class="fa-brands fa-node-js text-3xl text-[#68A063]"></i></div>
-            <div class="hero-floating-icon absolute -bottom-4 -right-4 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 3.5s; --hero-float-delay: 1s" aria-hidden="true"><i class="fa-brands fa-figma text-3xl text-[#F24E1E]"></i></div>
-            <div class="hero-floating-icon absolute bottom-1/4 -left-6 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 2s; --hero-float-delay: 1.5s" aria-hidden="true"><i class="fa-solid fa-code text-3xl text-primary"></i></div>
+            <div class="hero-floating-icon absolute -top-4 -right-4 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 4.8s" aria-hidden="true"><i class="fa-brands fa-vuejs text-3xl text-[#4FC08D]"></i></div>
+            <div class="hero-floating-icon absolute top-1/4 -left-6 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 4.4s; --hero-float-delay: .5s" aria-hidden="true"><i class="fa-brands fa-node-js text-3xl text-[#68A063]"></i></div>
+            <div class="hero-floating-icon absolute -bottom-4 -right-4 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 5.2s; --hero-float-delay: 1s" aria-hidden="true"><i class="fa-brands fa-figma text-3xl text-[#F24E1E]"></i></div>
+            <div class="hero-floating-icon absolute bottom-1/4 -left-6 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 4.6s; --hero-float-delay: 1.5s" aria-hidden="true"><i class="fa-solid fa-code text-3xl text-primary"></i></div>
           </div>
         </div>
       </div>
