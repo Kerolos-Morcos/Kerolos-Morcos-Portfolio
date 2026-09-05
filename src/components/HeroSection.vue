@@ -32,21 +32,21 @@ const techIcons = [
             <h1 id="hero-title" class="text-4xl md:text-6xl lg:text-7xl font-black leading-tight"><span class="relative inline-block"><span class="hero-name-gradient bg-gradient-to-l pb-8 from-primary via-secondary to-accent bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient" :data-text="t('hero.name')">{{ t('hero.name') }}</span></span></h1>
           </div>
 
-          <div class="inline-flex items-center gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-5 py-2.5 rounded-full mb-8">
+          <div class="inline-flex items-center gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-5 py-2.5 rounded-full mb-8" data-motion="fade-up" data-motion-hero data-motion-step="2">
             <div class="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center"><i class="fa-solid fa-code text-white text-sm" aria-hidden="true"></i></div>
             <span class="font-bold text-slate-800 dark:text-white">{{ t('hero.role') }}</span>
           </div>
 
-          <p class="hero-description text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed" data-motion="fade-up" data-motion-hero data-motion-step="2">
+          <p class="hero-description text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed" data-motion="fade-up" data-motion-hero data-motion-step="3">
             {{ t('hero.descriptionBefore') }} <span class="text-primary font-semibold">{{ t('hero.descriptionHighlight') }}</span>{{ t('hero.descriptionAfter') }}
           </p>
 
-          <div class="hero-actions flex flex-wrap justify-center gap-4 mb-10" data-motion="fade-up" data-motion-hero data-motion-step="3">
+          <div class="hero-actions flex flex-wrap justify-center gap-4 mb-10" data-motion="fade-up" data-motion-hero data-motion-step="4">
             <a href="#portfolio" class="group relative inline-flex items-center gap-3 bg-gradient-to-l from-primary to-secondary px-8 py-4 rounded-2xl text-lg font-bold text-white overflow-hidden transition-polished"><span class="relative z-10">{{ t('hero.projectsCta') }}</span><i :class="['fa-solid relative z-10 transition-polished', lang === 'ar' ? 'fa-arrow-left group-hover:-translate-x-2' : 'fa-arrow-right group-hover:translate-x-2']" aria-hidden="true"></i><span class="absolute inset-0 bg-gradient-to-l from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span></a>
             <a href="#contact" class="group inline-flex items-center gap-3 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white px-8 py-4 rounded-2xl text-lg font-bold transition-polished hover:border-primary hover:text-primary hover:shadow-lg"><span>{{ t('hero.contactCta') }}</span><i class="fa-solid fa-paper-plane transition-polished group-hover:-translate-y-1 group-hover:translate-x-1" aria-hidden="true"></i></a>
           </div>
 
-          <div class="hero-tech-list flex flex-wrap justify-center gap-2" aria-label="Core technologies" data-motion="fade-in" data-motion-hero data-motion-step="4">
+          <div class="hero-tech-list flex flex-wrap justify-center gap-2" aria-label="Core technologies" data-motion="fade-in" data-motion-hero data-motion-step="5">
             <div v-for="(tech, index) in techIcons" :key="tech.name" class="hero-tech-chip flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-interactive duration-300 group" :style="{ '--tech-color': tech.color, '--float-delay': `${index * 180}ms` }"><i :class="tech.icon" class="text-xl group-hover:rotate-180 transition-transform duration-500" :style="{ color: tech.color }" aria-hidden="true"></i><span class="text-sm font-semibold text-slate-700 dark:text-slate-300">{{ tech.name }}</span></div>
           </div>
           </div>
@@ -54,10 +54,10 @@ const techIcons = [
 
         <div class="order-1 lg:order-2 relative flex justify-center lg:justify-start">
           <div class="absolute inset-0 flex items-center justify-center">
-            <div class="hero-orbit w-[350px] h-[350px] md:w-[450px] md:h-[450px] rounded-full border-2 border-dashed border-primary/30 animate-spin" style="--hero-orbit-duration: 24s"></div>
+            <div class="hero-orbit w-[350px] h-[350px] md:w-[450px] md:h-[450px] rounded-full border-2 border-dashed border-primary/30 animate-spin" style="--hero-orbit-duration: 30s"></div>
           </div>
           <div class="absolute inset-0 flex items-center justify-center">
-            <div class="hero-orbit hero-orbit--inner w-[280px] h-[280px] md:w-[380px] md:h-[380px] rounded-full border-2 border-secondary/20 animate-spin" style="--hero-orbit-duration: 18s"></div>
+            <div class="hero-orbit hero-orbit--inner w-[280px] h-[280px] md:w-[380px] md:h-[380px] rounded-full border-2 border-secondary/20 animate-spin" style="--hero-orbit-duration: 24s"></div>
           </div>
 
           <div class="relative z-10">
@@ -67,10 +67,10 @@ const techIcons = [
               <img :src="profileImage" :alt="t('hero.heroImageAlt')" class="w-full h-full object-cover" width="900" height="900" loading="eager" fetchpriority="high" decoding="async" />
             </div>
 
-            <div class="hero-floating-icon absolute -top-4 -right-4 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 4.8s" aria-hidden="true"><i class="fa-brands fa-vuejs text-3xl text-[#4FC08D]"></i></div>
-            <div class="hero-floating-icon absolute top-1/4 -left-6 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 4.4s; --hero-float-delay: .5s" aria-hidden="true"><i class="fa-brands fa-node-js text-3xl text-[#68A063]"></i></div>
-            <div class="hero-floating-icon absolute -bottom-4 -right-4 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 5.2s; --hero-float-delay: 1s" aria-hidden="true"><i class="fa-brands fa-figma text-3xl text-[#F24E1E]"></i></div>
-            <div class="hero-floating-icon absolute bottom-1/4 -left-6 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 4.6s; --hero-float-delay: 1.5s" aria-hidden="true"><i class="fa-solid fa-code text-3xl text-primary"></i></div>
+            <div class="hero-floating-icon absolute -top-4 -right-4 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 5s" aria-hidden="true"><i class="fa-brands fa-vuejs text-3xl text-[#4FC08D]"></i></div>
+            <div class="hero-floating-icon absolute top-1/4 -left-6 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 4.8s; --hero-float-delay: .5s" aria-hidden="true"><i class="fa-brands fa-node-js text-3xl text-[#68A063]"></i></div>
+            <div class="hero-floating-icon absolute -bottom-4 -right-4 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 5.6s; --hero-float-delay: 1s" aria-hidden="true"><i class="fa-brands fa-figma text-3xl text-[#F24E1E]"></i></div>
+            <div class="hero-floating-icon absolute bottom-1/4 -left-6 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce" style="--hero-float-duration: 5.2s; --hero-float-delay: 1.5s" aria-hidden="true"><i class="fa-solid fa-code text-3xl text-primary"></i></div>
           </div>
         </div>
       </div>

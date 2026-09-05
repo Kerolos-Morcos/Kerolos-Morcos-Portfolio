@@ -2,9 +2,9 @@ import { nextTick, onMounted, onUnmounted } from "vue";
 
 const EASING = "cubic-bezier(.22, 1, .36, 1)";
 const PROFILES = {
-  mobile: { duration: 520, distance: 12, heading: 11, stagger: 30, maxDelay: 135, opacity: 0.12, rootMargin: "0px 0px -3% 0px", maxConcurrent: 4, staleAfter: 180 },
-  tablet: { duration: 600, distance: 20, heading: 17, stagger: 50, maxDelay: 200, opacity: 0.08, rootMargin: "0px 0px -5% 0px", maxConcurrent: 4, staleAfter: 180 },
-  desktop: { duration: 660, distance: 24, heading: 20, stagger: 55, maxDelay: 220, opacity: 0.05, rootMargin: "0px 0px -6% 0px", maxConcurrent: 4, staleAfter: 180 },
+  mobile: { duration: 720, distance: 22, heading: 20, stagger: 60, maxDelay: 280, opacity: 0, rootMargin: "0px 0px -12% 0px" },
+  tablet: { duration: 820, distance: 28, heading: 26, stagger: 75, maxDelay: 300, opacity: 0, rootMargin: "0px 0px -14% 0px" },
+  desktop: { duration: 880, distance: 32, heading: 32, stagger: 80, maxDelay: 320, opacity: 0, rootMargin: "0px 0px -14% 0px" },
 };
 
 export function useEntranceMotion() {
@@ -16,40 +16,14 @@ export function useEntranceMotion() {
   const completed = new WeakSet();
   const completedSections = new WeakSet();
   const animations = new Map();
-  const activeSectionAnimations = new Set();
+  const prepared = new Map();
   const profile = () => PROFILES[window.innerWidth <= 640 ? "mobile" : window.innerWidth < 1024 ? "tablet" : "desktop"];
   const shouldEnroll = (element) => {
     const mobileVariant = element.dataset.motionMobile;
     return window.innerWidth <= 640 ? mobileVariant !== "skip" : mobileVariant !== "only";
   };
 
-  function finishAnimations() {
-    // Underlying styles are always visible. Cancel releases the compositor
-    // animation immediately, including when the browser suspends a tab.
-    animations.forEach((animation, element) => {
-      completed.add(element);
-      animation.cancel();
-    });
-    animations.clear();
-    activeSectionAnimations.clear();
-  }
-
-  function settle() {
-    observer?.disconnect();
-    waiting.clear();
-    finishAnimations();
-  }
-
-  function animate(element, hero = false) {
-    if (completed.has(element) || reducedMotion.matches || document.hidden || !element.isConnected) return;
-    const settings = profile();
-    // Sections use no more than four visual groups. Any excess remains visible
-    // rather than creating a delayed waterfall after a fast navigation.
-    if (!hero && activeSectionAnimations.size >= settings.maxConcurrent) {
-      completed.add(element);
-      return;
-    }
-    const step = Math.min(4, Math.max(0, Number(element.dataset.motionStep) || 0));
+  function entranceState(element, settings) {
     const distance = element.hasAttribute("data-motion-heading") ? settings.heading : settings.distance;
     let transform = `translateY(${distance}px)`;
     if (element.dataset.motion === "fade-in") transform = "none";
@@ -58,23 +32,71 @@ export function useEntranceMotion() {
       const side = element.dataset.motionSide === "end" ? -1 : 1;
       transform = `translateX(${16 * direction * side}px)`;
     }
+    return { opacity: settings.opacity, transform };
+  }
 
+  function prepare(element) {
+    if (prepared.has(element) || completed.has(element) || !element.isConnected) return;
+    const initial = entranceState(element, profile());
+    prepared.set(element, { opacity: element.style.opacity, transform: element.style.transform });
+    // Preparation only happens while the group is below the initial viewport.
+    // Its structural section remains untouched, so geometry never changes.
+    element.style.opacity = String(initial.opacity);
+    element.style.transform = initial.transform;
+  }
+
+  function restorePrepared(element) {
+    const original = prepared.get(element);
+    if (!original) return;
+    element.style.opacity = original.opacity;
+    element.style.transform = original.transform;
+    prepared.delete(element);
+  }
+
+  function completeVisible(section) {
+    completedSections.add(section);
+    targetsFor(section).forEach((element) => {
+      completed.add(element);
+      restorePrepared(element);
+    });
+  }
+
+  function finishAnimations() {
+    [...animations.entries()].forEach(([element, animation]) => {
+      completed.add(element);
+      animation.cancel();
+      restorePrepared(element);
+    });
+    animations.clear();
+  }
+
+  function settle() {
+    observer?.disconnect();
+    waiting.clear();
+    finishAnimations();
+    [...prepared.keys()].forEach((element) => restorePrepared(element));
+  }
+
+  function animate(element, hero = false) {
+    if (completed.has(element) || reducedMotion.matches || document.hidden || !element.isConnected) return;
+    const settings = profile();
+    const step = Math.max(0, Number(element.dataset.motionStep) || 0);
+    const initial = entranceState(element, settings);
     const animation = element.animate([
-      { opacity: settings.opacity, transform },
+      initial,
       { opacity: 1, transform: "none" },
     ], {
       id: hero ? "entrance-hero" : "entrance-section-group",
       duration: settings.duration,
       delay: Math.min(settings.maxDelay, step * settings.stagger),
       easing: EASING,
-      fill: "backwards",
+      fill: "both",
     });
     completed.add(element);
     animations.set(element, animation);
-    if (!hero) activeSectionAnimations.add(element);
     const release = () => {
       animations.delete(element);
-      activeSectionAnimations.delete(element);
+      restorePrepared(element);
     };
     animation.onfinish = release;
     animation.oncancel = release;
@@ -98,8 +120,8 @@ export function useEntranceMotion() {
   function coordinate(section) {
     if (completedSections.has(section)) return;
     completedSections.add(section);
-    // Every presentation group shares the same observer callback and timing
-    // origin. Internal delays express hierarchy without independent triggers.
+    // One section trigger coordinates only its presentation groups: heading,
+    // content, cards, and CTA — never every individual child.
     targetsFor(section).forEach((element) => animate(element));
   }
 
@@ -107,16 +129,7 @@ export function useEntranceMotion() {
     const trigger = triggerFor(section);
     if (!trigger) return true;
     const rect = trigger.getBoundingClientRect();
-    return rect.bottom <= 0 || rect.top < window.innerHeight;
-  }
-
-  function isTooDeepToAnimate(section) {
-    const trigger = triggerFor(section);
-    if (!trigger) return true;
-    const rect = trigger.getBoundingClientRect();
-    // Normal entries begin near the lower edge. Only a heading that has
-    // already reached the upper half is considered too late to animate.
-    return rect.bottom <= 0 || rect.top < window.innerHeight * 0.45;
+    return rect.bottom <= 0 || rect.top < window.innerHeight || rect.width === 0 || rect.height === 0;
   }
 
   function handleVisibility() {
@@ -147,39 +160,41 @@ export function useEntranceMotion() {
 
     if ("IntersectionObserver" in window) {
       observer = new IntersectionObserver((entries) => {
-        const incoming = entries.filter((entry) => entry.isIntersecting && waiting.has(entry.target));
-        incoming.forEach((entry) => {
-          const trigger = entry.target;
-          const section = waiting.get(trigger);
-          waiting.delete(trigger);
-          observer.unobserve(trigger);
-          const rect = trigger.getBoundingClientRect();
-          // Late deliveries and restored/deep viewports stay visible. A normal
-          // entry is judged from its heading trigger, not the section padding.
-          if (performance.now() - entry.time > profile().staleAfter || isTooDeepToAnimate(section) || rect.width === 0 || rect.height === 0) {
-            completedSections.add(section);
-            targetsFor(section).forEach((element) => completed.add(element));
+        entries.forEach((entry) => {
+          const section = waiting.get(entry.target);
+          if (!section) return;
+
+          // The only mid-session skip is a group that a single exceptionally
+          // large scroll has already carried entirely above the viewport.
+          if (!entry.isIntersecting) {
+            if (entry.boundingClientRect.bottom <= 0) {
+              waiting.delete(entry.target);
+              observer.unobserve(entry.target);
+              completeVisible(section);
+            }
             return;
           }
+
+          waiting.delete(entry.target);
+          observer.unobserve(entry.target);
           coordinate(section);
         });
       }, { threshold: 0, rootMargin: profile().rootMargin });
 
       sections.forEach(({ section, trigger }) => {
-        // Initial content remains fully visible. During later scrolling the
-        // same section uses its first presentation group as a precise trigger.
-        if (!trigger || isInitiallyVisible(section) || trigger.getBoundingClientRect().width === 0 || trigger.getBoundingClientRect().height === 0) {
-          completedSections.add(section);
-          targetsFor(section).forEach((element) => completed.add(element));
+        // First-viewport and restored content remains visible. Only below-fold
+        // presentation groups are prepared before their one-time entrance.
+        if (!trigger || isInitiallyVisible(section)) {
+          completeVisible(section);
           return;
         }
+        presentationTargets(section).forEach((element) => prepare(element));
         waiting.set(trigger, section);
         observer.observe(trigger);
       });
     }
 
-    // Hero gets a compact initial sequence, independent of scroll observers.
-    // Reload/back/deep links retain immediately visible content.
+    // Hero has its own immediate, sequenced entrance and is never observer-led.
     const navigation = performance.getEntriesByType("navigation")[0];
     if (window.scrollY === 0 && !window.location.hash && navigation?.type !== "back_forward" && navigation?.type !== "reload") {
       root.querySelectorAll("[data-motion-hero]").forEach((element) => animate(element, true));
@@ -187,9 +202,7 @@ export function useEntranceMotion() {
 
     document.addEventListener("visibilitychange", handleVisibility);
     window.addEventListener("pageshow", handlePageShow);
-    window.addEventListener("resize", finishAnimations, { passive: true });
-    root.addEventListener("focusin", finishAnimations);
-    root.addEventListener("pointerdown", finishAnimations, { passive: true });
+    window.addEventListener("resize", settle, { passive: true });
     reducedMotion.addEventListener("change", handleReducedMotion);
   });
 
@@ -198,9 +211,7 @@ export function useEntranceMotion() {
     settle();
     document.removeEventListener("visibilitychange", handleVisibility);
     window.removeEventListener("pageshow", handlePageShow);
-    window.removeEventListener("resize", finishAnimations);
-    root?.removeEventListener("focusin", finishAnimations);
-    root?.removeEventListener("pointerdown", finishAnimations);
+    window.removeEventListener("resize", settle);
     reducedMotion?.removeEventListener("change", handleReducedMotion);
   });
 }
