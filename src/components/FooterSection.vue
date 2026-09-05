@@ -66,7 +66,7 @@ const currentYear = new Date().getFullYear();
         </div>
       </div>
 
-      <div class="border-t border-slate-200 dark:border-slate-800 pt-8" data-reveal>
+      <div class="border-t border-slate-200 dark:border-slate-800 pt-8">
         <div class="flex flex-col md:flex-row justify-between items-center gap-5">
           <p class="text-slate-500 dark:text-slate-400 text-lg text-center md:text-start">© {{ currentYear }} {{ t('footer.name') }}. {{ t('footer.rights') }}</p>
           <div class="flex gap-3">

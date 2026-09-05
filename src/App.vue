@@ -12,10 +12,10 @@ import SkillsSection from "./components/SkillsSection.vue";
 import StatisticsSection from "./components/StatisticsSection.vue";
 import TestimonialsSection from "./components/TestimonialsSection.vue";
 import { usePortfolio } from "./composables/usePortfolio";
-import { useReveal } from "./composables/useReveal";
+import { useEntranceMotion } from "./composables/useEntranceMotion";
 
 const { lang, isDark, font, themeName, themes, t, setLanguage, setFont, toggleTheme, chooseTheme, resetSettings } = usePortfolio();
-useReveal();
+useEntranceMotion();
 const activeSection = ref("hero-section");
 const menuOpen = ref(false);
 const menuReady = ref(false);
