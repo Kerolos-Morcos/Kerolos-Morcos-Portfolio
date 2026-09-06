@@ -1,10 +1,10 @@
 <script setup>
-import { defineAsyncComponent, onMounted, onUnmounted, ref, watch } from "vue";
+import { defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import AboutSection from "./components/AboutSection.vue";
 import ContactSection from "./components/ContactSection.vue";
 import ExperienceSection from "./components/ExperienceSection.vue";
 import FooterSection from "./components/FooterSection.vue";
-import HeroSection from "./components/HeroSection.vue";
+import HeroSection from "./components/hero/HeroExperience.vue";
 import Navbar from "./components/Navbar.vue";
 import ProjectsSection from "./components/ProjectsSection.vue";
 import SettingsPanel from "./components/SettingsPanel.vue";
@@ -17,8 +17,18 @@ import EngineeringFlow from './components/engineering/EngineeringFlow.vue';
 import TechMarquee from './components/portfolio/TechMarquee.vue';
 import ScrollProgress from './components/portfolio/ScrollProgress.vue';
 import PortfolioAnalytics from './components/analytics/PortfolioAnalytics.vue';
+import SystemMode from './components/system/SystemMode.vue';
+import ContextPointer from './components/portfolio/ContextPointer.vue';
+import { provideSystemMode } from './composables/useSystemMode';
 const DeveloperTerminal = defineAsyncComponent(() => import('./components/terminal/DeveloperTerminal.vue'));
 const terminalOpen = ref(false);
+const projectsSection = ref(null);
+provideSystemMode();
+async function openTerminalProject(id) {
+  terminalOpen.value = false;
+  await nextTick();
+  projectsSection.value?.openProjectById(id);
+}
 
 const { lang, isDark, font, themeName, themes, t, setLanguage, setFont, toggleTheme, chooseTheme, resetSettings } = usePortfolio();
 useEntranceMotion();
@@ -198,7 +208,7 @@ onUnmounted(() => {
     <AboutSection :lang="lang" :t="t" />
     <SkillsSection :lang="lang" :t="t" />
     <EngineeringFlow :t="t" />
-    <ProjectsSection :lang="lang" :t="t" />
+    <ProjectsSection ref="projectsSection" :lang="lang" :t="t" />
     <ExperienceSection :lang="lang" :t="t" />
     <TestimonialsSection :lang="lang" :t="t" />
     <StatisticsSection :t="t" />
@@ -206,7 +216,9 @@ onUnmounted(() => {
   </main>
 
   <FooterSection :t="t" />
-  <DeveloperTerminal v-if="terminalOpen" :lang="lang" :t="t" @close="terminalOpen = false" />
+  <SystemMode :t="t" :controls-hidden="menuOpen || settingsOpen || terminalOpen" />
+  <ContextPointer />
+  <DeveloperTerminal v-if="terminalOpen" :lang="lang" :t="t" :theme-name="themeName" :is-dark="isDark" @close="terminalOpen = false" @open-project="openTerminalProject" />
 
   <button id="scroll-to-top" class="scroll-top-transition fixed left-8 bottom-8 bg-gradient-to-tr from-primary to-accent hover:from-secondary hover:to-primary text-white w-14 h-14 rounded-full shadow-lg hover:shadow-2xl hover:shadow-primary/50 flex items-center justify-center z-50 group" :class="showScrollTop ? 'opacity-100 visible' : 'opacity-0 invisible'" type="button" :aria-label="t('a11y.scrollTop')" @click="scrollToTop"><i class="fa-solid fa-rocket text-2xl transform -rotate-45 group-hover:translate-y-[-3px] transition-transform duration-300" aria-hidden="true"></i></button>
   <SettingsPanel :is-open="settingsOpen" :menu-open="menuOpen" :lang="lang" :t="t" :themes="themes" :theme-name="themeName" :font="font" @close="settingsOpen = $event" @set-font="setFont" @set-theme="chooseTheme" @reset="resetSettings" />

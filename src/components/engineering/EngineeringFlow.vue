@@ -1,9 +1,11 @@
 <script setup>
 import { computed, ref } from 'vue';
+import RequestJourney from './RequestJourney.vue';
 const props = defineProps({ t: { type: Function, required: true } });
 const selected = ref(0);
 const hovered = ref(null);
-const active = computed(() => hovered.value ?? selected.value);
+const journeyLayer = ref(null);
+const active = computed(() => journeyLayer.value ?? hovered.value ?? selected.value);
 const layers = computed(() => props.t('v2.engineering.layers'));
 const layer = computed(() => layers.value[active.value]);
 function hoverNode(index, event) {
@@ -21,15 +23,17 @@ function hoverNode(index, event) {
       </div>
       <div class="engineering-console" data-motion="fade-up" data-motion-step="1">
         <div class="engineering-toolbar"><span class="console-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>{{ t('v2.engineering.model') }}</span><code dir="ltr" aria-hidden="true">0{{ active + 1 }} / 04</code></div>
+        <RequestJourney :t="t" @stage="journeyLayer = $event">
         <div class="engineering-nodes" @pointerleave="hovered = null">
           <template v-for="(node, index) in layers" :key="node.tech">
-            <button class="engineering-node" type="button" :aria-pressed="selected === index" :class="{ 'is-active': active === index, 'is-connected': Math.abs(active - index) === 1 }" aria-controls="engineering-detail" @click="selected = index" @focus="hovered = null" @pointerenter="hoverNode(index, $event)">
+            <button class="engineering-node" type="button" :aria-pressed="selected === index" :class="{ 'is-active': active === index, 'is-connected': Math.abs(active - index) === 1 }" aria-controls="engineering-detail" @click="selected = index; journeyLayer = null" @focus="hovered = null" @pointerenter="hoverNode(index, $event)">
               <span class="node-index" aria-hidden="true">0{{ index + 1 }}</span><i :class="node.icon" aria-hidden="true"></i><strong>{{ node.title }}</strong><bdi>{{ node.tech }}</bdi><small>{{ node.brief }}</small>
             </button>
             <span v-if="index < layers.length - 1" class="engineering-connection" :class="{ 'is-connected': index === active || index + 1 === active }" aria-hidden="true"><i></i></span>
           </template>
         </div>
-        <div id="engineering-detail" class="engineering-detail" aria-live="polite" aria-atomic="true">
+        </RequestJourney>
+        <div id="engineering-detail" class="engineering-detail" :aria-live="journeyLayer === null ? 'polite' : 'off'" aria-atomic="true">
           <div><p class="v2-eyebrow">{{ layer.output }}</p><h3>{{ layer.title }}</h3><p>{{ layer.detail }}</p></div><code dir="ltr">{{ layer.code }}</code>
         </div>
         <p class="engineering-hint">{{ t('v2.engineering.hint') }}</p>
@@ -68,6 +72,7 @@ h2 span { color: var(--v2-accent-text); }
 .engineering-connection { height: 1px; background: var(--v2-border); position: relative; overflow: hidden; }
 .engineering-connection i { position: absolute; width: 10px; height: 2px; background: var(--color-primary); left: -10px; animation: signal 4s linear infinite; }
 .engineering-connection.is-connected { background: var(--color-primary); }
+.request-journey.is-running .engineering-connection.is-connected i { animation-duration: .65s; }
 .engineering-detail { min-height: 190px; display: grid; grid-template-columns: 1.5fr 1fr; align-items: center; gap: 2rem; border-top: 1px solid var(--v2-border); padding: 2rem; }
 .engineering-detail h3 { font-size: 1.35rem; font-weight: 800; margin-block: .4rem; }
 .engineering-detail p:not(.v2-eyebrow) { color: var(--v2-muted); line-height: 1.75; max-width: 620px; }

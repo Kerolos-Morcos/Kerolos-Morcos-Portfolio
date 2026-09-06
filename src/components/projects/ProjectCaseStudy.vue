@@ -31,13 +31,13 @@ function afterClose(emit) {
       <h2>{{ local(project.title) }}</h2>
       <p class="case-description">{{ local(project.description) }}</p>
       <div class="v2-actions">
-        <a v-if="project.live" :href="project.live" target="_blank" rel="noopener noreferrer" class="v2-button v2-button--primary" @click="trackEvent('project_case_study_live_click', project.id)">{{ t('v2.live') }} <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+        <a v-if="project.live" :href="project.live" :data-cursor-label="t('v3.pointer.visit')" target="_blank" rel="noopener noreferrer" class="v2-button v2-button--primary" @click="trackEvent('project_case_study_live_click', project.id)">{{ t('v2.live') }} <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
         <a v-if="project.github" :href="project.github" target="_blank" rel="noopener noreferrer" class="v2-button" @click="trackEvent('github_project_click', project.id)"><i class="fa-brands fa-github" aria-hidden="true"></i>{{ t('v2.source') }}</a>
         <button type="button" class="v2-button" @click="share"><i class="fa-solid fa-link" aria-hidden="true"></i>{{ t('v2.share') }}</button>
       </div>
       <p v-if="copyState" role="status" class="case-copy-status">{{ t(`v2.${copyState}`) }}</p>
     </div>
-    <figure class="case-image"><img :src="project.image" :alt="`${local(project.title)} — ${local(detail?.previewNote) || t('v2.preview')}`" width="1265" height="712" /><figcaption>{{ local(detail?.previewNote) || t('v2.preview') }} <span aria-hidden="true">·</span> {{ local(project.title) }}</figcaption></figure>
+    <figure class="case-image"><div v-if="!detail?.previewNote" class="case-browser-frame" aria-hidden="true"><span>● ● ●</span><code>{{ local(project.title) }}</code><i class="fa-solid fa-arrow-up-right-from-square"></i></div><img :src="project.image" :alt="`${local(project.title)} — ${local(detail?.previewNote) || t('v2.preview')}`" width="1265" height="712" /><figcaption>{{ local(detail?.previewNote) || t('v2.preview') }} <span aria-hidden="true">·</span> {{ local(project.title) }}</figcaption></figure>
     <div class="case-body">
       <div class="case-stories">
         <section v-for="(key, index) in sections" :key="key" class="case-story"><span class="case-index" aria-hidden="true">{{ String(index + 1).padStart(2, '0') }}</span><div><h3>{{ t(`v2.${key}`) }}</h3><p>{{ local(detail[key]) }}</p></div></section>
@@ -56,7 +56,9 @@ function afterClose(emit) {
 </template>
 
 <style scoped>
-.case-intro { padding: 2.5rem 2.5rem 2rem; }
+.case-intro { padding: 2.5rem 2.5rem 2rem; background: radial-gradient(ellipse at 100% 0%, rgb(var(--accent-primary-rgb) / .10), transparent 65%); }
+.case-browser-frame { display: flex; align-items: center; gap: 1rem; padding: .75rem 1rem; border-bottom: 1px solid var(--v2-border); color: var(--v2-muted); font-size: .65rem; }
+.case-browser-frame > span { color: var(--v2-accent-text); letter-spacing: 3px; }.case-browser-frame code { flex: 1; text-align: center; font-size: .7rem; }
 .case-intro h2 { font-size: clamp(2rem, 5vw, 3.25rem); font-weight: 900; line-height: 1.2; margin-block: .75rem 1rem; overflow-wrap: anywhere; }
 .case-description { max-width: 680px; font-size: 1.2rem; color: var(--v2-muted); line-height: 1.8; margin-bottom: 1.5rem; }
 .case-image { margin-inline: 2.5rem; border: 1px solid var(--v2-border); border-radius: 1rem; overflow: hidden; background: var(--v2-inset); }

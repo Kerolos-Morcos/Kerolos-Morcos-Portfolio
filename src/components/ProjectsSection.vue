@@ -3,8 +3,14 @@ import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, watch } fr
 import { TransitionGroup } from "vue";
 import { projects } from "../data/projects";
 import { useProjectDetails } from '../composables/useProjectDetails';
+import { projectDepth as vProjectDepth } from '../directives/projectDepth';
 const ProjectCaseStudy = defineAsyncComponent(() => import('./projects/ProjectCaseStudy.vue'));
 const { selectedProject, openProject, closeProject } = useProjectDetails();
+function openProjectById(id) {
+  const project = projects.find(item => item.id === id);
+  if (project) openProject(project);
+}
+defineExpose({ openProjectById });
 
 const props = defineProps({ lang: { type: String, required: true }, t: { type: Function, required: true } });
 const selectedFilter = ref("all");
@@ -106,7 +112,7 @@ onUnmounted(() => {
       <div id="portfolio-grid-frame" class="project-grid-frame" :style="{ minHeight: gridMinHeight ? `${gridMinHeight}px` : undefined }">
         <TransitionGroup :name="projectTransitionName" tag="div" id="portfolio-grid" class="project-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" @pointerdown="startProjectSwipe" @pointerup="finishProjectSwipe" @pointercancel="cancelProjectSwipe" @pointerleave="cancelProjectSwipe">
         <article v-for="(project, index) in paginatedProjects" :key="project.id" v-spotlight class="portfolio-item group relative bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-primary transition-interactive duration-300">
-          <div class="relative h-72 overflow-hidden">
+          <div v-project-depth class="project-cinematic-preview relative h-72 overflow-hidden">
             <img :src="project.image" :alt="`${localized(project.title)} — ${t('v2.preview')}`" class="project-preview-image w-full h-full object-cover" width="1265" height="712" sizes="(min-width: 1024px) 27rem, (min-width: 768px) 43vw, 100vw" loading="lazy" decoding="async" />
             <div class="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <span v-if="project.live" class="absolute top-4 left-4 px-3 py-1 rounded-full bg-emerald-500 text-white text-xs font-bold shadow-lg"><i class="fa-solid fa-circle text-[8px] mr-1" aria-hidden="true"></i>{{ t('projects.live') }}</span>
@@ -122,7 +128,7 @@ onUnmounted(() => {
             <h3 class="text-2xl font-bold mb-2">{{ localized(project.title) }}</h3>
             <p class="text-slate-500 dark:text-slate-400 mb-4">{{ localized(project.description) }}</p>
             <div class="project-card-stack flex flex-wrap gap-2"><span v-for="technology in project.technologies" :key="technology" class="px-3 py-1 bg-slate-100 dark:bg-slate-700 rounded-lg text-xs">{{ technology }}</span></div>
-            <button type="button" class="project-case-button" :aria-label="`${t('v2.caseStudy')}: ${localized(project.title)}`" @click="openProject(project, $event)"><span>{{ t(project.caseStudy ? 'v2.caseStudy' : 'v2.overview') }}</span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></button>
+            <button type="button" class="project-case-button" :data-cursor-label="t('v3.pointer.view')" :aria-label="`${t('v2.caseStudy')}: ${localized(project.title)}`" @click="openProject(project, $event)"><span>{{ t(project.caseStudy ? 'v2.caseStudy' : 'v2.overview') }}</span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></button>
           </div>
         </article>
         </TransitionGroup>
@@ -151,3 +157,11 @@ onUnmounted(() => {
   </section>
   <ProjectCaseStudy v-if="selectedProject" :project="selectedProject" :lang="lang" :t="t" @close="closeProject" />
 </template>
+
+<style scoped>
+@media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+  .project-cinematic-preview .project-preview-image { transform: scale(1.045); translate: var(--image-x, 0px) var(--image-y, 0px); transition: translate .5s cubic-bezier(.22,1,.36,1), transform .5s cubic-bezier(.22,1,.36,1); }
+  .portfolio-item:hover .project-cinematic-preview .project-preview-image { transform: scale(1.045); }
+}
+@media (prefers-reduced-motion: reduce) { .project-cinematic-preview .project-preview-image { transform: none; translate: none; transition: none; } }
+</style>
