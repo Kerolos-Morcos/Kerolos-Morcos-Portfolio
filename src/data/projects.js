@@ -1,4 +1,5 @@
 import freshCartImage from "../assets/projects/fresh-cart.webp";
+import { caseStudies } from "./caseStudies";
 import adasahImage from "../assets/projects/adasah.webp";
 import missionCarImage from "../assets/projects/mission-car-users.webp";
 import gameArenaImage from "../assets/projects/game-arena.webp";
@@ -26,4 +27,4 @@ export const projects = [
   { id: "puzzle-game", title: { ar: "Puzzle Game", en: "Puzzle Game" }, description: { ar: "لعبة متصفح لترتيب تسع قطع صور بالسحب والإفلات في أماكنها الصحيحة.", en: "Browser puzzle game where nine image pieces are placed by drag and drop." }, technologies: ["HTML5", "CSS3", "JavaScript", "Drag & Drop"], category: "frontend", image: puzzleGameImage, live: null, github: "https://github.com/Kerolos-Morcos/Puzzle-Game", featured: false, tone: "accent" },
   { id: "market-think", title: { ar: "Market Think", en: "Market Think" }, description: { ar: "صفحة هبوط للتسويق الرقمي تعرض الخدمات والحملات ودعوات واضحة لاتخاذ إجراء.", en: "Digital marketing landing page with service sections, campaigns, and clear calls to action." }, technologies: ["HTML5", "CSS3"], category: "frontend", image: marketThinkImage, live: null, github: "https://github.com/Kerolos-Morcos/Market-Think", featured: false, tone: "secondary" },
   { id: "explore-travel", title: { ar: "Explore & Travel", en: "Explore & Travel" }, description: { ar: "صفحة سفر متجاوبة للبحث عن العطلات واستكشاف الوجهات والأدلة والتقييمات.", en: "Responsive travel landing page with holiday search, destinations, guides, and testimonials." }, technologies: ["HTML5", "CSS3", "Bootstrap"], category: "frontend", image: exploreTravelImage, live: null, github: "https://github.com/Kerolos-Morcos/Travel-Landing-Page", featured: false, tone: "primary" },
-];
+].map((project) => ({ ...project, caseStudy: caseStudies[project.id] || null }));

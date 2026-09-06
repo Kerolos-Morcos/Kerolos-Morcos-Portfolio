@@ -2,6 +2,7 @@
 import profileImage from "../assets/profile/kerolos-morcos.webp";
 
 defineProps({ lang: { type: String, required: true }, t: { type: Function, required: true } });
+defineEmits(['open-terminal']);
 
 const techIcons = [
   { name: "Vue.js", icon: "fa-brands fa-vuejs", color: "#42b883" },
@@ -29,7 +30,7 @@ const techIcons = [
 
           <div class="mb-8" data-motion="fade-up" data-motion-heading data-motion-hero data-motion-step="1">
             <p class="text-xl md:text-2xl text-slate-500 dark:text-slate-400 mb-3 font-medium">{{ t('hero.greeting') }}</p>
-            <h1 id="hero-title" class="text-4xl md:text-6xl lg:text-7xl font-black leading-tight"><span class="relative inline-block"><span class="hero-name-gradient bg-gradient-to-l pb-8 from-primary via-secondary to-accent bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient" :data-text="t('hero.name')">{{ t('hero.name') }}</span></span></h1>
+            <h1 id="hero-title" :aria-label="t('hero.name')" class="text-4xl md:text-6xl lg:text-7xl font-black leading-tight"><span class="relative inline-block"><span class="hero-name-gradient bg-gradient-to-l pb-8 from-primary via-secondary to-accent bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient" :data-text="t('hero.name')">{{ t('hero.name') }}</span></span></h1>
           </div>
 
           <div class="inline-flex items-center gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-5 py-2.5 rounded-full mb-8" data-motion="fade-up" data-motion-hero data-motion-step="2">
@@ -43,12 +44,14 @@ const techIcons = [
 
           <div class="hero-actions flex flex-wrap justify-center gap-4 mb-10" data-motion="fade-up" data-motion-hero data-motion-step="4">
             <a href="#portfolio" class="group relative inline-flex items-center gap-3 bg-gradient-to-l from-primary to-secondary px-8 py-4 rounded-2xl text-lg font-bold text-white overflow-hidden transition-polished"><span class="relative z-10">{{ t('hero.projectsCta') }}</span><i :class="['fa-solid relative z-10 transition-polished', lang === 'ar' ? 'fa-arrow-left group-hover:-translate-x-2' : 'fa-arrow-right group-hover:translate-x-2']" aria-hidden="true"></i><span class="absolute inset-0 bg-gradient-to-l from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span></a>
-            <a href="#contact" class="group inline-flex items-center gap-3 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white px-8 py-4 rounded-2xl text-lg font-bold transition-polished hover:border-primary hover:text-primary hover:shadow-lg"><span>{{ t('hero.contactCta') }}</span><i class="fa-solid fa-paper-plane transition-polished group-hover:-translate-y-1 group-hover:translate-x-1" aria-hidden="true"></i></a>
+            <a v-magnetic href="#contact" class="group inline-flex items-center gap-3 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white px-8 py-4 rounded-2xl text-lg font-bold transition-polished hover:border-primary hover:text-primary hover:shadow-lg"><span>{{ t('hero.contactCta') }}</span><i class="fa-solid fa-paper-plane transition-polished group-hover:-translate-y-1 group-hover:translate-x-1" aria-hidden="true"></i></a>
           </div>
 
           <div class="hero-tech-list flex flex-wrap justify-center gap-2" aria-label="Core technologies" data-motion="fade-in" data-motion-hero data-motion-step="5">
             <div v-for="(tech, index) in techIcons" :key="tech.name" class="hero-tech-chip flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-interactive duration-300 group" :style="{ '--tech-color': tech.color, '--float-delay': `${index * 180}ms` }"><i :class="tech.icon" class="text-xl group-hover:rotate-180 transition-transform duration-500" :style="{ color: tech.color }" aria-hidden="true"></i><span class="text-sm font-semibold text-slate-700 dark:text-slate-300">{{ tech.name }}</span></div>
           </div>
+          <p class="hero-proof">{{ t('v2.heroProof') }}</p>
+          <div class="hero-utility-links"><a href="/Kerolos-Morcos-Full-Stack-Developer-CV.pdf" download v-magnetic v-track="'cv_download'"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>{{ t('footer.cv') }}</a><a href="#engineering">{{ t('v2.engineeringLink') }}</a><button type="button" @click="$emit('open-terminal')"><i class="fa-solid fa-terminal" aria-hidden="true"></i>{{ t('v2.terminal.open') }}</button></div>
           </div>
         </div>
 

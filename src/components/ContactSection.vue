@@ -1,6 +1,7 @@
 <script setup>
 import { onUnmounted, reactive, ref } from "vue";
 import { socials } from "../data/socials";
+import { trackEvent } from "../lib/analytics";
 
 const props = defineProps({ lang: { type: String, required: true }, t: { type: Function, required: true } });
 const form = reactive({ name: "", email: "", phone: "", projectType: "", otherProjectType: "", budget: "", details: "", website: "" });
@@ -85,12 +86,14 @@ async function submitForm() {
 
     Object.assign(form, { name: "", email: "", phone: "", projectType: "", otherProjectType: "", budget: "", details: "", website: "" });
     submitState.value = "success";
+    trackEvent('contact_submit_success');
     window.clearTimeout(successResetTimer);
     successResetTimer = window.setTimeout(() => { submitState.value = "idle"; }, 7000);
   } catch (error) {
     lastDeliveryDebug.value ??= { status: null, apiError: error?.message || "Contact request failed", response: null };
     if (import.meta.env.DEV) console.error("Contact form delivery failed", lastDeliveryDebug.value);
     submitState.value = "error";
+    trackEvent('contact_submit_failure');
   }
 }
 
@@ -138,7 +141,7 @@ onUnmounted(() => {
             <div class="bg-white dark:bg-slate-900 rounded-2xl p-8">
               <h3 class="text-2xl font-bold mb-4 text-center text-slate-800 dark:text-white">{{ t('contact.follow') }}</h3>
               <div class="flex justify-center gap-4">
-                <a v-for="social in socials" :key="social.id" :href="social.href" class="social-icon-transition w-14 h-14 bg-slate-200 dark:bg-slate-800 rounded-xl flex items-center justify-center hover:bg-primary group" :aria-label="social.label" target="_blank" rel="noopener noreferrer"><i :class="social.icon" class="text-2xl text-slate-700 dark:text-white group-hover:text-white" aria-hidden="true"></i></a>
+                <a v-for="social in socials" :key="social.id" :href="social.href" v-track="social.id === 'linkedin' ? 'linkedin_click' : null" class="social-icon-transition w-14 h-14 bg-slate-200 dark:bg-slate-800 rounded-xl flex items-center justify-center hover:bg-primary group" :aria-label="social.label" target="_blank" rel="noopener noreferrer"><i :class="social.icon" class="text-2xl text-slate-700 dark:text-white group-hover:text-white" aria-hidden="true"></i></a>
               </div>
             </div>
           </div>

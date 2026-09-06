@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { defineAsyncComponent, onMounted, onUnmounted, ref, watch } from "vue";
 import AboutSection from "./components/AboutSection.vue";
 import ContactSection from "./components/ContactSection.vue";
 import ExperienceSection from "./components/ExperienceSection.vue";
@@ -13,6 +13,12 @@ import StatisticsSection from "./components/StatisticsSection.vue";
 import TestimonialsSection from "./components/TestimonialsSection.vue";
 import { usePortfolio } from "./composables/usePortfolio";
 import { useEntranceMotion } from "./composables/useEntranceMotion";
+import EngineeringFlow from './components/engineering/EngineeringFlow.vue';
+import TechMarquee from './components/portfolio/TechMarquee.vue';
+import ScrollProgress from './components/portfolio/ScrollProgress.vue';
+import PortfolioAnalytics from './components/analytics/PortfolioAnalytics.vue';
+const DeveloperTerminal = defineAsyncComponent(() => import('./components/terminal/DeveloperTerminal.vue'));
+const terminalOpen = ref(false);
 
 const { lang, isDark, font, themeName, themes, t, setLanguage, setFont, toggleTheme, chooseTheme, resetSettings } = usePortfolio();
 useEntranceMotion();
@@ -181,13 +187,17 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <PortfolioAnalytics />
+  <ScrollProgress />
   <a href="#main-content" class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-[100] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">{{ t('a11y.skip') }}</a>
   <Navbar :lang="lang" :t="t" :active-section="activeSection" :menu-open="menuOpen" :menu-ready="menuReady" :is-dark="isDark" @toggle-menu="toggleMenu" @close-menu="closeMenu" @navigate="handleMenuNavigation" @change-language="handleLanguageChange" @toggle-theme="handleThemeChange" />
 
   <main id="main-content">
-    <HeroSection :lang="lang" :t="t" />
+    <HeroSection :lang="lang" :t="t" @open-terminal="terminalOpen = true" />
+    <TechMarquee :t="t" />
     <AboutSection :lang="lang" :t="t" />
     <SkillsSection :lang="lang" :t="t" />
+    <EngineeringFlow :t="t" />
     <ProjectsSection :lang="lang" :t="t" />
     <ExperienceSection :lang="lang" :t="t" />
     <TestimonialsSection :lang="lang" :t="t" />
@@ -196,6 +206,7 @@ onUnmounted(() => {
   </main>
 
   <FooterSection :t="t" />
+  <DeveloperTerminal v-if="terminalOpen" :lang="lang" :t="t" @close="terminalOpen = false" />
 
   <button id="scroll-to-top" class="scroll-top-transition fixed left-8 bottom-8 bg-gradient-to-tr from-primary to-accent hover:from-secondary hover:to-primary text-white w-14 h-14 rounded-full shadow-lg hover:shadow-2xl hover:shadow-primary/50 flex items-center justify-center z-50 group" :class="showScrollTop ? 'opacity-100 visible' : 'opacity-0 invisible'" type="button" :aria-label="t('a11y.scrollTop')" @click="scrollToTop"><i class="fa-solid fa-rocket text-2xl transform -rotate-45 group-hover:translate-y-[-3px] transition-transform duration-300" aria-hidden="true"></i></button>
   <SettingsPanel :is-open="settingsOpen" :menu-open="menuOpen" :lang="lang" :t="t" :themes="themes" :theme-name="themeName" :font="font" @close="settingsOpen = $event" @set-font="setFont" @set-theme="chooseTheme" @reset="resetSettings" />

@@ -37,6 +37,8 @@ export function usePortfolio() {
     document.querySelector('meta[name="description"]')?.setAttribute("content", locale.value.meta.description);
     document.querySelector('meta[property="og:title"]')?.setAttribute("content", locale.value.meta.title);
     document.querySelector('meta[property="og:description"]')?.setAttribute("content", locale.value.meta.description);
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", locale.value.meta.title);
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", locale.value.meta.description);
     document.querySelector('meta[property="og:locale"]')?.setAttribute("content", locale.value.meta.locale);
     localStorage.setItem("portfolio-language", lang.value);
   }

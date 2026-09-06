@@ -1,6 +1,5 @@
 import { nextTick, onMounted, onUnmounted } from "vue";
-
-const EASING = "cubic-bezier(.22, 1, .36, 1)";
+import { EASING } from "../motion";
 const PROFILES = {
   mobile: { duration: 720, distance: 22, heading: 20, stagger: 60, maxDelay: 280, opacity: 0, rootMargin: "0px 0px -12% 0px" },
   tablet: { duration: 820, distance: 28, heading: 26, stagger: 75, maxDelay: 300, opacity: 0, rootMargin: "0px 0px -14% 0px" },

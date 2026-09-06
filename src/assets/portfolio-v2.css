@@ -1,0 +1,51 @@
+/* V2 primitives. Feature styling stays in its component. */
+:root {
+  --v2-surface: #fff;
+  --v2-inset: #f8fafc;
+  --v2-text: #0f172a;
+  --v2-muted: #475569;
+  --v2-border: #cbd5e1;
+  --v2-accent-text: color-mix(in srgb, var(--color-primary) 55%, #0f172a);
+}
+html.dark { --v2-surface: #0f172a; --v2-inset: #020617; --v2-text: #f1f5f9; --v2-muted: #cbd5e1; --v2-border: #334155; --v2-accent-text: color-mix(in srgb, var(--color-primary) 55%, #fff); }
+.v2-dialog { color-scheme: light; }
+html.dark .v2-dialog { color-scheme: dark; }
+html { scrollbar-gutter: stable; }
+.v2-eyebrow { color: var(--v2-accent-text); font-size: .8rem; font-weight: 700; letter-spacing: .05em; }
+.v2-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.v2-button { display: inline-flex; align-items: center; justify-content: center; gap: .65rem; min-height: 44px; padding: .75rem 1.1rem; border: 1px solid var(--v2-border); border-radius: .75rem; color: var(--v2-text); background: var(--v2-surface); font-weight: 700; cursor: pointer; transition: border-color var(--motion-fast), background-color var(--motion-fast), box-shadow var(--motion-fast); }
+.v2-button:hover { border-color: var(--color-primary); background: var(--v2-inset); }
+.v2-button--primary { background: color-mix(in srgb, var(--color-primary) 60%, #0f172a); color: white; border-color: transparent; }
+.v2-button--primary:hover { background: color-mix(in srgb, var(--color-secondary) 60%, #0f172a); border-color: transparent; }
+.v2-icon-button { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; flex-shrink: 0; border: 1px solid var(--v2-border); background: var(--v2-inset); color: var(--v2-text); border-radius: .75rem; cursor: pointer; transition: border-color var(--motion-fast), color var(--motion-fast); }
+.v2-icon-button:hover { border-color: var(--color-primary); color: var(--v2-accent-text); }
+.v2-spotlight { isolation: isolate; }
+.v2-spotlight::after { content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none; border-radius: inherit; opacity: 0; background: radial-gradient(300px circle at var(--pointer-x, 50%) var(--pointer-y, 50%), rgb(var(--accent-primary-rgb) / .10), transparent 75%); transition: opacity var(--motion-medium); }
+.hero-proof { margin-top: 1.25rem; color: var(--v2-muted); font-size: .85rem; }
+.hero-utility-links { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.25rem; margin-top: .5rem; }
+.hero-utility-links a, .hero-utility-links button { min-height: 44px; display: inline-flex; align-items: center; gap: .5rem; color: var(--v2-accent-text); font-size: .9rem; font-weight: 700; }
+.hero-utility-links a:hover, .hero-utility-links button:hover { text-decoration: underline; text-underline-offset: 4px; }
+.project-case-button { display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: 48px; margin-top: 1.25rem; border-top: 1px solid var(--v2-border); padding-top: .85rem; font-size: .9rem; font-weight: 700; color: var(--v2-accent-text); text-align: start; }
+.project-case-button i { transition: translate var(--motion-fast) var(--motion-premium-ease); }
+.project-case-button:hover i { translate: 2px -2px; }
+.portfolio-item .project-preview-image { transform: scale(1.035); transition: transform var(--motion-slow) var(--motion-premium-ease); }
+.portfolio-item.v2-spotlight { display: flex; flex-direction: column; }
+.portfolio-item.v2-spotlight > :first-child { flex-shrink: 0; }
+.portfolio-item .project-card-content { display: flex; flex-direction: column; flex: 1; }
+.project-card-content .project-case-button { margin-top: auto; }
+.project-card-stack { padding-bottom: 1.25rem; }
+.v2-dialog :is(button, a, input, [tabindex]):focus-visible, .engineering-node:focus-visible, .project-case-button:focus-visible, .hero-utility-links :is(a, button):focus-visible { outline: 3px solid var(--color-primary); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) {
+  .v2-spotlight.pointer-active::after { opacity: 1; }
+  .v2-magnetic { translate: var(--magnet-x, 0px) var(--magnet-y, 0px); transition-property: transform, translate, scale, background-color, border-color, color, box-shadow; transition-duration: var(--motion-medium); transition-timing-function: var(--motion-premium-ease); }
+  .hero-actions > .v2-magnetic:hover { translate: var(--magnet-x, 0px) var(--magnet-y, 0px); }
+  .portfolio-item:hover .project-preview-image { transform: scale(1); }
+}
+@media (max-width: 1023px) { .hero-utility-links { justify-content: center; } }
+@media (prefers-reduced-motion: reduce) {
+  #hero-section .hero-orbit, #hero-section .hero-profile-pulse, #hero-section .hero-floating-icon, #hero-section .hero-availability-ping, #hero-section .hero-scroll-indicator, #hero-section .hero-name-gradient::after { animation: none; }
+  .v2-magnetic, .hero-actions > .v2-magnetic:hover { translate: none; }
+  .v2-spotlight::after { display: none; }
+  .portfolio-item .project-preview-image { transform: none; transition: none; }
+  .v2-button, .v2-icon-button, .v2-magnetic, .project-case-button i { transition: none; }
+}

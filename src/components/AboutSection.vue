@@ -67,7 +67,7 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
           </div>
 
           <div class="flex gap-4 justify-center lg:justify-end" :aria-label="t('about.socialLabel')">
-            <a v-for="social in socials" :key="social.id" :href="social.href" :class="['w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-white transition-interactive duration-300 border border-slate-200 dark:border-slate-700', social.hover]" :aria-label="social.label" target="_blank" rel="noopener noreferrer"><i :class="social.icon" aria-hidden="true"></i></a>
+            <a v-for="social in socials" :key="social.id" :href="social.href" v-track="social.id === 'linkedin' ? 'linkedin_click' : null" :class="['w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-white transition-interactive duration-300 border border-slate-200 dark:border-slate-700', social.hover]" :aria-label="social.label" target="_blank" rel="noopener noreferrer"><i :class="social.icon" aria-hidden="true"></i></a>
           </div>
         </div>
       </div>
