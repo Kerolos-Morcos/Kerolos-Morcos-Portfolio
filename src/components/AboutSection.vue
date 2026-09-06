@@ -40,7 +40,7 @@ defineProps({ lang: { type: String, required: true }, t: { type: Function, requi
         </div>
 
         <div class="space-y-6">
-          <div class="code-editor rounded-2xl overflow-hidden shadow-2xl hover:shadow-primary/20 transition-interactive duration-500 transform hover:-translate-y-1">
+          <div class="code-editor rounded-2xl overflow-hidden shadow-2xl">
             <div class="code-editor__header flex items-center gap-2 px-4 py-3"><span class="w-3 h-3 rounded-full bg-red-500"></span><span class="w-3 h-3 rounded-full bg-yellow-500"></span><span class="w-3 h-3 rounded-full bg-green-500"></span><span class="code-file-label text-sm font-mono">{{ t('about.codeFile') }}</span></div>
             <div class="code-editor__content p-6 font-mono text-sm md:text-base leading-relaxed overflow-x-auto" dir="ltr">
               <p class="code-comment">{{ t('about.codeComment') }}</p>

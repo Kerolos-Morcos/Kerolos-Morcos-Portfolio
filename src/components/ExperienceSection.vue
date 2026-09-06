@@ -8,16 +8,19 @@ const props = defineProps({ lang: { type: String, required: true }, t: { type: F
 const trainingIndex = ref(0);
 const visibleCount = ref(1);
 const trainingDirection = ref("next");
-const pointerStartX = ref(null);
+const pointerStart = ref(null);
+const isMobile = computed(() => visibleCount.value === 1);
 const trainingPageCount = computed(() => Math.max(1, certificates.length - visibleCount.value + 1));
-const visibleCertificates = computed(() => certificates.slice(trainingIndex.value, trainingIndex.value + visibleCount.value));
+// Keep each mobile card mounted in one grid cell: hidden cards size the row
+// naturally, without duplicate content, measured heights, or entrance replay.
+const visibleCertificates = computed(() => isMobile.value ? certificates : certificates.slice(trainingIndex.value, trainingIndex.value + visibleCount.value));
 const trainingTransitionName = computed(() => trainingDirection.value === "next" ? "training-next" : "training-previous");
 
 function getVisibleCount() {
   if (typeof window === "undefined") return 1;
   return window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
 }
-function updateVisibleCount() { visibleCount.value = getVisibleCount(); }
+function updateVisibleCount() { visibleCount.value = getVisibleCount(); pointerStart.value = null; }
 function selectTrainingPage(page, direction = "next") {
   trainingDirection.value = direction;
   trainingIndex.value = Math.min(Math.max(page, 0), trainingPageCount.value - 1);
@@ -26,14 +29,27 @@ function nextTraining() { selectTrainingPage(trainingIndex.value + 1 >= training
 function previousTraining() { selectTrainingPage(trainingIndex.value - 1 < 0 ? trainingPageCount.value - 1 : trainingIndex.value - 1, "previous"); }
 function startTrainingSwipe(event) {
   if (event.pointerType === "mouse" && event.button !== 0) return;
-  pointerStartX.value = event.clientX;
+  if (isMobile.value && event.isPrimary === false) return;
+  pointerStart.value = { x: event.clientX, y: event.clientY, id: event.pointerId };
+  if (isMobile.value) event.currentTarget.setPointerCapture(event.pointerId);
+}
+function moveTrainingSwipe(event) {
+  const start = pointerStart.value;
+  if (!isMobile.value || !start || start.id !== event.pointerId) return;
+  const dx = Math.abs(event.clientX - start.x);
+  const dy = Math.abs(event.clientY - start.y);
+  // Once a gesture is vertical, leave it to native page scrolling.
+  if (dy > 12 && dy > dx) pointerStart.value = null;
 }
 function finishTrainingSwipe(event) {
-  if (pointerStartX.value === null) return;
-  const distance = event.clientX - pointerStartX.value;
-  pointerStartX.value = null;
+  const start = pointerStart.value;
+  if (!start || start.id !== event.pointerId) return;
+  const distance = event.clientX - start.x;
+  pointerStart.value = null;
   if (Math.abs(distance) < 48) return;
-  if (distance < 0) nextTraining();
+  if (isMobile.value && Math.abs(distance) < Math.abs(event.clientY - start.y) * 1.25) return;
+  const nextDistance = isMobile.value && props.lang === "ar" ? -distance : distance;
+  if (nextDistance < 0) nextTraining();
   else previousTraining();
 }
 function handleTrainingKeydown(event) {
@@ -110,8 +126,9 @@ onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
       <div class="mt-20" data-motion-section>
         <h3 class="section-title text-3xl font-black text-center mb-10" data-motion="fade-up" data-motion-heading><span class="bg-linear-to-r from-secondary to-accent bg-clip-text text-transparent">{{ t('experience.trainingTitle') }}</span></h3>
         <p class="text-center text-slate-500 dark:text-slate-400 mb-8" data-motion="fade-up" data-motion-step="1">{{ t('experience.certificates') }}</p>
-        <TransitionGroup :name="trainingTransitionName" tag="div" class="training-carousel grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" role="region" aria-roledescription="carousel" :aria-label="t('experience.trainingTitle')" tabindex="0" data-motion="fade-up" data-motion-step="2" @pointerdown="startTrainingSwipe" @pointerup="finishTrainingSwipe" @pointercancel="pointerStartX = null" @keydown="handleTrainingKeydown">
-          <article v-for="(certificate, index) in visibleCertificates" :key="certificate.id" class="training-card bg-slate-50 dark:bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 border border-slate-300 dark:border-slate-700 text-center hover:border-primary transition-interactive duration-300 transform hover:-translate-y-1">
+        <div data-motion="fade-up" data-motion-step="2">
+        <TransitionGroup :name="trainingTransitionName" :css="!isMobile" tag="div" class="training-carousel grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" :class="{ 'training-carousel--mobile': isMobile }" role="region" aria-roledescription="carousel" :aria-label="t('experience.trainingTitle')" tabindex="0" @pointerdown="startTrainingSwipe" @pointermove="moveTrainingSwipe" @pointerup="finishTrainingSwipe" @pointercancel="pointerStart = null" @lostpointercapture="pointerStart = null" @keydown="handleTrainingKeydown">
+          <article v-for="(certificate, index) in visibleCertificates" :key="certificate.id" class="bg-slate-50 dark:bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 border border-slate-300 dark:border-slate-700 text-center" :class="isMobile ? ['training-mobile-card', { 'is-active': index === trainingIndex, 'is-before': index < trainingIndex }] : 'training-card hover:border-primary transition-interactive duration-300 transform hover:-translate-y-1'" :aria-hidden="isMobile ? index !== trainingIndex : undefined" :inert="isMobile && index !== trainingIndex">
             <div>
               <span :class="['training-icon w-16 h-16 bg-linear-to-br rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl text-white', certificate.tone === 'secondary' ? 'from-secondary to-accent' : certificate.tone === 'accent' ? 'from-accent to-primary' : 'from-primary to-secondary']"><i :class="certificate.icon" aria-hidden="true"></i></span>
               <p class="text-primary font-bold mb-2">{{ certificate.provider }}</p>
@@ -120,7 +137,34 @@ onUnmounted(() => window.removeEventListener("resize", updateVisibleCount));
             </div>
           </article>
         </TransitionGroup>
+        <nav v-if="isMobile" class="training-mobile-controls methodology-controls flex items-center justify-center gap-4 mt-8" :aria-label="t('experience.trainingTitle')">
+          <button type="button" class="methodology-nav-button bg-white/90 dark:bg-slate-800/90 hover:bg-secondary text-slate-900 dark:text-white w-12 h-12 rounded-full flex items-center justify-center transition-interactive duration-300 hover:scale-110 border border-slate-300 dark:border-slate-700" :aria-label="t('experience.previousTraining')" @click="previousTraining"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-right' : 'fa-chevron-left'" aria-hidden="true"></i></button>
+          <div class="flex justify-center gap-3">
+            <button v-for="page in trainingPageCount" :key="page" type="button" :aria-current="trainingIndex === page - 1 ? 'true' : undefined" :aria-label="`${t('experience.trainingPage')} ${page}`" class="training-mobile-indicator" @click="selectTrainingPage(page - 1)"><span aria-hidden="true" :class="['w-3 h-3 rounded-full', trainingIndex === page - 1 ? 'bg-accent scale-125' : 'bg-slate-400 dark:bg-slate-600']"></span></button>
+          </div>
+          <button type="button" class="methodology-nav-button bg-white/90 dark:bg-slate-800/90 hover:bg-primary text-slate-900 dark:text-white w-12 h-12 rounded-full flex items-center justify-center transition-interactive duration-300 hover:scale-110 border border-slate-300 dark:border-slate-700" :aria-label="t('experience.nextTraining')" @click="nextTraining"><i class="fa-solid" :class="lang === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right'" aria-hidden="true"></i></button>
+        </nav>
+        </div>
       </div>
     </div>
   </section>
 </template>
+
+<style scoped>
+@media (max-width: 767px) {
+  .training-carousel--mobile { overflow: hidden; gap: 0; touch-action: pan-y pinch-zoom; }
+  .training-mobile-card { grid-area: 1 / 1; align-self: start; min-width: 0; visibility: hidden; opacity: 0; transform: translateX(18px); pointer-events: none; user-select: none; transition: opacity .25s ease, transform .25s ease, visibility .25s; }
+  .training-mobile-card.is-before { transform: translateX(-18px); }
+  .training-mobile-card:dir(rtl) { transform: translateX(-18px); }
+  .training-mobile-card.is-before:dir(rtl) { transform: translateX(18px); }
+  .training-mobile-card.is-active { visibility: visible; opacity: 1; transform: none; pointer-events: auto; }
+  .training-mobile-controls { margin-bottom: 0; }
+  .training-mobile-controls .methodology-nav-button { min-width: 44px; min-height: 44px; }
+  .training-carousel--mobile:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+  .training-mobile-indicator { display: grid; place-items: center; width: 24px; height: 44px; border-radius: 12px; cursor: pointer; }
+  .training-mobile-indicator > span { transition: background-color .3s ease, scale .3s ease; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .training-mobile-card, .training-mobile-indicator > span { transition: none; }
+}
+</style>
