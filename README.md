@@ -1,31 +1,41 @@
-# Kerolos Morcos Portfolio
+# Kerolos Morcos — Portfolio
 
-Vue 3 + Vite portfolio for Kerolos Morcos, a Full-Stack Developer using Vue.js and Node.js.
+Personal portfolio showcasing my work as a **Full-Stack Developer** specializing in **Vue.js, Node.js, Express.js, and MySQL**.
 
-## Local development
+Built with a strong focus on performance, responsive design, accessibility, smooth interactions, and a polished user experience.
 
-```sh
-npm install
-npm run dev
-```
+## Tech Stack
 
-## Production build
+- Vue 3
+- Vite
+- TypeScript
+- Tailwind CSS
+- Pinia
+- Node.js
+- Vercel
 
-```sh
-npm run build
-npm run preview
-```
+## Highlights
 
-First visits use English/LTR. Saved Arabic/RTL, color mode, palette, and font preferences remain supported. V2 does not change the existing color-mode initialization. The supplied CV remains at `/Kerolos-Morcos-Full-Stack-Developer-CV.pdf`.
+- Fully responsive across desktop, tablet, and mobile
+- Arabic and English support with RTL/LTR layouts
+- Light and dark themes
+- Persistent user preferences
+- Interactive project case studies
+- Modern animations and visual effects
+- Interactive engineering and architecture elements
+- Optimized assets and performance
+- Accessible UI and keyboard-friendly interactions
+- Contact form integration
+- Vercel Analytics and performance monitoring
 
-## V2 features and validation
+## Featured Projects
 
-Project case studies, an interactive engineering diagram, a local developer terminal, a technology rail, and official Vercel observability are modular additions.
+The portfolio showcases selected projects across full-stack development, including:
 
-```sh
-npm test
-npm run build
-git diff --check
-```
+- Car and fleet management systems
+- E-commerce applications
+- Church and community management platforms
+- Productivity and utility applications
+- Interactive web experiences
 
-See [the V2 implementation and verification report](docs/portfolio-v2.md) for architecture, feature removal instructions, analytics setup, test coverage, limitations, and the complete file list.
+Each project includes its technologies, key features, and relevant links where available.
